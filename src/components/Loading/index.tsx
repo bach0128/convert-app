@@ -1,27 +1,27 @@
-import { classNames } from "@/utils";
+import { classNames } from '@/lib/utils'
 
 type LoadingProps = {
-  size?: number;
-  text?: textProps;
-  bgColor?: string;
-  unfilledcolor?: string;
-  filledcolor?: string;
-  className?: string;
-};
+  size?: number
+  text?: textProps
+  bgColor?: string
+  unfilledcolor?: string
+  filledcolor?: string
+  className?: string
+}
 
 type textProps = {
-  text: string;
-  color?: string;
-  srOnly?: boolean;
-  bgColor?: string;
-};
+  text: string
+  color?: string
+  srOnly?: boolean
+  bgColor?: string
+}
 
 const defaultConfig = {
-  sr: "",
+  sr: '',
   ariaHidden: false,
-  size: "h-14 w-14",
-  bgColor: "",
-};
+  size: 'h-14 w-14',
+  bgColor: '',
+}
 
 export default function Loading({
   size,
@@ -32,14 +32,14 @@ export default function Loading({
   className,
 }: LoadingProps) {
   if (text?.srOnly) {
-    defaultConfig.sr = "sr-only";
-    defaultConfig.ariaHidden = false;
+    defaultConfig.sr = 'sr-only'
+    defaultConfig.ariaHidden = false
   }
   if (size) {
-    defaultConfig.size = `h-${size} w-${size}`;
+    defaultConfig.size = `h-${size} w-${size}`
   }
   if (bgColor) {
-    defaultConfig.bgColor = bgColor;
+    defaultConfig.bgColor = bgColor
   }
   return (
     <div
@@ -49,16 +49,16 @@ export default function Loading({
       <div className="bg-gray-400 opacity-50 w-screen h-screen fixed inset-0 z-auto"></div>
       <div
         className={classNames(
-          "grid w-full content-center justify-center h-full fixed z-50",
+          'grid w-full content-center justify-center h-full fixed z-50',
           defaultConfig.bgColor,
           className
         )}
         role="status"
       >
         <svg
-          aria-hidden={defaultConfig.ariaHidden ? "true" : "false"}
+          aria-hidden={defaultConfig.ariaHidden ? 'true' : 'false'}
           className={classNames(
-            "mx-auto animate-spin",
+            'mx-auto animate-spin',
             defaultConfig.size,
             text?.color,
             unfilledcolor,
@@ -78,11 +78,11 @@ export default function Loading({
           />
         </svg>
         {text && (
-          <span className={classNames(defaultConfig.sr, "text-center")}>
+          <span className={classNames(defaultConfig.sr, 'text-center')}>
             {text.text}
           </span>
         )}
       </div>
     </div>
-  );
+  )
 }

@@ -1,55 +1,55 @@
-import { AlignJustify, Loader2, User, X } from "lucide-react";
-import logo from "@/assets/images/logo.svg";
+import { AlignJustify, Loader2, User, X } from 'lucide-react'
+import logo from '@/assets/images/logo.jpg'
 // import {
 //   DropdownMenu,
 //   DropdownMenuContent,
 //   DropdownMenuItem,
 //   DropdownMenuTrigger,
 // } from "@/components/Shadcn/dropdown-menu";
-import { Link, NavLink } from "react-router-dom";
-import { ROUTE_PATH } from "@/enum/RoutePath.ts";
-import { Button } from "@/components/Shadcn/button.tsx";
-import { useEffect, useId, useState } from "react";
+import { Link, NavLink } from 'react-router-dom'
+import { ROUTE_PATH } from '@/enum/RoutePath.ts'
+import { Button } from '@/components/Shadcn/button.tsx'
+import { useEffect, useId, useState } from 'react'
 
-import clsx from "clsx";
-import { useBreakpoint } from "@/hooks/useBreakpoint.ts";
+import clsx from 'clsx'
+import { useBreakpoint } from '@/hooks/useBreakpoint.ts'
 
 const NAV_LINK_ARR = [
   {
-    name: "Dashboard",
+    name: 'Dashboard',
     href: ROUTE_PATH.DASHBOARD,
   },
   {
-    name: "About",
+    name: 'About',
     href: ROUTE_PATH.ABOUT,
   },
   {
-    name: "Contact",
+    name: 'Contact',
     href: ROUTE_PATH.CONTACT,
   },
-];
+]
 
 function SideBar({
   onClose,
   isLogoutLoading,
   onLogout,
 }: {
-  onClose: () => void;
-  isLogoutLoading: boolean;
-  onLogout: () => void;
+  onClose: () => void
+  isLogoutLoading: boolean
+  onLogout: () => void
 }) {
-  const id = useId();
-  const { isGreaterOrEqual } = useBreakpoint(768);
+  const id = useId()
+  const { isGreaterOrEqual } = useBreakpoint(768)
   useEffect(() => {
-    if (isGreaterOrEqual) onClose();
-  }, [isGreaterOrEqual, onClose]);
+    if (isGreaterOrEqual) onClose()
+  }, [isGreaterOrEqual, onClose])
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = 'hidden'
     return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, []);
+      document.body.style.overflow = 'unset'
+    }
+  }, [])
 
   return (
     <div className="inset-0 fixed bg-white z-[9999] top-20">
@@ -59,8 +59,8 @@ function SideBar({
             to={navItem.href}
             className={({ isActive }) =>
               clsx(
-                isActive && "underline",
-                "flex items-center font-medium py-3 hover:bg-gray-100 px-10 max-md:px-4"
+                isActive && 'underline',
+                'flex items-center font-medium py-3 hover:bg-gray-100 px-10 max-md:px-4'
               )
             }
             key={id + navItem.href}
@@ -74,7 +74,7 @@ function SideBar({
       </div>
       <Button
         className={`text-base w-full h-fit text-start justify-start py-3 hover:bg-gray-100 bg-white text-black px-10 max-md:px-4 ${
-          isLogoutLoading && "cursor-not-allowed"
+          isLogoutLoading && 'cursor-not-allowed'
         }`}
         disabled={isLogoutLoading}
         onClick={onLogout}
@@ -83,26 +83,26 @@ function SideBar({
         Logout
       </Button>
     </div>
-  );
+  )
 }
 
 function Header() {
-  const [isOpenSidebar, setIsOpenSidebar] = useState(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isOpenSidebar, setIsOpenSidebar] = useState(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const handleLogout = async () => {
-    setIsLoading(true);
-    console.log("Logging out...");
-  };
+    setIsLoading(true)
+    console.log('Logging out...')
+  }
 
   return (
     <>
       <header
         className="flex justify-between gap-4 px-10 max-md:px-4 py-5 border-b border-[#CECECE]"
-        style={{ height: "var(--height-header)" }}
+        style={{ height: 'var(--height-header)' }}
       >
-        <div className="flex gap-6 flex-grow">
-          <Link to={ROUTE_PATH.HOME}>
+        <div className="flex gap-6 flex-grow ">
+          <Link to={ROUTE_PATH.HOME} className="border border-gray-300 ">
             <img src={logo} alt="Logo" className="h-full" />
           </Link>
         </div>
@@ -112,13 +112,13 @@ function Header() {
               <NavLink
                 to={navItem.href}
                 className={({ isActive }) =>
-                  clsx(isActive && "underline", "flex items-center font-medium")
+                  clsx(isActive && 'underline', 'flex items-center font-medium')
                 }
                 key={navItem.href}
               >
                 {navItem.name}
               </NavLink>
-            );
+            )
           })}
         </nav>
         <Button
@@ -136,7 +136,7 @@ function Header() {
         />
       )}
     </>
-  );
+  )
 }
 
-export default Header;
+export default Header

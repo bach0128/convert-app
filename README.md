@@ -1,54 +1,120 @@
-# React + TypeScript + Vite
+# Development Setup
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project uses Husky and lint-staged to ensure code quality and consistency.
 
-Currently, two official plugins are available:
+## Prerequisites
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js (v16 or higher)
+- Yarn package manager
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Install dependencies:
+   \`\`\`bash
+   yarn install
+   \`\`\`
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+2. Install Husky hooks:
+   \`\`\`bash
+   yarn prepare
+   \`\`\`
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Code Quality Tools
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### ESLint
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+- Lints TypeScript and React code
+- Automatically fixes issues when possible
+- Run manually: `yarn lint` or `yarn lint:fix`
+
+### Prettier
+
+- Formats code consistently
+- Runs automatically on save (if VS Code is configured)
+- Run manually: `yarn format` or `yarn format:check`
+
+### Husky Hooks
+
+#### Pre-commit Hook
+
+- Runs `lint-staged` before each commit
+- Lints and formats only staged files
+- Prevents commits with linting errors
+
+#### Commit Message Hook (Optional)
+
+- Validates commit messages follow conventional format
+- Format: `type(scope): description`
+- Types: feat, fix, docs, style, refactor, perf, test, chore, ci, build, revert
+
+## Workflow
+
+1. Make your changes
+2. Stage files: `git add .`
+3. Commit: `git commit -m "feat: add new feature"`
+4. Hooks will automatically run:
+   - Lint and format staged files
+   - Validate commit message format
+5. If hooks pass, commit is created
+6. If hooks fail, fix issues and try again
+
+## Commands
+
+\`\`\`bash
+
+# Development
+
+yarn dev # Start development server
+yarn build # Build for production
+yarn preview # Preview production build
+
+# Code Quality
+
+yarn lint # Run ESLint
+yarn lint:fix # Run ESLint with auto-fix
+yarn format # Format code with Prettier
+yarn format:check # Check if code is formatted
+yarn type-check # Run TypeScript type checking
+
+# Git Hooks
+
+yarn prepare # Install Husky hooks
+\`\`\`
+
+## VS Code Setup
+
+Install recommended extensions:
+
+- ESLint
+- Prettier - Code formatter
+- TypeScript and JavaScript Language Features
+
+The `.vscode/settings.json` file is configured to:
+
+- Format on save
+- Auto-fix ESLint issues
+- Organize imports
+- Use Prettier as default formatter
+
+## Troubleshooting
+
+### Hooks not running
+
+\`\`\`bash
+yarn husky install
+chmod +x .husky/pre-commit
+chmod +x .husky/commit-msg
+\`\`\`
+
+### Skip hooks (emergency only)
+
+\`\`\`bash
+git commit --no-verify -m "emergency fix"
+\`\`\`
+
+### Reset hooks
+
+\`\`\`bash
+rm -rf .husky
+yarn husky install
+yarn husky add .husky/pre-commit "yarn lint-staged"
