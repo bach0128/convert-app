@@ -1,7 +1,7 @@
-import type React from 'react'
+import type React from 'react';
 
-import { useState } from 'react'
-import { Button } from '@/components/Shadcn/button'
+import { useState } from 'react';
+import { Button } from '@/components/Shadcn/button';
 import {
   Card,
   CardContent,
@@ -9,85 +9,85 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/Shadcn/card'
-import { Input } from '@/components/Shadcn/input'
-import { Label } from '@/components/Shadcn/label'
-import { Eye, EyeOff, Lock, CheckCircle } from 'lucide-react'
+} from '@/components/Shadcn/card';
+import { Input } from '@/components/Shadcn/input';
+import { Label } from '@/components/Shadcn/label';
+import { Eye, EyeOff, Lock, CheckCircle } from 'lucide-react';
 
 interface PasswordStrength {
-  score: number
-  feedback: string[]
+  score: number;
+  feedback: string[];
 }
 
 export default function ChangePasswordPage() {
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
-  const [showNewPassword, setShowNewPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
-  })
+  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const getPasswordStrength = (password: string): PasswordStrength => {
-    let score = 0
-    const feedback: string[] = []
+    let score = 0;
+    const feedback: string[] = [];
 
-    if (password.length >= 8) score += 1
-    else feedback.push('At least 8 characters')
+    if (password.length >= 8) score += 1;
+    else feedback.push('At least 8 characters');
 
-    if (/[A-Z]/.test(password)) score += 1
-    else feedback.push('One uppercase letter')
+    if (/[A-Z]/.test(password)) score += 1;
+    else feedback.push('One uppercase letter');
 
-    if (/[a-z]/.test(password)) score += 1
-    else feedback.push('One lowercase letter')
+    if (/[a-z]/.test(password)) score += 1;
+    else feedback.push('One lowercase letter');
 
-    if (/\d/.test(password)) score += 1
-    else feedback.push('One number')
+    if (/\d/.test(password)) score += 1;
+    else feedback.push('One number');
 
-    if (/[^A-Za-z0-9]/.test(password)) score += 1
-    else feedback.push('One special character')
+    if (/[^A-Za-z0-9]/.test(password)) score += 1;
+    else feedback.push('One special character');
 
-    return { score, feedback }
-  }
+    return { score, feedback };
+  };
 
-  const passwordStrength = getPasswordStrength(formData.newPassword)
+  const passwordStrength = getPasswordStrength(formData.newPassword);
   const passwordsMatch =
     formData.newPassword === formData.confirmPassword &&
-    formData.confirmPassword !== ''
+    formData.confirmPassword !== '';
 
   const getStrengthColor = (score: number) => {
-    if (score <= 2) return 'bg-red-500'
-    if (score <= 3) return 'bg-yellow-500'
-    if (score <= 4) return 'bg-blue-500'
-    return 'bg-green-500'
-  }
+    if (score <= 2) return 'bg-red-500';
+    if (score <= 3) return 'bg-yellow-500';
+    if (score <= 4) return 'bg-blue-500';
+    return 'bg-green-500';
+  };
 
   const getStrengthText = (score: number) => {
-    if (score <= 2) return 'Weak'
-    if (score <= 3) return 'Fair'
-    if (score <= 4) return 'Good'
-    return 'Strong'
-  }
+    if (score <= 2) return 'Weak';
+    if (score <= 3) return 'Fair';
+    if (score <= 4) return 'Good';
+    return 'Strong';
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (passwordStrength.score < 4 || !passwordsMatch) return
+    e.preventDefault();
+    if (passwordStrength.score < 4 || !passwordsMatch) return;
 
-    console.log('Password change submitted')
+    alert('Password change submitted');
     // Handle password change here
-  }
+  };
 
   const isFormValid =
-    formData.currentPassword && passwordStrength.score >= 4 && passwordsMatch
+    formData.currentPassword && passwordStrength.score >= 4 && passwordsMatch;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
@@ -251,5 +251,5 @@ export default function ChangePasswordPage() {
         </form>
       </Card>
     </div>
-  )
+  );
 }

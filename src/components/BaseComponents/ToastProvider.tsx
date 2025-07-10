@@ -1,6 +1,6 @@
-import * as Toast from "@radix-ui/react-toast";
+import * as Toast from '@radix-ui/react-toast';
 
-export default () => (
+const ToastProvider = () => (
   <Toast.Provider>
     <Toast.Root>
       <Toast.Title />
@@ -11,3 +11,5 @@ export default () => (
     <Toast.Viewport />
   </Toast.Provider>
 );
+
+export default ToastProvider;

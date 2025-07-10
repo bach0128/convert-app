@@ -6,6 +6,7 @@ This project uses Husky and lint-staged to ensure code quality and consistency.
 
 - Node.js (v16 or higher)
 - Yarn package manager
+- Shadcn
 
 ## Setup
 

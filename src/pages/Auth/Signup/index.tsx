@@ -1,7 +1,7 @@
-import type React from 'react'
+import type React from 'react';
 
-import { useState } from 'react'
-import { Button } from '@/components/Shadcn/button'
+import { useState } from 'react';
+import { Button } from '@/components/Shadcn/button';
 import {
   Card,
   CardContent,
@@ -9,16 +9,16 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/Shadcn/card'
-import { Input } from '@/components/Shadcn/input'
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react'
-import { Label } from '@/components/Shadcn/label'
-import { Checkbox } from '@/components/Shadcn/checkbox'
-import { ROUTE_PATH } from '@/enum/RoutePath'
+} from '@/components/Shadcn/card';
+import { Input } from '@/components/Shadcn/input';
+import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { Label } from '@/components/Shadcn/label';
+import { Checkbox } from '@/components/Shadcn/checkbox';
+import { ROUTE_PATH } from '@/enum/RoutePath';
 
 export default function SignUpPage() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -26,21 +26,20 @@ export default function SignUpPage() {
     password: '',
     confirmPassword: '',
     agreeToTerms: false,
-  })
+  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Form submitted:', formData)
+    e.preventDefault();
     // Handle form submission here
-  }
+  };
 
   return (
     <div className="flex items-center justify-center flex-1 h-full bg-gray-50">
@@ -207,5 +206,5 @@ export default function SignUpPage() {
         </form>
       </Card>
     </div>
-  )
+  );
 }

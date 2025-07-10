@@ -2,9 +2,9 @@ import type {
   UserSignUp,
   AuthResponse,
   PasswordChangeRequest,
-} from '@/types/auth'
-import { axiosAPIBaseConfig } from '@/api'
-import { AUTH_ENDPOINTS } from '@/api/Endpoints'
+} from '@/types/auth';
+import { axiosAPIBaseConfig } from '@/api';
+import { AUTH_ENDPOINTS } from '@/api/Endpoints';
 
 /**
  * User management service for server operations
@@ -17,8 +17,8 @@ export class UserService {
     const response = await axiosAPIBaseConfig.post<AuthResponse>(
       AUTH_ENDPOINTS.SIGNUP,
       userData
-    )
-    return response.data
+    );
+    return response.data;
   }
 
   /**
@@ -31,12 +31,12 @@ export class UserService {
     const request: PasswordChangeRequest = {
       current_password: currentPassword,
       new_password: newPassword,
-    }
+    };
 
     const response = await axiosAPIBaseConfig.put<AuthResponse>(
       AUTH_ENDPOINTS.CHANGE_PASSWORD,
       request
-    )
-    return response.data
+    );
+    return response.data;
   }
 }

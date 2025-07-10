@@ -1,7 +1,7 @@
-import type React from 'react'
+import type React from 'react';
 
-import { useState } from 'react'
-import { Button } from '@/components/Shadcn/button'
+import { useState } from 'react';
+import { Button } from '@/components/Shadcn/button';
 import {
   Card,
   CardContent,
@@ -9,28 +9,28 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/Shadcn/card'
-import { Input } from '@/components/Shadcn/input'
-import { Label } from '@/components/Shadcn/label'
-import { Mail, ArrowLeft } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
-import { ROUTE_PATH } from '@/enum/RoutePath'
+} from '@/components/Shadcn/card';
+import { Input } from '@/components/Shadcn/input';
+import { Label } from '@/components/Shadcn/label';
+import { Mail, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE_PATH } from '@/enum/RoutePath';
 
 export default function ResetPasswordPage() {
-  const [email, setEmail] = useState('')
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const navigate = useNavigate()
+  const [email, setEmail] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Reset password requested for:', email)
-    setIsSubmitted(true)
+    e.preventDefault();
+    alert('Reset password requested for:');
+    setIsSubmitted(true);
     // Handle password reset request here
-  }
+  };
 
   const handleBackToSignIn = () => {
-    navigate(ROUTE_PATH.SIGNIN)
-  }
+    navigate(ROUTE_PATH.SIGNIN);
+  };
 
   if (isSubmitted) {
     return (
@@ -44,12 +44,12 @@ export default function ResetPasswordPage() {
               Check your email
             </CardTitle>
             <CardDescription>
-              We've sent a password reset link to <strong>{email}</strong>
+              We&#39;ve sent a password reset link to <strong>{email}</strong>
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-gray-600 text-center">
-              Didn't receive the email? Check your spam folder or try again.
+              Didn&#39;t receive the email? Check your spam folder or try again.
             </p>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
@@ -71,7 +71,7 @@ export default function ResetPasswordPage() {
           </CardFooter>
         </Card>
       </div>
-    )
+    );
   }
 
   return (
@@ -82,7 +82,7 @@ export default function ResetPasswordPage() {
             Reset your password
           </CardTitle>
           <CardDescription className="text-center">
-            Enter your email address and we'll send you a link to reset your
+            Enter your email address and we&#39;ll send you a link to reset your
             password
           </CardDescription>
         </CardHeader>
@@ -121,5 +121,5 @@ export default function ResetPasswordPage() {
         </form>
       </Card>
     </div>
-  )
+  );
 }

@@ -1,15 +1,15 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { ROUTE_PATH } from '@/enum/RoutePath'
-import NotFoundPage from '@/pages/NotFound/NotFoundPage'
-import Loading from '@/components/Loading'
-import HomePage from '@/pages/Home/index'
-import MainLayout from '@/layout/MainLayout'
-import SignUpPage from '@/pages/Auth/Signup'
-import SignInPage from '@/pages/Auth/Signin'
-import ResetPasswordPage from '@/pages/Auth/ResetPassword'
-import VerifyCodePage from '@/pages/Auth/VerifyCode'
-import ChangePasswordPage from '@/pages/Auth/ChangePassword'
-import LayoutDefault from '@/layout/defaultLayout'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { ROUTE_PATH } from '@/enum/RoutePath';
+import NotFoundPage from '@/pages/NotFound/NotFoundPage';
+import Loading from '@/components/BaseComponents/Loading';
+import HomePage from '@/pages/Home/index';
+import MainLayout from '@/layout/MainLayout';
+import SignUpPage from '@/pages/Auth/Signup';
+import SignInPage from '@/pages/Auth/Signin';
+import ResetPasswordPage from '@/pages/Auth/ResetPassword';
+import VerifyCodePage from '@/pages/Auth/VerifyCode';
+import ChangePasswordPage from '@/pages/Auth/ChangePassword';
+import DefaultLayout from '@/layout/DefaultLayout';
 
 const router = createBrowserRouter([
   {
@@ -25,7 +25,7 @@ const router = createBrowserRouter([
 
   {
     path: '/',
-    element: <LayoutDefault />,
+    element: <DefaultLayout />,
     children: [
       {
         path: ROUTE_PATH.SIGNIN,
@@ -54,8 +54,8 @@ const router = createBrowserRouter([
     path: ROUTE_PATH.NOT_FOUND,
     element: <NotFoundPage />,
   },
-])
+]);
 
 export default function Router() {
-  return <RouterProvider router={router} fallbackElement={<Loading />} />
+  return <RouterProvider router={router} fallbackElement={<Loading />} />;
 }

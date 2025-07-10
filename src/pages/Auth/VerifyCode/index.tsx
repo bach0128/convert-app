@@ -1,7 +1,7 @@
-import type React from 'react'
+import type React from 'react';
 
-import { useState, useRef, useEffect } from 'react'
-import { Button } from '@/components/Shadcn/button'
+import { useState, useRef, useEffect } from 'react';
+import { Button } from '@/components/Shadcn/button';
 import {
   Card,
   CardContent,
@@ -9,86 +9,84 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/Shadcn/card'
-import { Input } from '@/components/Shadcn/input'
-import { Shield, ArrowLeft } from 'lucide-react'
+} from '@/components/Shadcn/card';
+import { Input } from '@/components/Shadcn/input';
+import { Shield, ArrowLeft } from 'lucide-react';
 
 export default function VerifyCodePage() {
-  const [code, setCode] = useState(['', '', '', '', '', ''])
-  const [isLoading, setIsLoading] = useState(false)
-  const [timeLeft, setTimeLeft] = useState(60)
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([])
+  const [code, setCode] = useState(['', '', '', '', '', '']);
+  const [isLoading, setIsLoading] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(60);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     if (timeLeft > 0) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000)
-      return () => clearTimeout(timer)
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timer);
     }
-  }, [timeLeft])
+  }, [timeLeft]);
 
   const handleInputChange = (index: number, value: string) => {
-    if (value.length > 1) return // Prevent multiple characters
+    if (value.length > 1) return; // Prevent multiple characters
 
-    const newCode = [...code]
-    newCode[index] = value
+    const newCode = [...code];
+    newCode[index] = value;
 
-    setCode(newCode)
+    setCode(newCode);
 
     // Auto-focus next input
     if (value && index < 5) {
-      inputRefs.current[index + 1]?.focus()
+      inputRefs.current[index + 1]?.focus();
     }
-  }
+  };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === 'Backspace' && !code[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus()
+      inputRefs.current[index - 1]?.focus();
     }
-  }
+  };
 
   const handlePaste = (e: React.ClipboardEvent) => {
-    e.preventDefault()
-    const pastedData = e.clipboardData.getData('text').slice(0, 6)
-    const newCode = [...code]
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text').slice(0, 6);
+    const newCode = [...code];
 
     for (let i = 0; i < pastedData.length && i < 6; i++) {
       if (/^\d$/.test(pastedData[i])) {
-        newCode[i] = pastedData[i]
+        newCode[i] = pastedData[i];
       }
     }
 
-    setCode(newCode)
+    setCode(newCode);
 
     // Focus the next empty input or the last input
-    const nextEmptyIndex = newCode.findIndex((digit) => digit === '')
-    const focusIndex = nextEmptyIndex === -1 ? 5 : nextEmptyIndex
-    inputRefs.current[focusIndex]?.focus()
-  }
+    const nextEmptyIndex = newCode.findIndex((digit) => digit === '');
+    const focusIndex = nextEmptyIndex === -1 ? 5 : nextEmptyIndex;
+    inputRefs.current[focusIndex]?.focus();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const verificationCode = code.join('')
+    e.preventDefault();
+    const verificationCode = code.join('');
 
-    if (verificationCode.length !== 6) return
+    if (verificationCode.length !== 6) return;
 
-    setIsLoading(true)
-    console.log('Verifying code:', verificationCode)
+    setIsLoading(true);
 
     // Simulate API call
     setTimeout(() => {
-      setIsLoading(false)
+      setIsLoading(false);
       // Handle verification result
-    }, 2000)
-  }
+    }, 2000);
+  };
 
   const handleResendCode = () => {
-    setTimeLeft(60)
-    setCode(['', '', '', '', '', ''])
-    console.log('Resending verification code')
+    setTimeLeft(60);
+    setCode(['', '', '', '', '', '']);
     // Handle resend logic
-  }
+  };
 
-  const isCodeComplete = code.every((digit) => digit !== '')
+  const isCodeComplete = code.every((digit) => digit !== '');
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
@@ -101,7 +99,7 @@ export default function VerifyCodePage() {
             Verify your email
           </CardTitle>
           <CardDescription>
-            We've sent a 6-digit verification code to your email address
+            We&#39;ve sent a 6-digit verification code to your email address
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
@@ -111,7 +109,7 @@ export default function VerifyCodePage() {
                 <Input
                   key={index}
                   ref={(el) => {
-                    inputRefs.current[index] = el
+                    inputRefs.current[index] = el;
                   }}
                   type="text"
                   inputMode="numeric"
@@ -161,5 +159,5 @@ export default function VerifyCodePage() {
         </form>
       </Card>
     </div>
-  )
+  );
 }

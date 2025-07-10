@@ -1,6 +1,6 @@
 // Centralized exports
-export { AuthService } from './Auth'
-export { UserService } from './User'
+export { AuthService } from './Auth';
+export { UserService } from './User';
 // export { AvatarService } from "./avatar.service";
 
 // Re-export types for convenience
@@ -13,4 +13,4 @@ export type {
   PasswordChangeRequest,
   AccountRecoveryRequest,
   AvatarUploadResponse,
-} from '@/types/auth'
+} from '@/types/auth';

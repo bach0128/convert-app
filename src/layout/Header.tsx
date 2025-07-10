@@ -1,18 +1,18 @@
-import { AlignJustify, Loader2, User, X } from 'lucide-react'
-import logo from '@/assets/images/logo.jpg'
+import { AlignJustify, Loader2, User, X } from 'lucide-react';
+import logo from '@/assets/images/logo.jpg';
 // import {
 //   DropdownMenu,
 //   DropdownMenuContent,
 //   DropdownMenuItem,
 //   DropdownMenuTrigger,
 // } from "@/components/Shadcn/dropdown-menu";
-import { Link, NavLink } from 'react-router-dom'
-import { ROUTE_PATH } from '@/enum/RoutePath.ts'
-import { Button } from '@/components/Shadcn/button.tsx'
-import { useEffect, useId, useState } from 'react'
+import { Link, NavLink } from 'react-router-dom';
+import { ROUTE_PATH } from '@/enum/RoutePath.ts';
+import { Button } from '@/components/Shadcn/button.tsx';
+import { useEffect, useId, useState } from 'react';
 
-import clsx from 'clsx'
-import { useBreakpoint } from '@/hooks/useBreakpoint.ts'
+import clsx from 'clsx';
+import { useBreakpoint } from '@/hooks/useBreakpoint.ts';
 
 const NAV_LINK_ARR = [
   {
@@ -27,29 +27,29 @@ const NAV_LINK_ARR = [
     name: 'Contact',
     href: ROUTE_PATH.CONTACT,
   },
-]
+];
 
 function SideBar({
   onClose,
   isLogoutLoading,
   onLogout,
 }: {
-  onClose: () => void
-  isLogoutLoading: boolean
-  onLogout: () => void
+  onClose: () => void;
+  isLogoutLoading: boolean;
+  onLogout: () => void;
 }) {
-  const id = useId()
-  const { isGreaterOrEqual } = useBreakpoint(768)
+  const id = useId();
+  const { isGreaterOrEqual } = useBreakpoint(768);
   useEffect(() => {
-    if (isGreaterOrEqual) onClose()
-  }, [isGreaterOrEqual, onClose])
+    if (isGreaterOrEqual) onClose();
+  }, [isGreaterOrEqual, onClose]);
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
+    document.body.style.overflow = 'hidden';
     return () => {
-      document.body.style.overflow = 'unset'
-    }
-  }, [])
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
 
   return (
     <div className="inset-0 fixed bg-white z-[9999] top-20">
@@ -83,17 +83,16 @@ function SideBar({
         Logout
       </Button>
     </div>
-  )
+  );
 }
 
 function Header() {
-  const [isOpenSidebar, setIsOpenSidebar] = useState(false)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isOpenSidebar, setIsOpenSidebar] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleLogout = async () => {
-    setIsLoading(true)
-    console.log('Logging out...')
-  }
+    setIsLoading(true);
+  };
 
   return (
     <>
@@ -118,7 +117,7 @@ function Header() {
               >
                 {navItem.name}
               </NavLink>
-            )
+            );
           })}
         </nav>
         <Button
@@ -136,7 +135,7 @@ function Header() {
         />
       )}
     </>
-  )
+  );
 }
 
-export default Header
+export default Header;

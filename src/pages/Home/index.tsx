@@ -1,5 +1,5 @@
-import { Upload, AlertCircle } from "lucide-react";
-import { useState, useRef } from "react";
+import { AlertCircle } from 'lucide-react';
+import { useState, useRef } from 'react';
 import {
   Table,
   TableBody,
@@ -7,95 +7,36 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/Shadcn/table";
+} from '@/components/Shadcn/table';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/Shadcn/card";
-import * as XLSX from "xlsx";
-import { Button } from "@/components/Shadcn/button";
-import { Alert, AlertDescription } from "@/components/Shadcn/alert";
+} from '@/components/Shadcn/card';
+import { Button } from '@/components/Shadcn/button';
+import { Alert, AlertDescription } from '@/components/Shadcn/alert';
+import ExcelUploader from '@/components/BaseComponents/ExcelUploader';
 
 interface ExcelData {
-  [key: string]: any;
+  [key: string]: string;
 }
 
 function HomePage() {
   const [data, setData] = useState<ExcelData[]>([]);
   const [headers, setHeaders] = useState<string[]>([]);
-  const [fileName, setFileName] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [fileName, setFileName] = useState<string>('');
+  const [error, setError] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    setLoading(true);
-    setError("");
-    setFileName(file.name);
-
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      try {
-        const data = new Uint8Array(e.target?.result as ArrayBuffer);
-        const workbook = XLSX.read(data, { type: "array" });
-
-        const worksheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[worksheetName];
-
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, {
-          header: 1,
-        }) as any[][];
-
-        if (jsonData.length > 0) {
-          const headers = jsonData[0] as string[];
-          setHeaders(headers);
-
-          const rows = jsonData.slice(1).map((row) => {
-            const obj: ExcelData = {};
-            headers.forEach((header, index) => {
-              obj[header] = row[index] || "";
-            });
-            return obj;
-          });
-
-          setData(rows);
-        }
-      } catch (err) {
-        setError(
-          "Error reading file. Please make sure it's a valid Excel file."
-        );
-        console.error("Error reading file:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    reader.onerror = () => {
-      setError("Error reading file.");
-      setLoading(false);
-    };
-
-    reader.readAsArrayBuffer(file);
-  };
-
-  const handleButtonClick = () => {
-    fileInputRef.current?.click();
-  };
 
   const clearData = () => {
     setData([]);
     setHeaders([]);
-    setFileName("");
-    setError("");
+    setFileName('');
+    setError('');
     if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+      fileInputRef.current.value = '';
     }
   };
 
@@ -108,30 +49,7 @@ function HomePage() {
         optio? Iure natus non molestias!
       </p>
       <div className="flex items-center gap-4 flex-col sm:flex-row">
-        <label
-          htmlFor="file-upload"
-          className="flex items-center gap-2 cursor-pointer"
-          title="Upload Excel File"
-        >
-          Upload an Excel file (.xlsx, .xls) to view its contents
-        </label>
-        <input
-          id="file-upload"
-          type="file"
-          accept=".xlsx,.xls"
-          onChange={handleFileUpload}
-          ref={fileInputRef}
-          className="hidden"
-        />
-        <Button
-          onClick={handleButtonClick}
-          variant="outline"
-          className="flex items-center gap-2"
-          disabled={loading}
-        >
-          <Upload className="h-4 w-4" />
-          {loading ? "Processing..." : "Select File"}
-        </Button>
+        <ExcelUploader />
         {fileName && (
           <span className="text-sm text-muted-foreground">
             Selected: {fileName}
@@ -181,7 +99,7 @@ function HomePage() {
                       <TableRow key={rowIndex}>
                         {headers.map((header, colIndex) => (
                           <TableCell key={colIndex}>
-                            {row[header]?.toString() || ""}
+                            {row[header]?.toString() || ''}
                           </TableCell>
                         ))}
                       </TableRow>

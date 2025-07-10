@@ -1,28 +1,88 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-export default tseslint.config(
-  { ignores: ['dist'] },
+import { FlatCompat } from '@eslint/eslintrc';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+});
+
+const eslintConfig = [
+  // 👇 Register plugin objects for Flat Config
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
-    },
     plugins: {
+      react, // required for rules like 'react/display-name'
       'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
-    },
-    rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
     },
   },
-)
+
+  // 👇 Legacy-style config wrapped via FlatCompat
+  ...compat.config({
+    extends: [
+      'plugin:@typescript-eslint/recommended',
+      'plugin:react-hooks/recommended',
+      'prettier',
+    ],
+    plugins: ['prettier', 'react-hooks'], // plugin *names*
+    rules: {
+      // 🔁 React plugin rules
+      ...react.configs.recommended.rules,
+      ...react.configs['jsx-runtime'].rules,
+
+      // 🔁 React Hooks plugin rules
+      ...reactHooks.configs.recommended.rules,
+
+      'react/prop-types': 'off',
+
+      // 🔧 Prettier formatting
+      'prettier/prettier': ['warn', { endOfLine: 'auto' }],
+
+      // 🔧 Console usage
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+
+      // 🔧 TypeScript
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/consistent-type-imports': 'warn',
+
+      // 🔧 Unused variables (ignore `_`)
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          args: 'all',
+          argsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
+      ],
+
+      // 🔒 Prevent deeply relative imports
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: ['../*'],
+        },
+      ],
+    },
+
+    settings: {
+      react: {
+        version: 'detect',
+      },
+      'import-x/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          project: ['./tsconfig.json'],
+        },
+      },
+    },
+  }),
+];
+
+export default eslintConfig;

@@ -11,6 +11,6 @@ const ROUTE_PATH = {
   PROFILE: '/profile',
   SETTINGS: '/settings',
   NOT_FOUND: '*',
-} as const
+} as const;
 
-export { ROUTE_PATH }
+export { ROUTE_PATH };

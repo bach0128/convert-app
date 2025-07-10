@@ -1,27 +1,27 @@
-import { classNames } from '@/lib/utils'
+import { classNames } from '@/lib/utils';
 
 type LoadingProps = {
-  size?: number
-  text?: textProps
-  bgColor?: string
-  unfilledcolor?: string
-  filledcolor?: string
-  className?: string
-}
+  size?: number;
+  text?: textProps;
+  bgColor?: string;
+  unfilledcolor?: string;
+  filledcolor?: string;
+  className?: string;
+};
 
 type textProps = {
-  text: string
-  color?: string
-  srOnly?: boolean
-  bgColor?: string
-}
+  text: string;
+  color?: string;
+  srOnly?: boolean;
+  bgColor?: string;
+};
 
 const defaultConfig = {
   sr: '',
   ariaHidden: false,
   size: 'h-14 w-14',
   bgColor: '',
-}
+};
 
 export default function Loading({
   size,
@@ -32,14 +32,14 @@ export default function Loading({
   className,
 }: LoadingProps) {
   if (text?.srOnly) {
-    defaultConfig.sr = 'sr-only'
-    defaultConfig.ariaHidden = false
+    defaultConfig.sr = 'sr-only';
+    defaultConfig.ariaHidden = false;
   }
   if (size) {
-    defaultConfig.size = `h-${size} w-${size}`
+    defaultConfig.size = `h-${size} w-${size}`;
   }
   if (bgColor) {
-    defaultConfig.bgColor = bgColor
+    defaultConfig.bgColor = bgColor;
   }
   return (
     <div
@@ -84,5 +84,5 @@ export default function Loading({
         )}
       </div>
     </div>
-  )
+  );
 }

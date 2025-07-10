@@ -4,9 +4,9 @@ import type {
   ResendOTPParams,
   AuthResponse,
   AccountRecoveryRequest,
-} from '@/types/auth'
-import { axiosBaseConfig } from '@/api'
-import { AUTH_ENDPOINTS } from '@/api/Endpoints'
+} from '@/types/auth';
+import { axiosBaseConfig } from '@/api';
+import { AUTH_ENDPOINTS } from '@/api/Endpoints';
 
 /**
  * Authentication service for Supabase operations
@@ -21,8 +21,8 @@ export class AuthService {
     const response = await axiosBaseConfig.post<UserCredential>(
       AUTH_ENDPOINTS.LOGIN,
       credentials
-    )
-    return response.data
+    );
+    return response.data;
   }
 
   /**
@@ -31,8 +31,8 @@ export class AuthService {
   static async logout(): Promise<AuthResponse> {
     const response = await axiosBaseConfig.post<AuthResponse>(
       AUTH_ENDPOINTS.LOGOUT
-    )
-    return response.data
+    );
+    return response.data;
   }
 
   /**
@@ -44,8 +44,8 @@ export class AuthService {
       {
         refresh_token: refreshToken,
       }
-    )
-    return response.data
+    );
+    return response.data;
   }
 
   /**
@@ -54,7 +54,7 @@ export class AuthService {
   static async recoverAccount(
     request: AccountRecoveryRequest
   ): Promise<AuthResponse> {
-    const redirectUrl = AuthService.getPasswordResetUrl()
+    const redirectUrl = AuthService.getPasswordResetUrl();
 
     const response = await axiosBaseConfig.post<AuthResponse>(
       AUTH_ENDPOINTS.RECOVER,
@@ -62,8 +62,8 @@ export class AuthService {
       {
         params: { redirect_to: redirectUrl },
       }
-    )
-    return response.data
+    );
+    return response.data;
   }
 
   /**
@@ -79,8 +79,8 @@ export class AuthService {
       {
         headers: { Authorization: `Bearer ${token}` },
       }
-    )
-    return response.data
+    );
+    return response.data;
   }
 
   /**
@@ -90,8 +90,8 @@ export class AuthService {
     const response = await axiosBaseConfig.post<AuthResponse>(
       AUTH_ENDPOINTS.OTP,
       params
-    )
-    return response.data
+    );
+    return response.data;
   }
 
   /**
@@ -99,8 +99,8 @@ export class AuthService {
    */
   private static getPasswordResetUrl(): string {
     if (typeof window === 'undefined') {
-      return '/reset-password' // Fallback for SSR
+      return '/reset-password'; // Fallback for SSR
     }
-    return `${window.location.protocol}//${window.location.host}/reset-password`
+    return `${window.location.protocol}//${window.location.host}/reset-password`;
   }
 }

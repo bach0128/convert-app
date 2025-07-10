@@ -1,6 +1,6 @@
-import type React from 'react'
-import { useState } from 'react'
-import { Button } from '@/components/Shadcn/button'
+import type React from 'react';
+import { useState } from 'react';
+import { Button } from '@/components/Shadcn/button';
 import {
   Card,
   CardContent,
@@ -8,35 +8,34 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/Shadcn/card'
-import { Input } from '@/components/Shadcn/input'
-import { Label } from '@/components/Shadcn/label'
-import { Checkbox } from '@/components/Shadcn/checkbox'
-import { Separator } from '@/components/Shadcn/separator'
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
-import { ROUTE_PATH } from '@/enum/RoutePath'
+} from '@/components/Shadcn/card';
+import { Input } from '@/components/Shadcn/input';
+import { Label } from '@/components/Shadcn/label';
+import { Checkbox } from '@/components/Shadcn/checkbox';
+import { Separator } from '@/components/Shadcn/separator';
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { ROUTE_PATH } from '@/enum/RoutePath';
 
 export default function SignInPage() {
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     rememberMe: false,
-  })
+  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Sign in form submitted:', formData)
+    e.preventDefault();
     // Handle form submission here
-  }
+  };
 
   // const handleSocialLogin = (provider: string) => {
   //   console.log(`Sign in with ${provider}`);
@@ -154,5 +153,5 @@ export default function SignInPage() {
         </form>
       </Card>
     </div>
-  )
+  );
 }
