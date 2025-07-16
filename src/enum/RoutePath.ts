@@ -11,6 +11,12 @@ const ROUTE_PATH = {
   PROFILE: '/profile',
   SETTINGS: '/settings',
   NOT_FOUND: '*',
+
+  /// page
+  REVENUE: '/revenue',
+  COST: '/cost',
+  TAXDECLARATION: '/tax_declaration',
+  REPORT: '/report',
 } as const;
 
 export { ROUTE_PATH };

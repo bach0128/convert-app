@@ -1,25 +1,13 @@
 import type * as React from 'react';
-import {
-  ChevronDown,
-  ChevronUp,
-  Plus,
-  MoreHorizontal,
-  Command,
-  LifeBuoy,
-  Send,
-} from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupAction,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
@@ -39,172 +27,82 @@ import {
   CollapsibleTrigger,
 } from '@/components/Shadcn/collapsible';
 import { NavList } from '@/enum/NavList';
-import { Link } from 'react-router-dom';
 
-// This is sample NavList.
-
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  onTabClick,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & {
+  onTabClick: (tabId: string) => void;
+}) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton
-                  size="lg"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                >
-                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                    <Command className="size-4" />
-                  </div>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">
-                      {NavList.teams[0].name}
-                    </span>
-                    <span className="truncate text-xs">
-                      {NavList.teams[0].plan}
-                    </span>
-                  </div>
-                  <ChevronDown className="ml-auto" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                align="start"
-                side="bottom"
-                sideOffset={4}
-              >
-                {NavList.teams.map((team) => (
-                  <DropdownMenuItem
-                    key={team.name}
-                    onClick={() => {}}
-                    className="gap-2 p-2"
-                  >
-                    <div className="flex size-6 items-center justify-center rounded-sm border">
-                      <team.logo className="size-4 shrink-0" />
-                    </div>
-                    {team.name}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <SidebarMenuSub>Phần mềm kế toán HKD</SidebarMenuSub>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Platform</SidebarGroupLabel>
           <SidebarMenu>
             {NavList.navMain.map((item) => (
               <Collapsible
                 key={item.title}
                 asChild
-                defaultOpen={item.isActive}
                 className="group/collapsible"
               >
                 <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton tooltip={item.title}>
-                      {item.icon && <item.icon />}
-                      <span>{item.title}</span>
-                      <ChevronDown className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
+                  {item.items ? (
+                    <>
+                      <CollapsibleTrigger asChild>
+                        <SidebarMenuButton
+                          tooltip={item.title}
+                          size="lg"
+                          className="group-data-[collapsible=icon]:justify-center"
+                          onClick={() => onTabClick(item.url)}
+                        >
+                          {item.icon && <item.icon className="self-center" />}
+                          {/* Hide title when collapsed */}
+                          <span className="font-medium sidebar-item-text lg:inline group-data-[collapsible=icon]:hidden">
+                            {item.title}
+                          </span>
+                          {item.items && (
+                            <ChevronDown className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180 group-data-[collapsible=icon]:hidden" />
+                          )}
+                        </SidebarMenuButton>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {item.items?.map((subItem) => (
+                            <SidebarMenuSubItem key={subItem.title}>
+                              <SidebarMenuSubButton asChild>
+                                <a href={subItem.url}>
+                                  <span>{subItem.title}</span>
+                                </a>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </>
+                  ) : (
+                    <SidebarMenuButton
+                      tooltip={item.title}
+                      size="lg"
+                      className="group-data-[collapsible=icon]:justify-center"
+                      onClick={() => onTabClick(item.url)}
+                    >
+                      {item.icon && <item.icon className="self-center" />}
+                      {/* Hide title when collapsed */}
+                      <span className="font-medium sidebar-item-text lg:inline group-data-[collapsible=icon]:hidden">
+                        {item.title}
+                      </span>
                     </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {item.items?.map((subItem) => (
-                        <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild>
-                            <a href={subItem.url}>
-                              <span>{subItem.title}</span>
-                            </a>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
+                  )}
                 </SidebarMenuItem>
               </Collapsible>
             ))}
           </SidebarMenu>
         </SidebarGroup>
-        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-          <SidebarGroupLabel>Projects</SidebarGroupLabel>
-          <SidebarGroupAction title="Add Project">
-            <Plus />
-            <span className="sr-only">Add Project</span>
-          </SidebarGroupAction>
-          <SidebarMenu>
-            {NavList.projects.map((item) => (
-              <SidebarMenuItem key={item.name}>
-                <SidebarMenuButton asChild>
-                  <Link to={item.url}>
-                    {(() => {
-                      const IconComponent = item.icon;
-                      return <IconComponent />;
-                    })()}
-                    <span>{item.name}</span>0
-                  </Link>
-                </SidebarMenuButton>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <SidebarMenuAction showOnHover>
-                      <MoreHorizontal />
-                      <span className="sr-only">More</span>
-                    </SidebarMenuAction>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    className="w-48 rounded-lg"
-                    side="bottom"
-                    align="end"
-                  >
-                    <DropdownMenuItem>
-                      <span>Edit Project</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <span>Delete Project</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </SidebarMenuItem>
-            ))}
-            <SidebarMenuItem>
-              <SidebarMenuButton className="text-sidebar-foreground/70">
-                <MoreHorizontal className="text-sidebar-foreground/70" />
-                <span>More</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
-        <SidebarGroup className="mt-auto">
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {[
-                {
-                  title: 'Support',
-                  url: '#',
-                  icon: LifeBuoy,
-                },
-                {
-                  title: 'Feedback',
-                  url: '#',
-                  icon: Send,
-                },
-              ].map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild size="sm">
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
       </SidebarContent>
+
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -212,14 +110,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
                   size="lg"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=close]:hover:bg-transparent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <img
                     src={NavList.user.avatar || '/placeholder.svg'}
                     alt={NavList.user.name}
                     className="size-8 rounded-lg"
                   />
-                  <div className="grid flex-1 text-left text-sm leading-tight">
+                  <div className="ml-2 flex-1 text-left text-sm leading-tight hidden lg:grid group-data-[collapsed=false]/sidebar:grid">
                     <span className="truncate font-semibold">
                       {NavList.user.name}
                     </span>
@@ -227,7 +125,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       {NavList.user.email}
                     </span>
                   </div>
-                  <ChevronUp className="ml-auto size-4" />
+                  <ChevronUp className="ml-auto size-4 hidden lg:block group-data-[collapsed=false]/sidebar:block" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -250,6 +148,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
+
       <SidebarRail />
     </Sidebar>
   );

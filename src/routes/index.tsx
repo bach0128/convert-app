@@ -10,6 +10,10 @@ import ResetPasswordPage from '@/pages/Auth/ResetPassword';
 import VerifyCodePage from '@/pages/Auth/VerifyCode';
 import ChangePasswordPage from '@/pages/Auth/ChangePassword';
 import DefaultLayout from '@/layout/DefaultLayout';
+import RevenuePage from '@/pages/RevenueM';
+import CostPage from '@/pages/CostM';
+import TaxDeclarationPage from '@/pages/TaxDeclaration';
+import ReportPage from '@/pages/Report';
 
 const router = createBrowserRouter([
   {
@@ -19,6 +23,22 @@ const router = createBrowserRouter([
       {
         element: <HomePage />,
         path: ROUTE_PATH.HOME,
+      },
+      {
+        element: <RevenuePage />,
+        path: ROUTE_PATH.REVENUE,
+      },
+      {
+        element: <CostPage />,
+        path: ROUTE_PATH.COST,
+      },
+      {
+        element: <TaxDeclarationPage />,
+        path: ROUTE_PATH.TAXDECLARATION,
+      },
+      {
+        element: <ReportPage />,
+        path: ROUTE_PATH.REPORT,
       },
     ],
   },

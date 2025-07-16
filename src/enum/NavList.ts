@@ -1,133 +1,59 @@
 import {
-  Command,
-  Frame,
-  PieChart,
-  SquareTerminal,
-  Bot,
-  BookOpen,
-  Settings,
+  FileText,
+  FileCheck,
+  FileChartColumnIncreasing,
+  ChartPie,
+  BoxesIcon,
 } from 'lucide-react';
+import userIcon from '@/assets/icons/user.svg';
+import { ROUTE_PATH } from './RoutePath';
 
 const NavList = {
   user: {
     name: 'John Doe',
     email: 'john@example.com',
-    avatar: '/placeholder.svg?height=32&width=32',
+    avatar: userIcon,
   },
-  teams: [
-    {
-      name: 'Acme Inc',
-      logo: Command,
-      plan: 'Enterprise',
-    },
-    {
-      name: 'Acme Corp.',
-      logo: Frame,
-      plan: 'Startup',
-    },
-    {
-      name: 'Evil Corp.',
-      logo: PieChart,
-      plan: 'Free',
-    },
-  ],
   navMain: [
     {
-      title: 'Playground',
+      title: 'Quản lý doanh thu',
+      url: ROUTE_PATH.REVENUE,
+      icon: FileText,
+      // isActive: true,
+    },
+    {
+      title: 'Quản lý chi phí',
+      url: ROUTE_PATH.COST,
+      icon: FileCheck,
+    },
+    {
+      title: 'Lập tờ khai thuế',
+      url: ROUTE_PATH.TAXDECLARATION,
+      icon: FileChartColumnIncreasing,
+    },
+    {
+      title: 'Báo cáo',
+      url: ROUTE_PATH.REPORT,
+      icon: ChartPie,
+    },
+    {
+      title: 'Danh mục vật tư, HH',
       url: '#',
-      icon: SquareTerminal,
-      isActive: true,
+      icon: BoxesIcon,
       items: [
         {
-          title: 'History',
+          title: 'Đơn vị tính',
           url: '#',
         },
         {
-          title: 'Starred',
+          title: 'Nhóm HH&DV',
           url: '#',
         },
         {
-          title: 'Settings',
+          title: 'Hàng hóa & Dịch vụ',
           url: '#',
         },
       ],
-    },
-    {
-      title: 'Models',
-      url: '#',
-      icon: Bot,
-      items: [
-        {
-          title: 'Genesis',
-          url: '#',
-        },
-        {
-          title: 'Explorer',
-          url: '#',
-        },
-        {
-          title: 'Quantum',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Documentation',
-      url: '#',
-      icon: BookOpen,
-      items: [
-        {
-          title: 'Introduction',
-          url: '#',
-        },
-        {
-          title: 'Get Started',
-          url: '#',
-        },
-        {
-          title: 'Tutorials',
-          url: '#',
-        },
-        {
-          title: 'Changelog',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Settings',
-      url: '#',
-      icon: Settings,
-      items: [
-        {
-          title: 'General',
-          url: '#',
-        },
-        {
-          title: 'Team',
-          url: '#',
-        },
-        {
-          title: 'Billing',
-          url: '#',
-        },
-        {
-          title: 'Limits',
-          url: '#',
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: 'Design Engineering',
-      url: '#',
-      icon: Frame,
-    },
-    {
-      name: 'Sales & Marketing',
-      url: '#',
-      icon: PieChart,
     },
   ],
 };
