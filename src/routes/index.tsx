@@ -14,6 +14,7 @@ import RevenuePage from '@/pages/RevenueM';
 import CostPage from '@/pages/CostM';
 import TaxDeclarationPage from '@/pages/TaxDeclaration';
 import ReportPage from '@/pages/Report';
+import MineBusiness from '@/pages/MineBusiness';
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         element: <ReportPage />,
         path: ROUTE_PATH.REPORT,
+      },
+      {
+        element: <MineBusiness />,
+        path: ROUTE_PATH.MINEBUSINESS,
       },
     ],
   },

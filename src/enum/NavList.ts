@@ -4,36 +4,43 @@ import {
   FileChartColumnIncreasing,
   ChartPie,
   BoxesIcon,
+  UserCircle2,
 } from 'lucide-react';
-import userIcon from '@/assets/icons/user.svg';
-import { ROUTE_PATH } from './RoutePath';
+import RevenuePage from '@/pages/RevenueM';
+import CostPage from '@/pages/CostM';
+import TaxDeclarationPage from '@/pages/TaxDeclaration';
+import ReportPage from '@/pages/Report';
+import MineBusiness from '@/pages/MineBusiness';
+
+const TabID = {
+  REVENUE: 'revenue',
+  COST: 'cost',
+  TAXDECLARATION: 'tax_declaration',
+  REPORT: 'report',
+  MINEBUSINESS: 'mine_business',
+};
 
 const NavList = {
-  user: {
-    name: 'John Doe',
-    email: 'john@example.com',
-    avatar: userIcon,
-  },
   navMain: [
     {
       title: 'Quản lý doanh thu',
-      url: ROUTE_PATH.REVENUE,
+      url: TabID.REVENUE,
       icon: FileText,
       // isActive: true,
     },
     {
       title: 'Quản lý chi phí',
-      url: ROUTE_PATH.COST,
+      url: TabID.COST,
       icon: FileCheck,
     },
     {
       title: 'Lập tờ khai thuế',
-      url: ROUTE_PATH.TAXDECLARATION,
+      url: TabID.TAXDECLARATION,
       icon: FileChartColumnIncreasing,
     },
     {
       title: 'Báo cáo',
-      url: ROUTE_PATH.REPORT,
+      url: TabID.REPORT,
       icon: ChartPie,
     },
     {
@@ -55,7 +62,20 @@ const NavList = {
         },
       ],
     },
+    {
+      title: 'Quản lý hộ kinh doanh',
+      url: TabID.MINEBUSINESS,
+      icon: UserCircle2,
+    },
   ],
 };
 
-export { NavList };
+const TabComponents: Record<string, React.ComponentType> = {
+  revenue: RevenuePage,
+  cost: CostPage,
+  tax_declaration: TaxDeclarationPage,
+  report: ReportPage,
+  mine_business: MineBusiness,
+};
+
+export { NavList, TabComponents };
