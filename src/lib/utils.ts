@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -9,10 +10,10 @@ export function classNames(
   return classes.filter(Boolean).join(' ');
 }
 
-export type StorageType = 'local' | 'session';
+export type StorageTypeString = 'local' | 'session';
 export const StorageType = {
-  LOCAL: 'local' as StorageType,
-  SESSION: 'session' as StorageType,
+  LOCAL: 'local' as StorageTypeString,
+  SESSION: 'session' as StorageTypeString,
 };
 
 export const saveToStorage = (
@@ -90,30 +91,33 @@ export const getAccessToken = (): string | null => {
 };
 
 export class StorageManager {
-  private static getStorage(type: StorageType): Storage {
+  private static getStorage(type: StorageTypeString): Storage {
     return type === StorageType.LOCAL ? localStorage : sessionStorage;
   }
 
   static set(
     key: string,
     value: string,
-    type: StorageType = StorageType.SESSION
+    type: StorageTypeString = StorageType.SESSION
   ): void {
     this.getStorage(type).setItem(key, value);
   }
 
   static get(
     key: string,
-    type: StorageType = StorageType.SESSION
+    type: StorageTypeString = StorageType.SESSION
   ): string | null {
     return this.getStorage(type).getItem(key);
   }
 
-  static remove(key: string, type: StorageType = StorageType.SESSION): void {
+  static remove(
+    key: string,
+    type: StorageTypeString = StorageType.SESSION
+  ): void {
     this.getStorage(type).removeItem(key);
   }
 
-  static clear(type: StorageType = StorageType.SESSION): void {
+  static clear(type: StorageTypeString = StorageType.SESSION): void {
     this.getStorage(type).clear();
   }
 

@@ -17,15 +17,7 @@ import { useBreakpoint } from '@/hooks/useBreakpoint.ts';
 const NAV_LINK_ARR = [
   {
     name: 'Dashboard',
-    href: ROUTE_PATH.DASHBOARD,
-  },
-  {
-    name: 'About',
-    href: ROUTE_PATH.ABOUT,
-  },
-  {
-    name: 'Contact',
-    href: ROUTE_PATH.CONTACT,
+    href: '#',
   },
 ];
 

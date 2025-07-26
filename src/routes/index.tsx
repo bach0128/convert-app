@@ -14,7 +14,8 @@ import RevenuePage from '@/pages/RevenueM';
 import CostPage from '@/pages/CostM';
 import TaxDeclarationPage from '@/pages/TaxDeclaration';
 import ReportPage from '@/pages/Report';
-import MineBusiness from '@/pages/MineBusiness';
+import BusinessHousehold from '@/pages/BusinessHousehold';
+import SingleBusinessHousehold from '@/pages/BusinessHousehold/SingleBusinessHousehold';
 
 const router = createBrowserRouter([
   {
@@ -35,15 +36,24 @@ const router = createBrowserRouter([
       },
       {
         element: <TaxDeclarationPage />,
-        path: ROUTE_PATH.TAXDECLARATION,
+        path: ROUTE_PATH.TAX_DECLARATION,
       },
       {
         element: <ReportPage />,
         path: ROUTE_PATH.REPORT,
       },
       {
-        element: <MineBusiness />,
-        path: ROUTE_PATH.MINEBUSINESS,
+        path: ROUTE_PATH.BUSINESS_HOUSEHOLD,
+        children: [
+          {
+            index: true,
+            element: <BusinessHousehold />,
+          },
+          {
+            path: ':id',
+            element: <SingleBusinessHousehold />,
+          },
+        ],
       },
     ],
   },

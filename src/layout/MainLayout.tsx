@@ -128,7 +128,7 @@ function MainLayout() {
                   <TabsContent
                     key={tab.url}
                     value={tab.url.replace('/', '')}
-                    className="mt-4"
+                    className="mt-.5"
                   >
                     <div className="border p-4 rounded bg-white shadow flex-1 h-full">
                       <TabComponent />

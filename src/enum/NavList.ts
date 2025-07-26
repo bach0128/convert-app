@@ -10,14 +10,16 @@ import RevenuePage from '@/pages/RevenueM';
 import CostPage from '@/pages/CostM';
 import TaxDeclarationPage from '@/pages/TaxDeclaration';
 import ReportPage from '@/pages/Report';
-import MineBusiness from '@/pages/MineBusiness';
+import BusinessHousehold from '@/pages/BusinessHousehold';
+import SingleBusinessHousehold from '@/pages/BusinessHousehold/SingleBusinessHousehold';
+import type { ComponentType } from 'react';
 
 const TabID = {
   REVENUE: 'revenue',
   COST: 'cost',
-  TAXDECLARATION: 'tax_declaration',
+  TAX_DECLARATION: 'tax_declaration',
   REPORT: 'report',
-  MINEBUSINESS: 'mine_business',
+  BUSINESS_HOUSEHOLD: 'business_household',
 };
 
 const NavList = {
@@ -35,7 +37,7 @@ const NavList = {
     },
     {
       title: 'Lập tờ khai thuế',
-      url: TabID.TAXDECLARATION,
+      url: TabID.TAX_DECLARATION,
       icon: FileChartColumnIncreasing,
     },
     {
@@ -64,18 +66,19 @@ const NavList = {
     },
     {
       title: 'Quản lý hộ kinh doanh',
-      url: TabID.MINEBUSINESS,
+      url: TabID.BUSINESS_HOUSEHOLD,
       icon: UserCircle2,
     },
   ],
 };
 
-const TabComponents: Record<string, React.ComponentType> = {
+const TabComponents: Record<string, ComponentType> = {
   revenue: RevenuePage,
   cost: CostPage,
   tax_declaration: TaxDeclarationPage,
   report: ReportPage,
-  mine_business: MineBusiness,
+  business_household: BusinessHousehold,
+  business_household_detail: SingleBusinessHousehold,
 };
 
 export { NavList, TabComponents };

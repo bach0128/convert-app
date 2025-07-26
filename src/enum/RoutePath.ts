@@ -12,9 +12,12 @@ const ROUTE_PATH = {
   /// page
   REVENUE: '/revenue',
   COST: '/cost',
-  TAXDECLARATION: '/tax_declaration',
+  TAX_DECLARATION: '/tax_declaration',
   REPORT: '/report',
-  MINEBUSINESS: '/mine_business',
+
+  // hộ kinh doanh
+  BUSINESS_HOUSEHOLD: '/business_household',
+  SINGLE_BUSINESS_HOUSEHOLD: '/business_household/:id',
 } as const;
 
 export { ROUTE_PATH };

@@ -1,88 +1,112 @@
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-import { FlatCompat } from '@eslint/eslintrc';
+import js from '@eslint/js';
+import tseslint from '@typescript-eslint/eslint-plugin';
+import tsparser from '@typescript-eslint/parser';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+export default [
+  // Base ESLint recommended rules
+  js.configs.recommended,
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  // 👇 Register plugin objects for Flat Config
+  // Configuration for TypeScript and React files
   {
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    languageOptions: {
+      parser: tsparser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        window: 'readonly',
+        document: 'readonly',
+        localStorage: 'readonly',
+        sessionStorage: 'readonly',
+        fetch: 'readonly',
+        __dirname: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        __filename: 'readonly',
+        global: 'readonly',
+        Buffer: 'readonly',
+        setImmediate: 'readonly',
+        clearImmediate: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        Promise: 'readonly',
+        Reflect: 'readonly',
+        BigInt: 'readonly',
+        KeyboardEvent: 'readonly',
+        React: 'readonly',
+        JSX: 'readonly',
+      },
+    },
     plugins: {
-      react, // required for rules like 'react/display-name'
+      '@typescript-eslint': tseslint,
+      react: react,
       'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
     },
-  },
-
-  // 👇 Legacy-style config wrapped via FlatCompat
-  ...compat.config({
-    extends: [
-      'plugin:@typescript-eslint/recommended',
-      'plugin:react-hooks/recommended',
-      'prettier',
-    ],
-    plugins: ['prettier', 'react-hooks'], // plugin *names*
-    rules: {
-      // 🔁 React plugin rules
-      ...react.configs.recommended.rules,
-      ...react.configs['jsx-runtime'].rules,
-
-      // 🔁 React Hooks plugin rules
-      ...reactHooks.configs.recommended.rules,
-
-      'react/prop-types': 'off',
-
-      // 🔧 Prettier formatting
-      'prettier/prettier': ['warn', { endOfLine: 'auto' }],
-
-      // 🔧 Console usage
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
-
-      // 🔧 TypeScript
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/consistent-type-imports': 'warn',
-
-      // 🔧 Unused variables (ignore `_`)
-      'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        {
-          args: 'all',
-          argsIgnorePattern: '^_',
-          caughtErrorsIgnorePattern: '^_',
-          varsIgnorePattern: '^_',
-          ignoreRestSiblings: true,
-        },
-      ],
-
-      // 🔒 Prevent deeply relative imports
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: ['../*'],
-        },
-      ],
-    },
-
     settings: {
       react: {
         version: 'detect',
       },
-      'import-x/resolver': {
-        typescript: {
-          alwaysTryTypes: true,
-          project: ['./tsconfig.json'],
-        },
-      },
     },
-  }),
-];
+    rules: {
+      // TypeScript rules
+      ...tseslint.configs.recommended.rules,
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/consistent-type-imports': 'warn',
 
-export default eslintConfig;
+      // React rules
+      ...react.configs.recommended.rules,
+      'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
+
+      // React Hooks rules
+      ...reactHooks.configs.recommended.rules,
+
+      // React Refresh rules
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
+
+      // General rules
+      'prefer-const': 'error',
+      'no-var': 'error',
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+    },
+  },
+
+  // Ignore patterns
+  {
+    ignores: [
+      'dist/**',
+      'node_modules/**',
+      'build/**',
+      'coverage/**',
+      'public/**',
+      'scripts/**',
+      'config/**',
+      '*.config.js',
+      '*.config.ts',
+    ],
+  },
+];
