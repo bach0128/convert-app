@@ -1,5 +1,5 @@
 import type * as React from 'react';
-import { ChevronDown } from 'lucide-react';
+// import { ChevronDown } from 'lucide-react';
 
 import {
   Sidebar,
@@ -10,15 +10,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
+  // SidebarMenuSubButton,
+  // SidebarMenuSubItem,
   SidebarRail,
 } from '@/components/Shadcn/sidebar';
 
 import {
   Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
+  // CollapsibleContent,
+  // CollapsibleTrigger,
 } from '@/components/Shadcn/collapsible';
 import { NavList } from '@/enum/NavList';
 
@@ -43,7 +43,7 @@ export function AppSidebar({
                 className="group/collapsible"
               >
                 <SidebarMenuItem>
-                  {item.items ? (
+                  {/* {item.items ? (
                     <>
                       <CollapsibleTrigger asChild>
                         <SidebarMenuButton
@@ -66,29 +66,28 @@ export function AppSidebar({
                           {item.items?.map((subItem) => (
                             <SidebarMenuSubItem key={subItem.title}>
                               <SidebarMenuSubButton asChild>
-                                <a href={subItem.url}>
-                                  <span>{subItem.title}</span>
-                                </a>
+                                <span onClick={() => onTabClick(subItem.url)}>
+                                  {subItem.title}
+                                </span>
                               </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                           ))}
                         </SidebarMenuSub>
                       </CollapsibleContent>
                     </>
-                  ) : (
-                    <SidebarMenuButton
-                      tooltip={item.title}
-                      size="lg"
-                      className="group-data-[collapsible=icon]:justify-center"
-                      onClick={() => onTabClick(item.url)}
-                    >
-                      {item.icon && <item.icon className="self-center" />}
-                      {/* Hide title when collapsed */}
-                      <span className="font-medium sidebar-item-text lg:inline group-data-[collapsible=icon]:hidden">
-                        {item.title}
-                      </span>
-                    </SidebarMenuButton>
-                  )}
+                  ) : ( */}
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    size="lg"
+                    className="group-data-[collapsible=icon]:justify-center"
+                    onClick={() => onTabClick(item.url)}
+                  >
+                    {item.icon && <item.icon className="self-center" />}
+                    {/* Hide title when collapsed */}
+                    <span className="font-medium sidebar-item-text lg:inline group-data-[collapsible=icon]:hidden">
+                      {item.title}
+                    </span>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
               </Collapsible>
             ))}

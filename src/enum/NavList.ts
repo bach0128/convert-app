@@ -13,6 +13,10 @@ import ReportPage from '@/pages/Report';
 import BusinessHousehold from '@/pages/BusinessHousehold';
 import SingleBusinessHousehold from '@/pages/BusinessHousehold/SingleBusinessHousehold';
 import type { ComponentType } from 'react';
+import UnitMaterial from '@/pages/Material/UnitMaterial';
+import GroupMaterial from '@/pages/Material/GroupMaterial';
+import Material from '@/pages/Material/Material';
+import MaterialList from '@/pages/Material';
 
 const TabID = {
   REVENUE: 'revenue',
@@ -20,6 +24,10 @@ const TabID = {
   TAX_DECLARATION: 'tax_declaration',
   REPORT: 'report',
   BUSINESS_HOUSEHOLD: 'business_household',
+  MATERIAL_LIST: 'material_list',
+  UNIT: 'unit',
+  GROUP_MATERIAL: 'group_material',
+  MATERIAL: 'material',
 };
 
 const NavList = {
@@ -47,20 +55,20 @@ const NavList = {
     },
     {
       title: 'Danh mục vật tư, HH',
-      url: '#',
+      url: TabID.MATERIAL_LIST,
       icon: BoxesIcon,
       items: [
         {
           title: 'Đơn vị tính',
-          url: '#',
+          url: TabID.UNIT,
         },
         {
           title: 'Nhóm HH&DV',
-          url: '#',
+          url: TabID.GROUP_MATERIAL,
         },
         {
           title: 'Hàng hóa & Dịch vụ',
-          url: '#',
+          url: TabID.MATERIAL,
         },
       ],
     },
@@ -79,6 +87,10 @@ const TabComponents: Record<string, ComponentType> = {
   report: ReportPage,
   business_household: BusinessHousehold,
   business_household_detail: SingleBusinessHousehold,
+  unit: UnitMaterial,
+  group_material: GroupMaterial,
+  material: Material,
+  material_list: MaterialList,
 };
 
 export { NavList, TabComponents };

@@ -16,6 +16,10 @@ import TaxDeclarationPage from '@/pages/TaxDeclaration';
 import ReportPage from '@/pages/Report';
 import BusinessHousehold from '@/pages/BusinessHousehold';
 import SingleBusinessHousehold from '@/pages/BusinessHousehold/SingleBusinessHousehold';
+import UnitMaterial from '@/pages/Material/UnitMaterial';
+import GroupMaterial from '@/pages/Material/GroupMaterial';
+import Material from '@/pages/Material/Material';
+import MaterialList from '@/pages/Material';
 
 const router = createBrowserRouter([
   {
@@ -54,6 +58,22 @@ const router = createBrowserRouter([
             element: <SingleBusinessHousehold />,
           },
         ],
+      },
+      {
+        element: <GroupMaterial />,
+        path: ROUTE_PATH.GROUP_MATERIAL,
+      },
+      {
+        element: <Material />,
+        path: ROUTE_PATH.MATERIAL,
+      },
+      {
+        element: <UnitMaterial />,
+        path: ROUTE_PATH.UNIT,
+      },
+      {
+        element: <MaterialList />,
+        path: ROUTE_PATH.MATERIAL_LIST,
       },
     ],
   },

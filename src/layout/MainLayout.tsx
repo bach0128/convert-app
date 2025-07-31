@@ -34,8 +34,8 @@ function MobileSidebarTrigger() {
 }
 
 function MainLayout() {
-  const [openTabs, setOpenTabs] = useState<string[]>(['home']);
-  const [activeTab, setActiveTab] = useState<string>('home');
+  const [openTabs, setOpenTabs] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<string>();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -44,7 +44,7 @@ function MainLayout() {
 
   // Sync active tab with current route
   useEffect(() => {
-    const currentPath = location.pathname.slice(1) || 'home';
+    const currentPath = location.pathname.slice(1);
     if (openTabs.includes(currentPath)) {
       setActiveTab(currentPath);
     }
@@ -70,7 +70,7 @@ function MainLayout() {
 
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
-    navigate(`/${tabId === 'home' ? '' : tabId}`);
+    navigate(`/${tabId}`);
   };
 
   return (
@@ -124,14 +124,68 @@ function MainLayout() {
 
                 if (!tab || !TabComponent) return null;
 
+                const hasSubItems = tab.items && tab.items.length > 0;
+
                 return (
-                  <TabsContent
-                    key={tab.url}
-                    value={tab.url.replace('/', '')}
-                    className="mt-.5"
-                  >
+                  <TabsContent key={tab.url} value={tab.url} className="mt-.5">
                     <div className="border p-4 rounded bg-white shadow flex-1 h-full">
-                      <TabComponent />
+                      {hasSubItems ? (
+                        <div className="space-y-4">
+                          <Tabs
+                            defaultValue={tab.items[0]?.url}
+                            className="w-full"
+                          >
+                            <TabsList
+                              className="grid w-full"
+                              style={{
+                                gridTemplateColumns: `repeat(${tab.items.length}, 1fr)`,
+                              }}
+                            >
+                              {tab.items.map((subItem) => (
+                                <TabsTrigger
+                                  key={subItem.url}
+                                  value={subItem.url}
+                                >
+                                  {subItem.title}
+                                </TabsTrigger>
+                              ))}
+                            </TabsList>
+                            {tab.items.map((subItem) => {
+                              const SubTabComponent =
+                                TabComponents[subItem.url];
+
+                              return (
+                                <TabsContent
+                                  key={subItem.url}
+                                  value={subItem.url}
+                                  className="mt-4"
+                                >
+                                  {SubTabComponent ? (
+                                    <SubTabComponent />
+                                  ) : (
+                                    <div className="p-8 text-center text-muted-foreground border-2 border-dashed rounded-lg">
+                                      <p>Content for {subItem.title}</p>
+                                      <p className="text-sm mt-2">
+                                        Component not found: {subItem.url}
+                                      </p>
+                                    </div>
+                                  )}
+                                  <TabComponent />
+                                </TabsContent>
+                              );
+                            })}
+                          </Tabs>
+                        </div>
+                      ) : TabComponent ? (
+                        <TabComponent />
+                      ) : (
+                        <div className="p-8 text-center text-muted-foreground border-2 border-dashed rounded-lg">
+                          <p>Content for {tab.title}</p>
+                          <p className="text-sm mt-2">
+                            Component not found: {tabId}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </TabsContent>
                 );

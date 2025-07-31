@@ -18,6 +18,12 @@ const ROUTE_PATH = {
   // hộ kinh doanh
   BUSINESS_HOUSEHOLD: '/business_household',
   SINGLE_BUSINESS_HOUSEHOLD: '/business_household/:id',
+
+  //Hàng hóa & Dịch vụ
+  UNIT: '/unit',
+  GROUP_MATERIAL: '/group_material',
+  MATERIAL: '/material',
+  MATERIAL_LIST: '/material_list',
 } as const;
 
 export { ROUTE_PATH };
