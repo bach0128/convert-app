@@ -1,0 +1,40 @@
+import type { MaterialItem } from '@/pages/Material/Material/hooks';
+
+export const mockMaterial: MaterialItem[] = [
+  {
+    id: '1',
+    code: 'HH0009',
+    name: 'San pham 1',
+    unit_name: 'Kg',
+    type: 'Dịch vụ',
+    provider: 'San xuat trong nuoc',
+    category: 'Hang hoa nguyen vat lieu',
+    status: 'Active',
+    price: 100000,
+    discount: null,
+  },
+  {
+    id: '2',
+    code: 'HH0002',
+    name: 'San pham 2',
+    unit_name: 'Kg',
+    type: 'Dịch vụ',
+    provider: 'San xuat trong nuoc',
+    category: 'Hang hoa nguyen vat lieu',
+    status: 'Inactive',
+    price: 200000,
+    discount: null,
+  },
+  {
+    id: '3',
+    code: 'HH0004',
+    name: 'San pham 4',
+    unit_name: 'Thùng',
+    type: 'Dịch vụ',
+    provider: 'San xuat trong nuoc',
+    category: 'Hang hoa nguyen vat lieu',
+    status: 'Closed',
+    price: 300000,
+    discount: null,
+  },
+];

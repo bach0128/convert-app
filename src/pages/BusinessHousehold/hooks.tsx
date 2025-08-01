@@ -37,6 +37,7 @@ export const useBusinessHousehold = () => {
           {table.row.original.tax_code}
         </Link>
       ),
+      size: 10,
     },
     {
       accessorKey: 'business_name',
@@ -51,16 +52,19 @@ export const useBusinessHousehold = () => {
         </Button>
       ),
       cell: ({ row }) => <span>{row.getValue('business_name')}</span>,
+      size: 33.33,
     },
     {
       accessorKey: 'business_group',
       header: 'Phân nhóm',
       cell: ({ row }) => <span>{row.getValue('business_group')}</span>,
+      size: 20,
     },
     {
       accessorKey: 'main_industry',
       header: 'Ngành nghề chính',
       cell: ({ row }) => <span>{row.getValue('main_industry')}</span>,
+      size: 20,
     },
     {
       accessorKey: 'status',
@@ -70,6 +74,7 @@ export const useBusinessHousehold = () => {
 
         return <Status status={status} />;
       },
+      size: 10,
     },
   ];
 

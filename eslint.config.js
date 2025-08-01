@@ -4,6 +4,7 @@ import tsparser from '@typescript-eslint/parser';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
+import prettier from 'prettier';
 
 export default [
   // Base ESLint recommended rules
@@ -22,13 +23,6 @@ export default [
         },
       },
       globals: {
-        console: 'readonly',
-        process: 'readonly',
-        window: 'readonly',
-        document: 'readonly',
-        localStorage: 'readonly',
-        sessionStorage: 'readonly',
-        fetch: 'readonly',
         __dirname: 'readonly',
         module: 'readonly',
         require: 'readonly',
@@ -46,7 +40,8 @@ export default [
         BigInt: 'readonly',
         KeyboardEvent: 'readonly',
         React: 'readonly',
-        JSX: 'readonly',
+        HTMLInputElement: 'readonly',
+        console: 'off',
       },
     },
     plugins: {
@@ -54,6 +49,7 @@ export default [
       react: react,
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      prettier: prettier,
     },
     settings: {
       react: {

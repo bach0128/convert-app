@@ -38,10 +38,6 @@ function MainLayout() {
   const [activeTab, setActiveTab] = useState<string>();
   const navigate = useNavigate();
   const location = useLocation();
-
-  // const { isMobile } = useSidebar();
-  // const customIsMobile = useIsMobile();
-
   // Sync active tab with current route
   useEffect(() => {
     const currentPath = location.pathname.slice(1);

@@ -1,5 +1,73 @@
+import { TableData } from '@/components/BaseComponents/TableData';
+import { useGroupColumns } from './hooks';
+import { useMemo, useState } from 'react';
+import { ConfirmModal } from '@/components/BaseComponents/ConfirmModal';
+import FormGroup from '@/components/BaseComponents/FormGroup';
+import BaseInput from '@/components/BaseComponents/BaseInput';
+import { mockGroupMaterial } from '@/mocks/GroupMaterial';
+import SearchInput from '@/components/BaseComponents/SearchInput';
+
 function GroupMaterial() {
-  return <div>GroupMaterial</div>;
+  const [idEdit, setIdEdit] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+
+  const { columns } = useGroupColumns(setIdEdit, setIsEditing);
+
+  const dataEditing = useMemo(() => {
+    if (idEdit)
+      return mockGroupMaterial.filter((item) => item.id === idEdit)[0];
+  }, [idEdit]);
+
+  return (
+    <div>
+      <SearchInput placeholder="Tìm kiếm" />
+      <div className="mt-4">
+        <TableData columns={columns} data={mockGroupMaterial} />
+      </div>
+
+      <ConfirmModal
+        open={Boolean(isEditing)}
+        onOpenChange={setIsEditing}
+        title={'Thông tin nhóm hàng hóa và dịch vụ'}
+        content={
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <FormGroup label="Mã">
+                <BaseInput isReadonly={true} value={dataEditing?.code} />
+              </FormGroup>
+              <FormGroup label="Tỷ lệ thuế GTGT">
+                <BaseInput isReadonly={true} value={dataEditing?.vat_rate} />
+              </FormGroup>
+              <FormGroup label="Tỷ lệ thuế TNCN">
+                <BaseInput isReadonly={true} value={dataEditing?.pit_rate} />
+              </FormGroup>
+            </div>
+            <div className="flex items-center gap-3 w-full">
+              <FormGroup label="Nhóm HH&DV" isRequrired wrapperClass="w-full">
+                <BaseInput defaultValue={dataEditing?.name} />
+              </FormGroup>
+              <FormGroup
+                label="Trạng thái sử dụng"
+                wrapperClass="w-full"
+                isRequrired
+              >
+                <BaseInput defaultValue={dataEditing?.status} />
+              </FormGroup>
+            </div>
+            <FormGroup label="Loại ngành nghề" isRequrired>
+              <BaseInput defaultValue={dataEditing?.type} />
+            </FormGroup>
+          </div>
+        }
+        handleSubmit={async () => {}}
+        confirmText="Lưu"
+        handleCancel={() => {
+          setIdEdit('');
+          setIsEditing(false);
+        }}
+      />
+    </div>
+  );
 }
 
 export default GroupMaterial;

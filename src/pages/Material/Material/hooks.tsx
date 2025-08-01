@@ -1,7 +1,6 @@
 import { Button } from '@/components/Shadcn/button';
 import { ArrowUpDown, PauseCircle, PencilIcon, Trash2 } from 'lucide-react';
 import type { ColumnDef } from '@tanstack/react-table';
-import { format } from 'date-fns';
 import Status from '@/components/BaseComponents/Status';
 import type { Status_Business } from '@/enum/Status_Business';
 import {
@@ -10,19 +9,25 @@ import {
   TooltipTrigger,
 } from '@/components/Shadcn/tooltip';
 
-export type UnitItem = {
+export type MaterialItem = {
   id: string;
   code: string;
   name: string;
-  created_at: string;
+  unit_name: string;
+  type: string;
+  provider: string;
+  category: string;
   status: Status_Business;
+  description?: string;
+  price: number;
+  discount: number | null;
 };
 
-export const useUnitColumns = (
+export const useGroupColumns = (
   setIdEdit: React.Dispatch<React.SetStateAction<string>>,
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  const columns: ColumnDef<UnitItem>[] = [
+  const columns: ColumnDef<MaterialItem>[] = [
     {
       accessorKey: 'code',
       header: ({ column }) => (
@@ -31,12 +36,14 @@ export const useUnitColumns = (
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className="p-0 px-1 hover:bg-transparent cursor-pointer"
         >
-          Mã ĐVT
+          Mã
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => <span>{row.getValue('code')}</span>,
-      size: 16.67,
+      cell: ({ row }) => (
+        <span className="w-[120px]">{row.getValue('code')}</span>
+      ),
+      size: 8.33,
     },
     {
       accessorKey: 'name',
@@ -46,21 +53,36 @@ export const useUnitColumns = (
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className="p-0 px-1 hover:bg-transparent cursor-pointer"
         >
-          Tên Đơn vị tính
+          Tên nhóm hàng hóa và dịch vụ
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
       cell: ({ row }) => <span className="">{row.getValue('name')}</span>,
-      size: 33.33,
+      size: 16.66,
     },
     {
-      accessorKey: 'created_at',
-      header: 'Ngày khởi tạo',
-      cell: ({ row }) => {
-        const date = row.getValue('created_at') as string;
-        return <span>{format(new Date(date), 'dd/MM/yyyy')}</span>;
-      },
-      size: 16.67,
+      accessorKey: 'unit_name',
+      header: () => <span>ĐVT</span>,
+      cell: ({ row }) => <span>{row.getValue('unit_name')}</span>,
+      size: 16.66,
+    },
+    {
+      accessorKey: 'type',
+      header: () => <span>Nhóm HH&DV</span>,
+      cell: ({ row }) => <span>{row.getValue('type')}</span>,
+      size: 16.66,
+    },
+    {
+      accessorKey: 'provider',
+      header: () => <span>Nguồn gốc</span>,
+      cell: ({ row }) => <span className="">{row.getValue('provider')}</span>,
+      size: 8.33,
+    },
+    {
+      accessorKey: 'category',
+      header: () => <span>Phân loại</span>,
+      cell: ({ row }) => <span className="">{row.getValue('category')}</span>,
+      size: 16.66,
     },
     {
       accessorKey: 'status',
@@ -69,7 +91,7 @@ export const useUnitColumns = (
         const status = row.getValue('status') as Status_Business;
         return <Status status={status} wrapperClass="w-full max-w-[200px]" />;
       },
-      size: 16.67,
+      size: 16.66,
     },
     {
       accessorKey: 'action',
@@ -111,7 +133,7 @@ export const useUnitColumns = (
           </div>
         );
       },
-      size: 16.67,
+      size: 16.66,
     },
   ];
 
