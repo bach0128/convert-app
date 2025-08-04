@@ -10,6 +10,7 @@ module.exports = {
     '@typescript-eslint/recommended',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
+    'prettier',
   ],
   ignorePatterns: ['dist', 'node_modules'],
   parser: '@typescript-eslint/parser',
@@ -20,13 +21,14 @@ module.exports = {
       jsx: true,
     },
   },
-  plugins: ['react-refresh', 'react'],
+  plugins: ['react-refresh', 'react', 'prettier'],
   settings: {
     react: {
       version: 'detect',
     },
   },
   rules: {
+    'react-hooks/react-compiler': 'error',
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
@@ -44,7 +46,13 @@ module.exports = {
     'prefer-const': 'error',
     'no-var': 'error',
     'no-console': ['warn', { allow: ['warn', 'error'] }],
-    'react/react-in-jsx-scope': 'off', // Not needed in React 17+
-    'react/prop-types': 'off', // Using TypeScript for prop validation
+    'react/react-in-jsx-scope': 'off',
+    'react/prop-types': 'off',
+    'prettier/prettier': [
+      'warn',
+      {
+        endOfLine: 'auto',
+      },
+    ],
   },
 };

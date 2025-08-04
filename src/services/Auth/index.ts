@@ -5,8 +5,8 @@ import type {
   AuthResponse,
   AccountRecoveryRequest,
 } from '@/types/auth';
-import { axiosBaseConfig } from '@/api';
-import { AUTH_ENDPOINTS } from '@/api/Endpoints';
+import { axiosAPIBaseConfig } from '@/api';
+import { AUTH_ENDPOINTS } from '@/api/endPoints';
 
 /**
  * Authentication service for Supabase operations
@@ -18,7 +18,7 @@ export class AuthService {
   static async login(
     credentials: EmailPasswordAuthentication
   ): Promise<UserCredential> {
-    const response = await axiosBaseConfig.post<UserCredential>(
+    const response = await axiosAPIBaseConfig.post<UserCredential>(
       AUTH_ENDPOINTS.LOGIN,
       credentials
     );
@@ -29,7 +29,7 @@ export class AuthService {
    * Logout current user
    */
   static async logout(): Promise<AuthResponse> {
-    const response = await axiosBaseConfig.post<AuthResponse>(
+    const response = await axiosAPIBaseConfig.post<AuthResponse>(
       AUTH_ENDPOINTS.LOGOUT
     );
     return response.data;
@@ -39,7 +39,7 @@ export class AuthService {
    * Refresh authentication token
    */
   static async refreshToken(refreshToken: string): Promise<UserCredential> {
-    const response = await axiosBaseConfig.post<UserCredential>(
+    const response = await axiosAPIBaseConfig.post<UserCredential>(
       AUTH_ENDPOINTS.REFRESH_TOKEN,
       {
         refresh_token: refreshToken,
@@ -56,7 +56,7 @@ export class AuthService {
   ): Promise<AuthResponse> {
     const redirectUrl = AuthService.getPasswordResetUrl();
 
-    const response = await axiosBaseConfig.post<AuthResponse>(
+    const response = await axiosAPIBaseConfig.post<AuthResponse>(
       AUTH_ENDPOINTS.RECOVER,
       request,
       {
@@ -73,7 +73,7 @@ export class AuthService {
     credentials: EmailPasswordAuthentication,
     token: string
   ): Promise<AuthResponse> {
-    const response = await axiosBaseConfig.put<AuthResponse>(
+    const response = await axiosAPIBaseConfig.put<AuthResponse>(
       AUTH_ENDPOINTS.CREDENTIALS,
       credentials,
       {
@@ -87,7 +87,7 @@ export class AuthService {
    * Resend OTP for verification
    */
   static async resendOTP(params: ResendOTPParams): Promise<AuthResponse> {
-    const response = await axiosBaseConfig.post<AuthResponse>(
+    const response = await axiosAPIBaseConfig.post<AuthResponse>(
       AUTH_ENDPOINTS.OTP,
       params
     );

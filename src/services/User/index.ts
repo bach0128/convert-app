@@ -4,7 +4,7 @@ import type {
   PasswordChangeRequest,
 } from '@/types/auth';
 import { axiosAPIBaseConfig } from '@/api';
-import { AUTH_ENDPOINTS } from '@/api/Endpoints';
+import { AUTH_ENDPOINTS } from '@/api/endPoints';
 
 /**
  * User management service for server operations
