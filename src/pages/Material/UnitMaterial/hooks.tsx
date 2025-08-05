@@ -3,7 +3,7 @@ import { ArrowUpDown, PauseCircle, PencilIcon, Trash2 } from 'lucide-react';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import Status from '@/components/BaseComponents/Status';
-import type { Status_Business } from '@/enum/Status_Business';
+import type { Status_Business } from '@/interfaces/Status_Business';
 import {
   Tooltip,
   TooltipContent,

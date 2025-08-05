@@ -14,7 +14,7 @@ import { Input } from '@/components/Shadcn/input';
 import { Label } from '@/components/Shadcn/label';
 import { Mail, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { ROUTE_PATH } from '@/enum/RoutePath';
+import { ROUTE_PATH } from '@/interfaces/RoutePath';
 
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState('');
@@ -23,7 +23,6 @@ export default function ResetPasswordPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Reset password requested for:');
     setIsSubmitted(true);
     // Handle password reset request here
   };

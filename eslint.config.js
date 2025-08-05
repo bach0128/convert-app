@@ -44,6 +44,10 @@ export default [
         console: 'off',
         window: 'readonly',
         process: 'readonly',
+        localStorage: 'readonly',
+        sessionStorage: 'readonly',
+        document: 'readonly',
+        KEY_LOCAL_STORAGE: 'readonly',
       },
     },
     plugins: {
@@ -103,7 +107,6 @@ export default [
       'public/**',
       'scripts/**',
       'config/**',
-      '*.config.js',
       '*.config.ts',
     ],
   },

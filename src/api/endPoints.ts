@@ -1,12 +1,17 @@
 const AUTH_ENDPOINTS = {
-  LOGIN: 'login',
-  LOGOUT: 'logout',
-  SIGNUP: 'register',
-  REFRESH_TOKEN: 'refresh_token',
+  SIGNIN: '/auth/signin',
+  SIGNUP: '/auth/signup',
+  SIGNOUT: '/auth/signout',
+  REFRESH_TOKEN: '/auth/refresh_token',
   CREDENTIALS: 'credentials',
   OTP: 'otp',
   RECOVER: 'recover',
-  CHANGE_PASSWORD: 'change_password',
+  CHANGE_PASSWORD: '/auth/change_password',
+  GETME: '/auth/me',
 };
 
-export { AUTH_ENDPOINTS };
+const BUSSINESS_ENDPOINTS = {
+  INDEX: 'bussiness-household',
+};
+
+export { AUTH_ENDPOINTS, BUSSINESS_ENDPOINTS };

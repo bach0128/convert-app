@@ -3,15 +3,17 @@ import axios, {
   type AxiosResponse,
   type InternalAxiosRequestConfig,
 } from 'axios';
-import { KEY_LOCAL_STORAGE } from '@/enum/Storage.ts';
+import { KEY_LOCAL_STORAGE } from '@/interfaces/Storage';
 import {
   getRefreshToken,
   isRememberMe,
   removeFromStorages,
+  saveToken,
   // saveToken,
 } from '@/lib/utils';
-import { ROUTE_PATH } from '@/enum/RoutePath';
-// import type { UserCredential } from '@/types/auth';
+import { ROUTE_PATH } from '@/interfaces/RoutePath';
+import type { UserCredential } from '@/types/dto/auth';
+import { AuthService } from '@/services/Auth';
 // ----------------------------------------------------------------
 
 const createAxiosInstance = (baseURL: string) => {
@@ -55,25 +57,26 @@ const createAxiosInterceptorsApiBase = (
         KEY_LOCAL_STORAGE.ACCESS_TOKEN,
         KEY_LOCAL_STORAGE.REFRESH_TOKEN,
       ]);
-      window.location.href = `${ROUTE_PATH.SIGNIN}`;
+      if (!window.location.href.includes('signin'))
+        window.location.href = `${ROUTE_PATH.SIGNIN}`;
       return Promise.reject(error);
     }
 
-    // try {
-    //   const res: UserCredential = await supaBaseRefreshToken(refreshToken);
-    //   const initialRequest = error.config;
-    //   if (!initialRequest) throw new Error('Initial request is undefined');
-    //   saveToken(KEY_LOCAL_STORAGE.ACCESS_TOKEN, res.access_token);
-    //   initialRequest.headers.Authorization = `Bearer ${res.access_token}`;
-    //   return axiosInstance.request(initialRequest);
-    // } catch (refreshTokenError) {
-    //   removeFromStorages([
-    //     KEY_LOCAL_STORAGE.ACCESS_TOKEN,
-    //     KEY_LOCAL_STORAGE.REFRESH_TOKEN,
-    //   ]);
-    //   window.location.href = `${ROUTE_PATH.SIGNIN}`;
-    //   return Promise.reject(refreshTokenError);
-    // }
+    try {
+      const res: UserCredential = await AuthService.refreshToken(refreshToken);
+      const initialRequest = error.config;
+      if (!initialRequest) throw new Error('Initial request is undefined');
+      saveToken(KEY_LOCAL_STORAGE.ACCESS_TOKEN, res.access_token);
+      initialRequest.headers.Authorization = `Bearer ${res.access_token}`;
+      return axiosInstance.request(initialRequest);
+    } catch (refreshTokenError) {
+      removeFromStorages([
+        KEY_LOCAL_STORAGE.ACCESS_TOKEN,
+        KEY_LOCAL_STORAGE.REFRESH_TOKEN,
+      ]);
+      window.location.href = `${ROUTE_PATH.SIGNIN}`;
+      return Promise.reject(refreshTokenError);
+    }
   };
 
   // no-error
@@ -89,7 +92,7 @@ const createAxiosInterceptorsApiBase = (
 };
 
 const axiosAPIBaseConfig = createAxiosInstance(
-  process.env.VITE_API_BASE_URL || ''
+  import.meta.env.VITE_API_BASE_URL || ''
 );
 
 createAxiosInterceptorsApiBase(axiosAPIBaseConfig);

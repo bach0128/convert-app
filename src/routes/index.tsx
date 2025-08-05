@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { ROUTE_PATH } from '@/enum/RoutePath';
+import { ROUTE_PATH } from '@/interfaces/RoutePath';
 import NotFoundPage from '@/pages/NotFound/NotFoundPage';
 import Loading from '@/components/BaseComponents/Loading';
 import HomePage from '@/pages/Home/index';
@@ -20,11 +20,16 @@ import UnitMaterial from '@/pages/Material/UnitMaterial';
 import GroupMaterial from '@/pages/Material/GroupMaterial';
 import Material from '@/pages/Material/Material';
 import MaterialList from '@/pages/Material';
+import { ProtectedRoute } from './PrivateRoute';
 
 const router = createBrowserRouter([
   {
     path: ROUTE_PATH.HOME,
-    element: <MainLayout />,
+    element: (
+      <ProtectedRoute>
+        <MainLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         element: <HomePage />,

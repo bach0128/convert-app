@@ -1,4 +1,4 @@
-import type { Status_Business } from '@/enum/Status_Business';
+import type { Status_Business } from '@/interfaces/Status_Business';
 import { cn } from '@/lib/utils';
 
 function Status({

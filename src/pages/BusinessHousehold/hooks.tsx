@@ -1,7 +1,7 @@
 import Status from '@/components/BaseComponents/Status';
 import { Button } from '@/components/Shadcn/button';
-import { ROUTE_PATH } from '@/enum/RoutePath';
-import type { Status_Business } from '@/enum/Status_Business';
+import { ROUTE_PATH } from '@/interfaces/RoutePath';
+import type { Status_Business } from '@/interfaces/Status_Business';
 import type { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { Link } from 'react-router-dom';

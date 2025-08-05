@@ -4,40 +4,38 @@ import type {
   ResendOTPParams,
   AuthResponse,
   AccountRecoveryRequest,
-} from '@/types/auth';
-import { axiosAPIBaseConfig } from '@/api';
+  UserSignUp,
+  User,
+} from '@/types/dto/auth';
+import { axiosAPIBaseConfig } from '@/api/axios';
 import { AUTH_ENDPOINTS } from '@/api/endPoints';
 
-/**
- * Authentication service for Supabase operations
- */
 export class AuthService {
-  /**
-   * Login user with email and password
-   */
-  static async login(
+  static async signin(
     credentials: EmailPasswordAuthentication
   ): Promise<UserCredential> {
     const response = await axiosAPIBaseConfig.post<UserCredential>(
-      AUTH_ENDPOINTS.LOGIN,
+      AUTH_ENDPOINTS.SIGNIN,
       credentials
     );
     return response.data;
   }
 
-  /**
-   * Logout current user
-   */
-  static async logout(): Promise<AuthResponse> {
-    const response = await axiosAPIBaseConfig.post<AuthResponse>(
-      AUTH_ENDPOINTS.LOGOUT
+  static async signup(credentials: UserSignUp): Promise<UserCredential> {
+    const response = await axiosAPIBaseConfig.post<UserCredential>(
+      AUTH_ENDPOINTS.SIGNUP,
+      credentials
     );
     return response.data;
   }
 
-  /**
-   * Refresh authentication token
-   */
+  static async signout(): Promise<AuthResponse> {
+    const response = await axiosAPIBaseConfig.post<AuthResponse>(
+      AUTH_ENDPOINTS.SIGNOUT
+    );
+    return response.data;
+  }
+
   static async refreshToken(refreshToken: string): Promise<UserCredential> {
     const response = await axiosAPIBaseConfig.post<UserCredential>(
       AUTH_ENDPOINTS.REFRESH_TOKEN,
@@ -48,9 +46,11 @@ export class AuthService {
     return response.data;
   }
 
-  /**
-   * Send password recovery email
-   */
+  static async getMe(): Promise<User> {
+    const response = await axiosAPIBaseConfig.get<User>(AUTH_ENDPOINTS.GETME);
+    return response.data;
+  }
+
   static async recoverAccount(
     request: AccountRecoveryRequest
   ): Promise<AuthResponse> {
@@ -66,9 +66,6 @@ export class AuthService {
     return response.data;
   }
 
-  /**
-   * Update user password with token
-   */
   static async updatePassword(
     credentials: EmailPasswordAuthentication,
     token: string
@@ -83,9 +80,6 @@ export class AuthService {
     return response.data;
   }
 
-  /**
-   * Resend OTP for verification
-   */
   static async resendOTP(params: ResendOTPParams): Promise<AuthResponse> {
     const response = await axiosAPIBaseConfig.post<AuthResponse>(
       AUTH_ENDPOINTS.OTP,
@@ -94,9 +88,6 @@ export class AuthService {
     return response.data;
   }
 
-  /**
-   * Get password reset URL based on current location
-   */
   private static getPasswordResetUrl(): string {
     if (typeof window === 'undefined') {
       return '/reset-password'; // Fallback for SSR

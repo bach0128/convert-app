@@ -12,11 +12,13 @@ export interface UserSignUp extends EmailPasswordAuthentication {
 export interface UserCredential {
   access_token: string;
   refresh_token: string;
-  user: {
-    id: string;
-    email: string;
-    name?: string;
-  };
+  user: User;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name?: string;
 }
 
 export interface ResendOTPParams {
@@ -27,7 +29,6 @@ export interface ResendOTPParams {
 export interface AuthResponse<T = unknown> {
   data: T;
   message?: string;
-  success: boolean;
 }
 
 export interface PasswordChangeRequest {

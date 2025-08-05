@@ -12,14 +12,33 @@ import {
 import { useBusinessHousehold } from './hooks';
 import { ListBusinessHousehold } from '@/mocks/BusinessHousehold';
 import { useParams } from 'react-router-dom';
-import BusinessHeader from './header';
+import BussinessHeader from './BussinessHeader';
+import { useState } from 'react';
+import { ConfirmModal } from '@/components/BaseComponents/ConfirmModal';
+import FormGroup from '@/components/BaseComponents/FormGroup';
+import BaseInput from '@/components/BaseComponents/BaseInput';
+// import { useFormik } from 'formik';
+// import { zodToFormikValidate } from '@/lib/utils';
 
 function BusinessHousehold() {
   const { id } = useParams();
   const { columns } = useBusinessHousehold();
+  const [isOpenCreate, setIsOpenCreate] = useState(false);
+
+  // const formik = useFormik<SigninFormValues>({
+  //   initialValues: {
+  //     email: '',
+  //     password: '',
+  //   },
+  //   validate: zodToFormikValidate(signinSchema),
+  //   onSubmit: async (values) => {
+  //     await signin(values);
+  //   },
+  // });
+
   return (
     <div>
-      <BusinessHeader />
+      <BussinessHeader setIsOpenCreate={setIsOpenCreate} />
       {!id && (
         <>
           <div className="flex items-center justify-between mt-2">
@@ -65,6 +84,23 @@ function BusinessHousehold() {
           </div>
         </>
       )}
+      {/**TODO: add role admin for show this */}
+      <ConfirmModal
+        open={isOpenCreate}
+        onOpenChange={setIsOpenCreate}
+        title={'Tạo hộ kinh doanh mới'}
+        content={
+          <div>
+            <FormGroup label="Mã số thuế">
+              <BaseInput />
+            </FormGroup>
+          </div>
+        }
+        handleSubmit={function (): Promise<void> {
+          throw new Error('Function not implemented.');
+        }}
+        confirmText="Tạo mới"
+      />
     </div>
   );
 }

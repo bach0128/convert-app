@@ -1,8 +1,9 @@
-/* eslint-disable no-undef */
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { toast } from 'sonner';
+import type { ZodSchema } from 'zod';
 
-import { KEY_LOCAL_STORAGE } from '@/enum/Storage';
+import { KEY_LOCAL_STORAGE } from '@/interfaces/Storage';
 
 export function classNames(
   ...classes: (string | undefined | null | boolean)[]
@@ -90,45 +91,54 @@ export const getAccessToken = (): string | null => {
   return getTokenFromStorage(KEY_LOCAL_STORAGE.ACCESS_TOKEN);
 };
 
-export class StorageManager {
-  private static getStorage(type: StorageTypeString): Storage {
-    return type === StorageType.LOCAL ? localStorage : sessionStorage;
-  }
-
-  static set(
-    key: string,
-    value: string,
-    type: StorageTypeString = StorageType.SESSION
-  ): void {
-    this.getStorage(type).setItem(key, value);
-  }
-
-  static get(
-    key: string,
-    type: StorageTypeString = StorageType.SESSION
-  ): string | null {
-    return this.getStorage(type).getItem(key);
-  }
-
-  static remove(
-    key: string,
-    type: StorageTypeString = StorageType.SESSION
-  ): void {
-    this.getStorage(type).removeItem(key);
-  }
-
-  static clear(type: StorageTypeString = StorageType.SESSION): void {
-    this.getStorage(type).clear();
-  }
-
-  static removeFromBoth(keys: string[]): void {
-    keys.forEach((key) => {
-      this.remove(key, StorageType.LOCAL);
-      this.remove(key, StorageType.SESSION);
-    });
+export function toastNotification(
+  message: string,
+  type: 'success' | 'error' | 'info' | 'warning',
+  description?: string
+) {
+  switch (type) {
+    case 'success':
+      toast.success(message, {
+        description,
+      });
+      break;
+    case 'error':
+      toast.error(message, {
+        description,
+      });
+      break;
+    case 'info':
+      toast(message, {
+        description,
+      });
+      break;
+    case 'warning':
+      toast.warning(message, {
+        description,
+      });
+      break;
+    default:
+      toast(message, {
+        description,
+      });
   }
 }
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function zodToFormikValidate<T>(schema: ZodSchema<T>) {
+  return (values: unknown) => {
+    const result = schema.safeParse(values);
+    if (result.success) return {};
+    const errors: Record<string, string> = {};
+    for (const issue of result.error.issues) {
+      const path = issue.path[0];
+      if (typeof path === 'string') {
+        errors[path] = issue.message;
+      }
+    }
+    return errors;
+  };
 }

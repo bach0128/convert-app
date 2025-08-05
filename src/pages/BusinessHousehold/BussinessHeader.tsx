@@ -4,7 +4,11 @@ import { ListBusinessHousehold } from '@/mocks/BusinessHousehold';
 import { PenIcon, Plus } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-function BusinessHeader() {
+function BussinessHeader({
+  setIsOpenCreate,
+}: {
+  setIsOpenCreate: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const navigate = useNavigate();
   const { id } = useParams();
   const data = ListBusinessHousehold.filter((item) => item.id === id);
@@ -20,7 +24,7 @@ function BusinessHeader() {
             <PenIcon /> Chỉnh sửa
           </Button>
         ) : (
-          <Button variant={'outline'}>
+          <Button variant={'outline'} onClick={() => setIsOpenCreate(true)}>
             <Plus /> Thêm HKD
           </Button>
         )}
@@ -38,4 +42,4 @@ function BusinessHeader() {
   );
 }
 
-export default BusinessHeader;
+export default BussinessHeader;

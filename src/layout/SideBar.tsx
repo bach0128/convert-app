@@ -1,5 +1,4 @@
 import type * as React from 'react';
-// import { ChevronDown } from 'lucide-react';
 
 import {
   Sidebar,
@@ -10,17 +9,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
-  // SidebarMenuSubButton,
-  // SidebarMenuSubItem,
   SidebarRail,
 } from '@/components/Shadcn/sidebar';
 
-import {
-  Collapsible,
-  // CollapsibleContent,
-  // CollapsibleTrigger,
-} from '@/components/Shadcn/collapsible';
-import { NavList } from '@/enum/NavList';
+import { Collapsible } from '@/components/Shadcn/collapsible';
+import { NavList } from '@/interfaces/NavList';
 
 export function AppSidebar({
   onTabClick,
@@ -43,39 +36,6 @@ export function AppSidebar({
                 className="group/collapsible"
               >
                 <SidebarMenuItem>
-                  {/* {item.items ? (
-                    <>
-                      <CollapsibleTrigger asChild>
-                        <SidebarMenuButton
-                          tooltip={item.title}
-                          size="lg"
-                          className="group-data-[collapsible=icon]:justify-center"
-                          onClick={() => onTabClick(item.url)}
-                        >
-                          {item.icon && <item.icon className="self-center" />}
-                          <span className="font-medium sidebar-item-text lg:inline group-data-[collapsible=icon]:hidden">
-                            {item.title}
-                          </span>
-                          {item.items && (
-                            <ChevronDown className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180 group-data-[collapsible=icon]:hidden" />
-                          )}
-                        </SidebarMenuButton>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <SidebarMenuSub>
-                          {item.items?.map((subItem) => (
-                            <SidebarMenuSubItem key={subItem.title}>
-                              <SidebarMenuSubButton asChild>
-                                <span onClick={() => onTabClick(subItem.url)}>
-                                  {subItem.title}
-                                </span>
-                              </SidebarMenuSubButton>
-                            </SidebarMenuSubItem>
-                          ))}
-                        </SidebarMenuSub>
-                      </CollapsibleContent>
-                    </>
-                  ) : ( */}
                   <SidebarMenuButton
                     tooltip={item.title}
                     size="lg"

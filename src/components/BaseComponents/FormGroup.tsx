@@ -16,7 +16,7 @@ function FormGroup({
   children,
   errorMsg,
   label,
-  wrapperClass = 'space-y-1',
+  wrapperClass = 'space-y-1 text-left',
   labelClass = '',
   childrenClass,
   isWrappedByLabel = true,

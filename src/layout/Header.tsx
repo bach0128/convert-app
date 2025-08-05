@@ -7,7 +7,7 @@ import logo from '@/assets/images/logo.jpg';
 //   DropdownMenuTrigger,
 // } from "@/components/Shadcn/dropdown-menu";
 import { Link, NavLink } from 'react-router-dom';
-import { ROUTE_PATH } from '@/enum/RoutePath.ts';
+import { ROUTE_PATH } from '@/interfaces/RoutePath';
 import { Button } from '@/components/Shadcn/button.tsx';
 import { useEffect, useId, useState } from 'react';
 

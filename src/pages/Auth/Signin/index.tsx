@@ -1,5 +1,4 @@
-import type React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/Shadcn/button';
 import {
   Card,
@@ -9,38 +8,49 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/Shadcn/card';
-import { Input } from '@/components/Shadcn/input';
 import { Label } from '@/components/Shadcn/label';
 import { Checkbox } from '@/components/Shadcn/checkbox';
 import { Separator } from '@/components/Shadcn/separator';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
-import { ROUTE_PATH } from '@/enum/RoutePath';
+import { ROUTE_PATH } from '@/interfaces/RoutePath';
+import { useFormik } from 'formik';
+import type { SigninFormValues } from '@/lib/validations/auth.schema/index';
+import {
+  saveToStorage,
+  toastNotification,
+  zodToFormikValidate,
+} from '@/lib/utils';
+import { signinSchema } from '@/lib/validations/auth.schema/index';
+import FormGroup from '@/components/BaseComponents/FormGroup';
+import BaseInput from '@/components/BaseComponents/BaseInput';
+import { KEY_LOCAL_STORAGE } from '@/interfaces/Storage';
+import { useAuthContext } from '@/contexts/authContext';
 
 export default function SignInPage() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    rememberMe: false,
+  const { signin, error } = useAuthContext();
+  const [isRemember, setIsRemember] = useState(false);
+
+  const formik = useFormik<SigninFormValues>({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validate: zodToFormikValidate(signinSchema),
+    onSubmit: async (values) => {
+      await signin(values);
+    },
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  useEffect(() => {
+    if (error) toastNotification(error, 'error');
+  }, [error]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission here
-  };
-
-  // const handleSocialLogin = (provider: string) => {
-  //   console.log(`Sign in with ${provider}`);
-  //   // Handle social login here
-  // };
+  useEffect(() => {
+    saveToStorage(
+      KEY_LOCAL_STORAGE.REMEMBER_ME,
+      isRemember ? 'true' : 'false',
+      true
+    );
+  }, [isRemember]);
 
   return (
     <div className="flex-1 h-full flex items-center justify-center bg-gray-50">
@@ -50,79 +60,61 @@ export default function SignInPage() {
             Welcome back
           </CardTitle>
           <CardDescription className="text-center">
-            Enter your credentials to access your account
+            Vui lòng nhập email và mật khẩu để đăng nhập.
           </CardDescription>
         </CardHeader>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+            <FormGroup label="Email" isRequrired errorMsg={formik.errors.email}>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
+                <BaseInput
                   id="email"
                   name="email"
                   type="email"
                   placeholder="john.doe@example.com"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="pl-10"
-                  required
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  isError={!!(formik.touched.email && formik.errors.email)}
                 />
               </div>
-            </div>
+            </FormGroup>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-                <a
-                  href={ROUTE_PATH.RESET_PASSWORD}
-                  className="text-sm text-blue-600 hover:underline"
-                >
-                  Forgot password?
-                </a>
-              </div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
-                  id="password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Enter your password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="pl-10 pr-10"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 h-4 w-4 text-gray-400 hover:text-gray-600"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2 mb-2">
-              <Checkbox
-                id="remember"
-                checked={formData.rememberMe}
-                onCheckedChange={(checked) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    rememberMe: checked as boolean,
-                  }))
-                }
+            <FormGroup
+              label="Password"
+              isRequrired
+              errorMsg={formik.errors.password}
+            >
+              <BaseInput
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                isError={!!(formik.touched.password && formik.errors.password)}
               />
-              <Label htmlFor="remember" className="text-sm font-normal">
-                Remember me
-              </Label>
-            </div>
+              <div className="flex items-center justify-between mt-2 mb-4">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="remember"
+                    onCheckedChange={(checked) =>
+                      setIsRemember(checked === true)
+                    }
+                  />
+                  <Label htmlFor="remember" className="text-sm font-normal">
+                    Remember me
+                  </Label>
+                </div>
+                <div className="text-end">
+                  <a
+                    href={ROUTE_PATH.RESET_PASSWORD}
+                    className="text-sm hover:underline"
+                  >
+                    Forgot password?
+                  </a>
+                </div>
+              </div>
+            </FormGroup>
           </CardContent>
 
           <CardFooter className="flex flex-col space-y-4">
@@ -134,17 +126,12 @@ export default function SignInPage() {
               <div className="absolute inset-0 flex items-center">
                 <Separator className="w-full" />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-gray-500">
-                  Or continue with
-                </span>
-              </div>
             </div>
             <div className="text-center text-sm text-gray-600">
               {"Don't have an account? "}
               <a
                 href={ROUTE_PATH.REGISTER}
-                className="text-blue-600 hover:underline font-medium"
+                className="hover:underline font-medium text-black"
               >
                 Sign up
               </a>
