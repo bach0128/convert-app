@@ -21,7 +21,7 @@ interface ConfirmModalProps {
   description?: string;
   confirmText?: string;
   cancelText?: string;
-  handleSubmit: () => Promise<void>;
+  handleSubmit: () => Promise<void> | void;
   handleCancel?: () => void;
   content?: React.ReactNode;
   variant?: 'default' | 'destructive';
@@ -72,6 +72,7 @@ export function ConfirmModal({
             onClick={handleSubmit}
             className="px-6"
             disabled={isSubmiting}
+            type="submit"
           >
             {confirmText}
           </Button>

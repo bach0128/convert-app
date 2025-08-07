@@ -10,34 +10,89 @@ import {
   SelectValue,
 } from '@/components/Shadcn/select';
 import { useBusinessHousehold } from './hooks';
-import { ListBusinessHousehold } from '@/mocks/BusinessHousehold';
 import { useParams } from 'react-router-dom';
 import BussinessHeader from './BussinessHeader';
 import { useState } from 'react';
 import { ConfirmModal } from '@/components/BaseComponents/ConfirmModal';
 import FormGroup from '@/components/BaseComponents/FormGroup';
 import BaseInput from '@/components/BaseComponents/BaseInput';
-// import { useFormik } from 'formik';
-// import { zodToFormikValidate } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import {
+  createBhh,
+  getBhh,
+  getBussinessType,
+  getIndustryGroup,
+  getTaxPaymentMethod,
+} from '@/api/bussiness-household';
+import Loading from '@/components/BaseComponents/Loading';
+import { useFormik } from 'formik';
+import { toastNotification, zodToFormikValidate } from '@/lib/utils';
+import {
+  createBussinessSchema,
+  type BussinessFormValues,
+} from '@/lib/validations/bussiness.schema';
 
 function BusinessHousehold() {
   const { id } = useParams();
   const { columns } = useBusinessHousehold();
   const [isOpenCreate, setIsOpenCreate] = useState(false);
 
-  // const formik = useFormik<SigninFormValues>({
-  //   initialValues: {
-  //     email: '',
-  //     password: '',
-  //   },
-  //   validate: zodToFormikValidate(signinSchema),
-  //   onSubmit: async (values) => {
-  //     await signin(values);
-  //   },
-  // });
+  const { data: IndustryGroup, isLoading: isLoadingGroup } = useQuery({
+    queryKey: ['industry-group'],
+    queryFn: getIndustryGroup,
+  });
+
+  const {
+    data: listBhh,
+    isLoading: loadingBhh,
+    refetch,
+  } = useQuery({
+    queryKey: ['list-bhh'],
+    queryFn: getBhh,
+  });
+
+  const { data: BussinessType, isLoading: loadingType } = useQuery({
+    queryKey: ['bussiness-type'],
+    queryFn: getBussinessType,
+  });
+
+  const { data: TaxPaymentMethod, isLoading: loadingTaxPaymentMethod } =
+    useQuery({
+      queryKey: ['tax-payment-method'],
+      queryFn: getTaxPaymentMethod,
+    });
+
+  const formik = useFormik<BussinessFormValues>({
+    initialValues: {
+      name: '',
+      tax_code: 0,
+      email: '',
+      owner: '',
+      phone: '',
+      address: '',
+      bussinessType: 0,
+      taxPaymentMethod: 0,
+    },
+    validate: zodToFormikValidate(createBussinessSchema),
+    onSubmit: async (values) => {
+      try {
+        await createBhh(values);
+        toastNotification('Tạo hộ kinh doanh mới thành công', 'success');
+        setIsOpenCreate(false);
+        formik.resetForm();
+        refetch();
+      } catch (error) {
+        if (error instanceof Error) toastNotification(error.message, 'error');
+      }
+    },
+  });
 
   return (
     <div>
+      {(isLoadingGroup ||
+        loadingTaxPaymentMethod ||
+        loadingBhh ||
+        loadingType) && <Loading />}
       <BussinessHeader setIsOpenCreate={setIsOpenCreate} />
       {!id && (
         <>
@@ -47,13 +102,16 @@ function BusinessHousehold() {
               <div className="flex items-center gap-1.5">
                 Phân nhóm HKD:
                 <Select>
-                  <SelectTrigger className="w-fit">
+                  <SelectTrigger className="max-w-[250px] truncate">
                     <SelectValue placeholder="Chọn phân nhóm hộ kinh doanh" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem value="apple">Apple</SelectItem>
-                      <SelectItem value="banana">Banana</SelectItem>
+                      {IndustryGroup?.map((item) => (
+                        <SelectItem value={item.id.toString()} key={item.id}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -62,13 +120,16 @@ function BusinessHousehold() {
               <div className="flex items-center gap-1.5">
                 Ngành nghề chính:
                 <Select>
-                  <SelectTrigger className="w-fit">
-                    <SelectValue placeholder="Chọn ngành nghề chính" />
+                  <SelectTrigger className="max-w-[280px] truncate">
+                    <SelectValue placeholder="Chọn ngành nghề kinh doanh chính" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-[400px] overflow-y-auto">
                     <SelectGroup>
-                      <SelectItem value="apple">Apple</SelectItem>
-                      <SelectItem value="banana">Banana</SelectItem>
+                      {BussinessType?.map((item) => (
+                        <SelectItem value={item.id.toString()} key={item.id}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -78,10 +139,11 @@ function BusinessHousehold() {
               Xuất file
             </Button>
           </div>
-
-          <div className="mt-4">
-            <TableData columns={columns} data={ListBusinessHousehold} />
-          </div>
+          {listBhh && (
+            <div className="mt-4">
+              <TableData columns={columns} data={listBhh.results} />
+            </div>
+          )}
         </>
       )}
       {/**TODO: add role admin for show this */}
@@ -90,15 +152,150 @@ function BusinessHousehold() {
         onOpenChange={setIsOpenCreate}
         title={'Tạo hộ kinh doanh mới'}
         content={
-          <div>
-            <FormGroup label="Mã số thuế">
-              <BaseInput />
-            </FormGroup>
-          </div>
+          <form className="flex flex-col gap-3">
+            <div className="flex w-full items-center gap-2">
+              <FormGroup
+                label="Mã số thuế"
+                isRequrired
+                wrapperClass="w-full"
+                errorMsg={formik.errors.tax_code}
+              >
+                <BaseInput
+                  type="number"
+                  id="tax_code"
+                  name="tax_code"
+                  value={formik.values.tax_code}
+                  onChange={formik.handleChange}
+                  isError={
+                    !!(formik.touched.tax_code && formik.errors.tax_code)
+                  }
+                />
+              </FormGroup>
+              <FormGroup
+                label="Tên hộ kinh doanh"
+                isRequrired
+                wrapperClass="w-full"
+                errorMsg={formik.errors.name}
+              >
+                <BaseInput
+                  id="name"
+                  value={formik.values.name}
+                  onChange={formik.handleChange}
+                  isError={!!(formik.touched.name && formik.errors.name)}
+                />
+              </FormGroup>
+            </div>
+            <div className="grid grid-cols-4 gap-2">
+              <FormGroup
+                label="Người đại diện"
+                isRequrired
+                wrapperClass="col-span-2"
+                errorMsg={formik.errors.owner}
+              >
+                <BaseInput
+                  id="owner"
+                  value={formik.values.owner}
+                  onChange={formik.handleChange}
+                  isError={!!(formik.touched.owner && formik.errors.owner)}
+                />
+              </FormGroup>
+              <FormGroup
+                label="Email"
+                isRequrired
+                errorMsg={formik.errors.email}
+              >
+                <BaseInput
+                  id="email"
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  isError={!!(formik.touched.email && formik.errors.email)}
+                />
+              </FormGroup>
+              <FormGroup
+                label="Số điện thoại"
+                isRequrired
+                errorMsg={formik.errors.phone}
+              >
+                <BaseInput
+                  type="text"
+                  id="phone"
+                  value={formik.values.phone}
+                  onChange={formik.handleChange}
+                  isError={!!(formik.touched.phone && formik.errors.phone)}
+                />
+              </FormGroup>
+            </div>
+            <div>
+              <FormGroup
+                label="Địa chỉ kinh doanh"
+                isRequrired
+                errorMsg={formik.errors.address}
+              >
+                <BaseInput
+                  id="address"
+                  value={formik.values.address}
+                  onChange={formik.handleChange}
+                  isError={!!(formik.touched.address && formik.errors.address)}
+                />
+              </FormGroup>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <FormGroup
+                label="Ngành nghề kinh doanh chính"
+                isRequrired
+                errorMsg={formik.errors.bussinessType}
+              >
+                <Select
+                  onValueChange={(value) =>
+                    formik.setFieldValue('bussinessType', +value)
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Chọn ngành nghề kinh doanh chính" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[400px] overflow-y-auto">
+                    <SelectGroup>
+                      {BussinessType?.map((item) => (
+                        <SelectItem
+                          key={item.id}
+                          id="bussinessType"
+                          value={item.id.toString()}
+                        >
+                          {item.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </FormGroup>
+              <FormGroup
+                label="Hình thức nộp thuế"
+                isRequrired
+                errorMsg={formik.errors.taxPaymentMethod}
+              >
+                <Select
+                  onValueChange={(value) =>
+                    formik.setFieldValue('taxPaymentMethod', +value)
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Chọn hình thức nộp thuế" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[400px] overflow-y-auto">
+                    <SelectGroup>
+                      {TaxPaymentMethod?.map((item) => (
+                        <SelectItem value={item.id.toString()} key={item.id}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </FormGroup>
+            </div>
+          </form>
         }
-        handleSubmit={function (): Promise<void> {
-          throw new Error('Function not implemented.');
-        }}
+        handleSubmit={formik.handleSubmit}
         confirmText="Tạo mới"
       />
     </div>

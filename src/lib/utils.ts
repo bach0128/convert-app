@@ -3,7 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import { toast } from 'sonner';
 import type { ZodSchema } from 'zod';
 
-import { KEY_LOCAL_STORAGE } from '@/interfaces/Storage';
+import { KEY_LOCAL_STORAGE } from '@/enum/Storage';
 
 export function classNames(
   ...classes: (string | undefined | null | boolean)[]

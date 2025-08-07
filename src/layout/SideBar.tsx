@@ -13,7 +13,7 @@ import {
 } from '@/components/Shadcn/sidebar';
 
 import { Collapsible } from '@/components/Shadcn/collapsible';
-import { NavList } from '@/interfaces/NavList';
+import { NavList } from '@/enum/NavList';
 
 export function AppSidebar({
   onTabClick,

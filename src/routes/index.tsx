@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { ROUTE_PATH } from '@/interfaces/RoutePath';
+import { ROUTE_PATH } from '@/enum/route-path';
 import NotFoundPage from '@/pages/NotFound/NotFoundPage';
 import Loading from '@/components/BaseComponents/Loading';
 import HomePage from '@/pages/Home/index';
@@ -20,65 +20,65 @@ import UnitMaterial from '@/pages/Material/UnitMaterial';
 import GroupMaterial from '@/pages/Material/GroupMaterial';
 import Material from '@/pages/Material/Material';
 import MaterialList from '@/pages/Material';
-import { ProtectedRoute } from './PrivateRoute';
+import AuthGuard from '@/contexts/authContext';
 
 const router = createBrowserRouter([
   {
-    path: ROUTE_PATH.HOME,
-    element: (
-      <ProtectedRoute>
-        <MainLayout />
-      </ProtectedRoute>
-    ),
+    element: <AuthGuard />,
     children: [
       {
-        element: <HomePage />,
-        path: ROUTE_PATH.HOME,
-      },
-      {
-        element: <RevenuePage />,
-        path: ROUTE_PATH.REVENUE,
-      },
-      {
-        element: <CostPage />,
-        path: ROUTE_PATH.COST,
-      },
-      {
-        element: <TaxDeclarationPage />,
-        path: ROUTE_PATH.TAX_DECLARATION,
-      },
-      {
-        element: <ReportPage />,
-        path: ROUTE_PATH.REPORT,
-      },
-      {
-        path: ROUTE_PATH.BUSINESS_HOUSEHOLD,
+        element: <MainLayout />,
         children: [
           {
-            index: true,
-            element: <BusinessHousehold />,
+            element: <HomePage />,
+            path: ROUTE_PATH.HOME,
           },
           {
-            path: ':id',
-            element: <SingleBusinessHousehold />,
+            element: <RevenuePage />,
+            path: ROUTE_PATH.REVENUE,
+          },
+          {
+            element: <CostPage />,
+            path: ROUTE_PATH.COST,
+          },
+          {
+            element: <TaxDeclarationPage />,
+            path: ROUTE_PATH.TAX_DECLARATION,
+          },
+          {
+            element: <ReportPage />,
+            path: ROUTE_PATH.REPORT,
+          },
+          {
+            path: ROUTE_PATH.BUSINESS_HOUSEHOLD,
+            children: [
+              {
+                index: true,
+                element: <BusinessHousehold />,
+              },
+              {
+                path: ':id',
+                element: <SingleBusinessHousehold />,
+              },
+            ],
+          },
+          {
+            element: <GroupMaterial />,
+            path: ROUTE_PATH.GROUP_MATERIAL,
+          },
+          {
+            element: <Material />,
+            path: ROUTE_PATH.MATERIAL,
+          },
+          {
+            element: <UnitMaterial />,
+            path: ROUTE_PATH.UNIT,
+          },
+          {
+            element: <MaterialList />,
+            path: ROUTE_PATH.MATERIAL_LIST,
           },
         ],
-      },
-      {
-        element: <GroupMaterial />,
-        path: ROUTE_PATH.GROUP_MATERIAL,
-      },
-      {
-        element: <Material />,
-        path: ROUTE_PATH.MATERIAL,
-      },
-      {
-        element: <UnitMaterial />,
-        path: ROUTE_PATH.UNIT,
-      },
-      {
-        element: <MaterialList />,
-        path: ROUTE_PATH.MATERIAL_LIST,
       },
     ],
   },
@@ -92,7 +92,7 @@ const router = createBrowserRouter([
         element: <SignInPage />,
       },
       {
-        path: ROUTE_PATH.REGISTER,
+        path: ROUTE_PATH.SIGNUP,
         element: <SignUpPage />,
       },
       {

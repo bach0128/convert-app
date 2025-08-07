@@ -11,10 +11,11 @@ import {
 import { Label } from '@/components/Shadcn/label';
 import { Checkbox } from '@/components/Shadcn/checkbox';
 import { Separator } from '@/components/Shadcn/separator';
-import { ROUTE_PATH } from '@/interfaces/RoutePath';
+import { ROUTE_PATH } from '@/enum/route-path';
 import { useFormik } from 'formik';
 import type { SigninFormValues } from '@/lib/validations/auth.schema/index';
 import {
+  isRememberMe,
   saveToStorage,
   toastNotification,
   zodToFormikValidate,
@@ -22,12 +23,12 @@ import {
 import { signinSchema } from '@/lib/validations/auth.schema/index';
 import FormGroup from '@/components/BaseComponents/FormGroup';
 import BaseInput from '@/components/BaseComponents/BaseInput';
-import { KEY_LOCAL_STORAGE } from '@/interfaces/Storage';
-import { useAuthContext } from '@/contexts/authContext';
+import { KEY_LOCAL_STORAGE } from '@/enum/Storage';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function SignInPage() {
-  const { signin, error } = useAuthContext();
   const [isRemember, setIsRemember] = useState(false);
+  const { error, signin } = useAuth();
 
   const formik = useFormik<SigninFormValues>({
     initialValues: {
@@ -36,7 +37,20 @@ export default function SignInPage() {
     },
     validate: zodToFormikValidate(signinSchema),
     onSubmit: async (values) => {
-      await signin(values);
+      const result = await signin(values);
+      saveToStorage(
+        KEY_LOCAL_STORAGE.ACCESS_TOKEN,
+        result.access_token,
+        isRememberMe()
+      );
+
+      saveToStorage(
+        KEY_LOCAL_STORAGE.REFRESH_TOKEN,
+        result.refresh_token,
+        isRememberMe()
+      );
+
+      window.location.href = '/';
     },
   });
 
@@ -130,7 +144,7 @@ export default function SignInPage() {
             <div className="text-center text-sm text-gray-600">
               {"Don't have an account? "}
               <a
-                href={ROUTE_PATH.REGISTER}
+                href={ROUTE_PATH.SIGNUP}
                 className="hover:underline font-medium text-black"
               >
                 Sign up

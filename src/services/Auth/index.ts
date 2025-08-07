@@ -8,7 +8,7 @@ import type {
   User,
 } from '@/types/dto/auth';
 import { axiosAPIBaseConfig } from '@/api/axios';
-import { AUTH_ENDPOINTS } from '@/api/endPoints';
+import { AUTH_ENDPOINTS } from '@/enum/auth-end-points';
 
 export class AuthService {
   static async signin(
@@ -36,7 +36,9 @@ export class AuthService {
     return response.data;
   }
 
-  static async refreshToken(refreshToken: string): Promise<UserCredential> {
+  static async refreshToken(
+    refreshToken: string
+  ): Promise<{ access_token: string }> {
     const response = await axiosAPIBaseConfig.post<UserCredential>(
       AUTH_ENDPOINTS.REFRESH_TOKEN,
       {

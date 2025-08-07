@@ -38,6 +38,7 @@
     "@radix-ui/react-toast": "^1.2.14",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@tailwindcss/vite": "^4.1.10",
+    "@tanstack/react-query": "^5.84.1",
     "@tanstack/react-table": "^8.21.3",
     "axios": "^1.10.0",
     "babel-plugin-react-compiler": "^19.1.0-rc.2",

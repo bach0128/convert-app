@@ -1,19 +1,10 @@
 import Status from '@/components/BaseComponents/Status';
 import { Button } from '@/components/Shadcn/button';
-import { ROUTE_PATH } from '@/interfaces/RoutePath';
-import type { Status_Business } from '@/interfaces/Status_Business';
+import { ROUTE_PATH } from '@/enum/route-path';
+import type { BusinessHouseholdItem } from '@/types/dto/bussiness-household';
 import type { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-export type BusinessHouseholdItem = {
-  id: string;
-  tax_code: string;
-  business_name: string;
-  business_group: string;
-  main_industry: string;
-  status: Status_Business;
-};
 
 export const useBusinessHousehold = () => {
   const columns: ColumnDef<BusinessHouseholdItem>[] = [
@@ -40,7 +31,7 @@ export const useBusinessHousehold = () => {
       size: 10,
     },
     {
-      accessorKey: 'business_name',
+      accessorKey: 'name',
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -51,28 +42,26 @@ export const useBusinessHousehold = () => {
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => <span>{row.getValue('business_name')}</span>,
+      cell: ({ row }) => <span>{row.getValue('name')}</span>,
       size: 33.33,
     },
     {
-      accessorKey: 'business_group',
+      accessorKey: 'industryGroup',
       header: 'Phân nhóm',
-      cell: ({ row }) => <span>{row.getValue('business_group')}</span>,
+      cell: (table) => <span>{table.row.original.industryGroup.name}</span>,
       size: 20,
     },
     {
-      accessorKey: 'main_industry',
+      accessorKey: 'bussinessType',
       header: 'Ngành nghề chính',
-      cell: ({ row }) => <span>{row.getValue('main_industry')}</span>,
+      cell: (table) => <span>{table.row.original.bussinessType.name}</span>,
       size: 20,
     },
     {
       accessorKey: 'status',
       header: 'Trạng thái',
-      cell: ({ row }) => {
-        const status = row.getValue('status') as Status_Business;
-
-        return <Status status={status} />;
+      cell: (table) => {
+        return <Status status={table.row.original.status.name} />;
       },
       size: 10,
     },

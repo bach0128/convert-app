@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Button } from '@/components/Shadcn/button';
 import {
   Card,
@@ -8,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/Shadcn/card';
-import { ROUTE_PATH } from '@/interfaces/RoutePath';
+import { ROUTE_PATH } from '@/enum/route-path';
 import FormGroup from '@/components/BaseComponents/FormGroup';
 import BaseInput from '@/components/BaseComponents/BaseInput';
 import { useFormik } from 'formik';
@@ -17,11 +16,11 @@ import {
   signupSchema,
   type SignUpFormValues,
 } from '@/lib/validations/auth.schema';
-import { useAuthContext } from '@/contexts/authContext';
+import { useAuth } from '@/hooks/use-auth';
+import { useEffect } from 'react';
 
 export default function SignUpPage() {
-  const { signup, error } = useAuthContext();
-
+  const { error, signup } = useAuth();
   const formik = useFormik<SignUpFormValues>({
     initialValues: {
       name: '',
@@ -36,6 +35,8 @@ export default function SignUpPage() {
         email: values.email,
         password: values.password,
       });
+      toastNotification('Đăng ký tài khoản thành công.', 'success');
+      window.location.href = '/signin';
     },
   });
 

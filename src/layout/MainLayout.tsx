@@ -12,10 +12,10 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/components/Shadcn/tabs';
-import { NavList, TabComponents } from '@/interfaces/NavList';
+import { NavList, TabComponents } from '@/enum/NavList';
 import { X } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ROUTE_PATH } from '@/interfaces/RoutePath';
+import { ROUTE_PATH } from '@/enum/route-path';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 function MobileSidebarTrigger() {

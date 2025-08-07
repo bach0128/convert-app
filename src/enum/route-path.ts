@@ -1,7 +1,7 @@
 const ROUTE_PATH = {
   HOME: '/',
   SIGNIN: '/signin',
-  REGISTER: '/register',
+  SIGNUP: '/signup',
   RESET_PASSWORD: '/reset-password',
   VERIFY_CODE: '/verify-code',
   CHANGE_PASSWORD: '/change-password',

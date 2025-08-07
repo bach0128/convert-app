@@ -1,4 +1,4 @@
-import type { Status_Business } from '@/interfaces/Status_Business';
+import type { Status_Business } from '@/enum/status-bussiness';
 import { cn } from '@/lib/utils';
 
 function Status({
@@ -9,10 +9,16 @@ function Status({
   wrapperClass?: string;
 }) {
   const statusStyle = {
-    Active: 'bg-green-200 text-green-800',
+    active: 'bg-green-200 text-green-800',
     'Temporarily suspended': 'bg-yellow-200 text-yellow-800',
-    Closed: 'bg-red-200 text-red-800',
-    Inactive: 'bg-gray-200 text-gray-800',
+    stop: 'bg-red-200 text-red-800',
+    new: 'bg-gray-200 text-gray-800',
+  };
+
+  const statusTitle = {
+    active: 'Đang hoạt động',
+    stop: 'Ngưng hoạy động',
+    new: 'tạo mới',
   };
   return (
     <span
@@ -22,7 +28,7 @@ function Status({
         wrapperClass
       )}
     >
-      {status}
+      {statusTitle[status]}
     </span>
   );
 }

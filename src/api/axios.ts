@@ -3,7 +3,7 @@ import axios, {
   type AxiosResponse,
   type InternalAxiosRequestConfig,
 } from 'axios';
-import { KEY_LOCAL_STORAGE } from '@/interfaces/Storage';
+import { KEY_LOCAL_STORAGE } from '@/enum/Storage';
 import {
   getRefreshToken,
   isRememberMe,
@@ -11,8 +11,7 @@ import {
   saveToken,
   // saveToken,
 } from '@/lib/utils';
-import { ROUTE_PATH } from '@/interfaces/RoutePath';
-import type { UserCredential } from '@/types/dto/auth';
+import { ROUTE_PATH } from '@/enum/route-path';
 import { AuthService } from '@/services/Auth';
 // ----------------------------------------------------------------
 
@@ -63,7 +62,8 @@ const createAxiosInterceptorsApiBase = (
     }
 
     try {
-      const res: UserCredential = await AuthService.refreshToken(refreshToken);
+      const res: { access_token: string } =
+        await AuthService.refreshToken(refreshToken);
       const initialRequest = error.config;
       if (!initialRequest) throw new Error('Initial request is undefined');
       saveToken(KEY_LOCAL_STORAGE.ACCESS_TOKEN, res.access_token);

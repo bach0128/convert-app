@@ -11,15 +11,11 @@ import {
 } from '@/components/Shadcn/pagination';
 
 export default function Component({
-  handleNextPage,
-  handlePrevPage,
   handlePageClick,
   currentPage,
   total,
   itemsPerPage,
 }: {
-  handleNextPage: () => void;
-  handlePrevPage: () => void;
   handlePageClick: (page: number) => void;
   currentPage: number;
   total: number;
@@ -68,7 +64,9 @@ export default function Component({
           <PaginationPrevious
             href="#"
             onClick={
-              currentPage === 1 ? (e) => e.preventDefault() : handlePrevPage
+              currentPage === 1
+                ? (e) => e.preventDefault()
+                : () => handlePageClick(currentPage - 1)
             }
             aria-disabled={currentPage === 1}
             tabIndex={currentPage === 1 ? -1 : 0}
@@ -96,7 +94,7 @@ export default function Component({
           onClick={
             currentPage === totalPages
               ? (e) => e.preventDefault()
-              : handleNextPage
+              : () => handlePageClick(currentPage + 1)
           }
           aria-disabled={currentPage === totalPages}
           tabIndex={currentPage === totalPages ? -1 : 0}
@@ -107,8 +105,6 @@ export default function Component({
 }
 
 Component.defaultProps = {
-  handleNextPage: () => {},
-  handlePrevPage: () => {},
   handlePageClick: (_page: number) => {},
   currentPage: 1,
   total: 100, // Default total items

@@ -6,9 +6,8 @@ export type APIResponse<T> = {
 };
 
 export type PaginatedResponse<T> = {
-  items: T[];
+  results: T[];
   total: number;
   page: number;
-  page_size: number;
-  pages: number;
+  limit: number;
 };
