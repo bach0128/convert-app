@@ -7,10 +7,22 @@ import FormGroup from '@/components/BaseComponents/FormGroup';
 import BaseInput from '@/components/BaseComponents/BaseInput';
 import { format } from 'date-fns';
 import SearchInput from '@/components/BaseComponents/SearchInput';
+import { getMaterialUnit } from '@/api/material';
+import { useQuery } from '@tanstack/react-query';
+import Loading from '@/components/BaseComponents/Loading';
 
 function UnitMaterial() {
   const [idEdit, setIdEdit] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+
+  const {
+    data: listMu,
+    isLoading,
+    // refetch,
+  } = useQuery({
+    queryKey: ['list-material-unit'],
+    queryFn: getMaterialUnit,
+  });
 
   const { columns } = useUnitColumns(setIdEdit, setIsEditing);
 
@@ -20,10 +32,13 @@ function UnitMaterial() {
 
   return (
     <div className="mt-4">
+      {isLoading && <Loading />}
       <SearchInput placeholder="Tìm kiếm" />
-      <div className="mt-4">
-        <TableData columns={columns} data={mockUnits} />
-      </div>
+      {listMu?.results && (
+        <div className="mt-4">
+          <TableData columns={columns} data={listMu?.results} />
+        </div>
+      )}
 
       <ConfirmModal
         open={Boolean(isEditing)}

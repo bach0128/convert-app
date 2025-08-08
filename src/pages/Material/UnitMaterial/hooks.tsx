@@ -3,28 +3,20 @@ import { ArrowUpDown, PauseCircle, PencilIcon, Trash2 } from 'lucide-react';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import Status from '@/components/BaseComponents/Status';
-import type { Status_Business } from '@/enum/status-bussiness';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/Shadcn/tooltip';
-
-export type UnitItem = {
-  id: string;
-  code: string;
-  name: string;
-  created_at: string;
-  status: Status_Business;
-};
+import type { MaterialUnitItem } from '@/types/dto/material';
 
 export const useUnitColumns = (
   setIdEdit: React.Dispatch<React.SetStateAction<string>>,
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  const columns: ColumnDef<UnitItem>[] = [
+  const columns: ColumnDef<MaterialUnitItem>[] = [
     {
-      accessorKey: 'code',
+      accessorKey: 'id',
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -35,7 +27,7 @@ export const useUnitColumns = (
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => <span>{row.getValue('code')}</span>,
+      cell: ({ row }) => <span>{row.getValue('id')}</span>,
       size: 16.67,
     },
     {
@@ -54,10 +46,10 @@ export const useUnitColumns = (
       size: 33.33,
     },
     {
-      accessorKey: 'created_at',
+      accessorKey: 'createdAt',
       header: 'Ngày khởi tạo',
       cell: ({ row }) => {
-        const date = row.getValue('created_at') as string;
+        const date = row.getValue('createdAt') as string;
         return <span>{format(new Date(date), 'dd/MM/yyyy')}</span>;
       },
       size: 16.67,
@@ -65,9 +57,13 @@ export const useUnitColumns = (
     {
       accessorKey: 'status',
       header: 'Trạng thái hoạt động',
-      cell: ({ row }) => {
-        const status = row.getValue('status') as Status_Business;
-        return <Status status={status} wrapperClass="w-full max-w-[200px]" />;
+      cell: (table) => {
+        return (
+          <Status
+            status={table.row.original.status.name}
+            wrapperClass="w-full max-w-[200px]"
+          />
+        );
       },
       size: 16.67,
     },

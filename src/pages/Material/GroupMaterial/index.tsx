@@ -6,10 +6,22 @@ import FormGroup from '@/components/BaseComponents/FormGroup';
 import BaseInput from '@/components/BaseComponents/BaseInput';
 import { mockGroupMaterial } from '@/mocks/GroupMaterial';
 import SearchInput from '@/components/BaseComponents/SearchInput';
+import { useQuery } from '@tanstack/react-query';
+import { getMaterialGroup } from '@/api/material';
+import Loading from '@/components/BaseComponents/Loading';
 
 function GroupMaterial() {
   const [idEdit, setIdEdit] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+
+  const {
+    data: listMg,
+    isLoading,
+    // refetch,
+  } = useQuery({
+    queryKey: ['list-material-group'],
+    queryFn: getMaterialGroup,
+  });
 
   const { columns } = useGroupColumns(setIdEdit, setIsEditing);
 
@@ -20,10 +32,13 @@ function GroupMaterial() {
 
   return (
     <div>
+      {isLoading && <Loading />}
       <SearchInput placeholder="Tìm kiếm" />
-      <div className="mt-4">
-        <TableData columns={columns} data={mockGroupMaterial} />
-      </div>
+      {listMg?.results && (
+        <div className="mt-4">
+          <TableData columns={columns} data={listMg?.results} />
+        </div>
+      )}
 
       <ConfirmModal
         open={Boolean(isEditing)}

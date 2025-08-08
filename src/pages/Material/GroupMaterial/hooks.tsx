@@ -2,30 +2,20 @@ import { Button } from '@/components/Shadcn/button';
 import { ArrowUpDown, PauseCircle, PencilIcon, Trash2 } from 'lucide-react';
 import type { ColumnDef } from '@tanstack/react-table';
 import Status from '@/components/BaseComponents/Status';
-import type { Status_Business } from '@/enum/status-bussiness';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/Shadcn/tooltip';
-
-export type GroupMaterialItem = {
-  id: string;
-  code: string;
-  name: string;
-  type: string;
-  vat_rate: string;
-  pit_rate: string;
-  status: Status_Business;
-};
+import type { MaterialGroupItem } from '@/types/dto/material';
 
 export const useGroupColumns = (
   setIdEdit: React.Dispatch<React.SetStateAction<string>>,
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  const columns: ColumnDef<GroupMaterialItem>[] = [
+  const columns: ColumnDef<MaterialGroupItem>[] = [
     {
-      accessorKey: 'code',
+      accessorKey: 'id',
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -37,7 +27,7 @@ export const useGroupColumns = (
         </Button>
       ),
       cell: ({ row }) => (
-        <span className="w-[120px]">{row.getValue('code')}</span>
+        <span className="w-[120px]">{row.getValue('id')}</span>
       ),
       size: 8.33,
     },
@@ -77,9 +67,13 @@ export const useGroupColumns = (
     {
       accessorKey: 'status',
       header: 'Trạng thái hoạt động',
-      cell: ({ row }) => {
-        const status = row.getValue('status') as Status_Business;
-        return <Status status={status} wrapperClass="w-full max-w-[200px]" />;
+      cell: (table) => {
+        return (
+          <Status
+            status={table.row.original.status.name}
+            wrapperClass="w-full max-w-[200px]"
+          />
+        );
       },
       size: 16.66,
     },
