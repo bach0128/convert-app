@@ -24,3 +24,33 @@ export interface MaterialUnitItem {
     name: Status_Business;
   };
 }
+
+export interface MaterialItem {
+  id: string;
+  name: string;
+  user_id: number;
+  createdAt: string;
+  updatedAt: string;
+  unit: {
+    id: string;
+    name: string;
+  };
+  group: {
+    id: string;
+    name: string;
+    type: string;
+  };
+  price: string;
+  status: {
+    id: number;
+    name: Status_Business;
+  };
+}
+
+export type CreateNewMaterial = {
+  name: string;
+  unitId: string;
+  groupId: string;
+  price: string;
+  description?: string;
+};

@@ -2,26 +2,12 @@ import { Button } from '@/components/Shadcn/button';
 import { ArrowUpDown, PauseCircle, PencilIcon, Trash2 } from 'lucide-react';
 import type { ColumnDef } from '@tanstack/react-table';
 import Status from '@/components/BaseComponents/Status';
-import type { Status_Business } from '@/enum/status-bussiness';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/Shadcn/tooltip';
-
-export type MaterialItem = {
-  id: string;
-  code: string;
-  name: string;
-  unit_name: string;
-  type: string;
-  provider: string;
-  category: string;
-  status: Status_Business;
-  description?: string;
-  price: number;
-  discount: number | null;
-};
+import type { MaterialItem } from '@/types/dto/material';
 
 export const useGroupColumns = (
   setIdEdit: React.Dispatch<React.SetStateAction<string>>,
@@ -29,7 +15,7 @@ export const useGroupColumns = (
 ) => {
   const columns: ColumnDef<MaterialItem>[] = [
     {
-      accessorKey: 'code',
+      accessorKey: 'id',
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -41,7 +27,7 @@ export const useGroupColumns = (
         </Button>
       ),
       cell: ({ row }) => (
-        <span className="w-[120px]">{row.getValue('code')}</span>
+        <span className="w-[120px]">{row.getValue('id')}</span>
       ),
       size: 8.33,
     },
@@ -61,35 +47,39 @@ export const useGroupColumns = (
       size: 16.66,
     },
     {
-      accessorKey: 'unit_name',
+      accessorKey: 'unit',
       header: () => <span>ĐVT</span>,
-      cell: ({ row }) => <span>{row.getValue('unit_name')}</span>,
+      cell: (table) => <span>{table.row.original.unit.name}</span>,
       size: 16.66,
     },
     {
-      accessorKey: 'type',
+      accessorKey: 'group',
       header: () => <span>Nhóm HH&DV</span>,
-      cell: ({ row }) => <span>{row.getValue('type')}</span>,
+      cell: (table) => <span>{table.row.original.group.name}</span>,
       size: 16.66,
     },
-    {
-      accessorKey: 'provider',
-      header: () => <span>Nguồn gốc</span>,
-      cell: ({ row }) => <span className="">{row.getValue('provider')}</span>,
-      size: 8.33,
-    },
-    {
-      accessorKey: 'category',
-      header: () => <span>Phân loại</span>,
-      cell: ({ row }) => <span className="">{row.getValue('category')}</span>,
-      size: 16.66,
-    },
+    // {
+    //   accessorKey: 'provider',
+    //   header: () => <span>Nguồn gốc</span>,
+    //   cell: ({ row }) => <span className="">{row.getValue('provider')}</span>,
+    //   size: 8.33,
+    // },
+    // {
+    //   accessorKey: 'category',
+    //   header: () => <span>Phân loại</span>,
+    //   cell: ({ row }) => <span className="">{row.getValue('category')}</span>,
+    //   size: 16.66,
+    // },
     {
       accessorKey: 'status',
       header: 'Trạng thái hoạt động',
-      cell: ({ row }) => {
-        const status = row.getValue('status') as Status_Business;
-        return <Status status={status} wrapperClass="w-full max-w-[200px]" />;
+      cell: (table) => {
+        return (
+          <Status
+            status={table.row.original.status.name}
+            wrapperClass="w-full max-w-[200px]"
+          />
+        );
       },
       size: 16.66,
     },

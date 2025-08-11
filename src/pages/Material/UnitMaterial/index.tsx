@@ -10,6 +10,8 @@ import SearchInput from '@/components/BaseComponents/SearchInput';
 import { getMaterialUnit } from '@/api/material';
 import { useQuery } from '@tanstack/react-query';
 import Loading from '@/components/BaseComponents/Loading';
+import { Button } from '@/components/Shadcn/button';
+import { Plus } from 'lucide-react';
 
 function UnitMaterial() {
   const [idEdit, setIdEdit] = useState('');
@@ -31,9 +33,17 @@ function UnitMaterial() {
   }, [idEdit]);
 
   return (
-    <div className="mt-4">
+    <div>
       {isLoading && <Loading />}
-      <SearchInput placeholder="Tìm kiếm" />
+      <div className="flex items-center justify-between">
+        <SearchInput placeholder="Tìm kiếm" />
+        <div className="flex gap-2">
+          <Button variant={'outline'}>
+            <Plus />
+            Thêm mới{' '}
+          </Button>
+        </div>
+      </div>
       {listMu?.results && (
         <div className="mt-4">
           <TableData columns={columns} data={listMu?.results} />

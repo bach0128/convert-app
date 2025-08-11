@@ -9,6 +9,8 @@ import SearchInput from '@/components/BaseComponents/SearchInput';
 import { useQuery } from '@tanstack/react-query';
 import { getMaterialGroup } from '@/api/material';
 import Loading from '@/components/BaseComponents/Loading';
+import { Button } from '@/components/Shadcn/button';
+import { Plus } from 'lucide-react';
 
 function GroupMaterial() {
   const [idEdit, setIdEdit] = useState('');
@@ -33,7 +35,14 @@ function GroupMaterial() {
   return (
     <div>
       {isLoading && <Loading />}
-      <SearchInput placeholder="Tìm kiếm" />
+      <div className="flex items-center justify-between">
+        <SearchInput placeholder="Tìm kiếm" />
+        <div className="flex gap-2">
+          <Button variant={'outline'}>
+            <Plus /> Thêm mới{' '}
+          </Button>
+        </div>
+      </div>
       {listMg?.results && (
         <div className="mt-4">
           <TableData columns={columns} data={listMg?.results} />

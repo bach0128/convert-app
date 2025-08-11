@@ -1,6 +1,11 @@
 import { axiosAPIBaseConfig } from './axios';
 import type { PaginatedResponse } from '@/enum/api';
-import type { MaterialGroupItem, MaterialUnitItem } from '@/types/dto/material';
+import type {
+  CreateNewMaterial,
+  MaterialGroupItem,
+  MaterialItem,
+  MaterialUnitItem,
+} from '@/types/dto/material';
 
 export const getMaterialGroup = async () => {
   const response =
@@ -16,4 +21,19 @@ export const getMaterialUnit = async () => {
       '/material-unit'
     );
   return response.data;
+};
+
+// material
+export const getMaterial = async () => {
+  const response =
+    await axiosAPIBaseConfig.get<PaginatedResponse<MaterialItem>>('/material');
+  return response.data;
+};
+
+export const createMaterial = async (data: CreateNewMaterial) => {
+  const response = await axiosAPIBaseConfig.post<{
+    status: number;
+    message: string;
+  }>('/material', data);
+  return response;
 };
