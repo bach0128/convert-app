@@ -2,6 +2,7 @@ import type {
   BusinessHouseholdItem,
   CreateNewBussinessHousehold,
   DefaultItem,
+  UpdateBussinessHousehold,
 } from '@/types/dto/bussiness-household';
 import { axiosAPIBaseConfig } from './axios';
 import type { PaginatedResponse } from '@/enum/api';
@@ -44,4 +45,12 @@ export const createBhh = async (data: CreateNewBussinessHousehold) => {
     ...data,
   });
   return response.data;
+};
+
+export const updateBhh = async (id: string, data: UpdateBussinessHousehold) => {
+  const response = await axiosAPIBaseConfig.patch(
+    `/bussiness-household/${id}`,
+    data
+  );
+  return response;
 };

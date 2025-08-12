@@ -17,7 +17,7 @@ const ROUTE_PATH = {
 
   // hộ kinh doanh
   BUSINESS_HOUSEHOLD: '/business_household',
-  SINGLE_BUSINESS_HOUSEHOLD: '/business_household/:id',
+  SINGLE_BUSINESS_HOUSEHOLD: '/business_household_detail/:id',
 
   //Hàng hóa & Dịch vụ
   UNIT: '/unit',

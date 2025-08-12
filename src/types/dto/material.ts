@@ -45,6 +45,7 @@ export interface MaterialItem {
     id: number;
     name: Status_Business;
   };
+  description?: string;
 }
 
 export type CreateNewMaterial = {
@@ -53,4 +54,23 @@ export type CreateNewMaterial = {
   groupId: string;
   price: string;
   description?: string;
+};
+
+export type UpdateMaterial = {
+  name: string;
+  unitId: string;
+  groupId: string;
+  price: string;
+  statusId: number;
+  description?: string;
+};
+
+// material unit
+export type CreateNewMaterialUnit = {
+  name: string;
+};
+
+export type UpdateMaterialUnit = {
+  name: string;
+  statusId: number;
 };

@@ -17,6 +17,7 @@ export interface BusinessHouseholdItem {
     name: Status_Business;
   };
   industryGroup: DefaultItem;
+  email: string;
 }
 
 export interface DefaultItem {
@@ -25,11 +26,19 @@ export interface DefaultItem {
 }
 
 export type CreateNewBussinessHousehold = {
-  tax_code: number;
+  tax_code: string;
   name: string;
   owner: string;
   address: string;
   phone: string;
+  bussinessType: number;
+  taxPaymentMethod: number;
+};
+
+export type UpdateBussinessHousehold = {
+  name: string;
+  owner: string;
+  address: string;
   bussinessType: number;
   taxPaymentMethod: number;
 };

@@ -1,16 +1,16 @@
 import { TableData } from '@/components/BaseComponents/TableData';
 import { useGroupColumns } from './hooks';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ConfirmModal } from '@/components/BaseComponents/ConfirmModal';
 import FormGroup from '@/components/BaseComponents/FormGroup';
 import BaseInput from '@/components/BaseComponents/BaseInput';
 import SearchInput from '@/components/BaseComponents/SearchInput';
-import { mockMaterial } from '@/mocks/Material';
 import {
   createMaterial,
   getMaterial,
   getMaterialGroup,
   getMaterialUnit,
+  updateMaterial,
 } from '@/api/material';
 import { useQuery } from '@tanstack/react-query';
 import Loading from '@/components/BaseComponents/Loading';
@@ -28,8 +28,11 @@ import { useFormik } from 'formik';
 import { toastNotification, zodToFormikValidate } from '@/lib/utils';
 import {
   createMaterialSchema,
-  type MaterialFormValues,
+  updateMaterialSchema,
+  type MaterialCreateFormValues,
+  type MaterialUpdateFormValues,
 } from '@/lib/validations/material.schema/material.schema';
+import SelectStatus from '@/components/BaseComponents/SelectStatus';
 
 function Material() {
   const [idEdit, setIdEdit] = useState('');
@@ -45,20 +48,12 @@ function Material() {
     queryFn: getMaterial,
   });
 
-  const {
-    data: listMG,
-    isLoading: isLoadingMg,
-    // refetch,
-  } = useQuery({
+  const { data: listMG, isLoading: isLoadingMg } = useQuery({
     queryKey: ['list-material-group'],
     queryFn: getMaterialGroup,
   });
 
-  const {
-    data: listMU,
-    isLoading: isLoadingMu,
-    // refetch,
-  } = useQuery({
+  const { data: listMU, isLoading: isLoadingMu } = useQuery({
     queryKey: ['list-material-unit'],
     queryFn: getMaterialUnit,
   });
@@ -66,10 +61,11 @@ function Material() {
   const { columns } = useGroupColumns(setIdEdit, setIsEditing);
 
   const dataEditing = useMemo(() => {
-    if (idEdit) return mockMaterial.filter((item) => item.id === idEdit)[0];
+    if (idEdit)
+      return listMaterial?.results.filter((item) => item.id === idEdit)[0];
   }, [idEdit]);
 
-  const formik = useFormik<MaterialFormValues>({
+  const formikCreate = useFormik<MaterialCreateFormValues>({
     initialValues: {
       name: '',
       unitId: '',
@@ -88,15 +84,51 @@ function Material() {
             price: values.price,
           });
         } else await createMaterial(values);
-        toastNotification('Tạo hộ kinh doanh mới thành công', 'success');
+        toastNotification('Tạo hàng hóa mới thành công', 'success');
         setIsCreate(false);
-        formik.resetForm();
+        formikCreate.resetForm();
         refetch();
       } catch (error) {
         if (error instanceof Error) toastNotification(error.message, 'error');
       }
     },
   });
+
+  const formikUpdate = useFormik<MaterialUpdateFormValues>({
+    initialValues: {
+      name: '',
+      unitId: '',
+      groupId: '',
+      price: '',
+      description: '',
+      statusId: 1,
+    },
+    validate: zodToFormikValidate(updateMaterialSchema),
+    onSubmit: async (values) => {
+      try {
+        await updateMaterial(dataEditing?.id || '', values);
+        toastNotification('Cập nhật hàng hóa thành công', 'success');
+        setIsEditing(false);
+        setIdEdit('');
+        formikUpdate.resetForm();
+        refetch();
+      } catch (error) {
+        if (error instanceof Error) toastNotification(error.message, 'error');
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (dataEditing)
+      formikUpdate.setValues({
+        name: dataEditing.name,
+        unitId: dataEditing.unit.id,
+        groupId: dataEditing.group.id,
+        price: dataEditing.price,
+        statusId: dataEditing.status.id,
+        description: dataEditing.description || '',
+      });
+  }, [idEdit]);
 
   return (
     <div>
@@ -125,23 +157,39 @@ function Material() {
         title={'Thông tin hàng hóa và dịch vụ'}
         content={
           <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-3">
+            <div className="grid grid-cols-3 items-center gap-3">
               <FormGroup label="Mã">
-                <BaseInput isReadonly={true} value={dataEditing?.code} />
+                <BaseInput isReadonly={true} value={dataEditing?.id} />
               </FormGroup>
-              <FormGroup label="Tên HHDV" isRequrired>
-                <BaseInput value={dataEditing?.name} />
+              <FormGroup
+                label="Tên HHDV"
+                isRequrired
+                errorMsg={formikUpdate.errors.name}
+              >
+                <BaseInput
+                  value={formikUpdate.values.name}
+                  onChange={formikUpdate.handleChange}
+                  id="name"
+                  isError={
+                    !!(formikUpdate.touched.name && formikUpdate.errors.name)
+                  }
+                />
               </FormGroup>
-              <FormGroup label="Nhóm HHDV" isRequrired>
+              <FormGroup
+                label="Nhóm HHDV"
+                isRequrired
+                errorMsg={formikUpdate.errors.groupId}
+              >
                 <Select
                   onValueChange={(value) =>
-                    formik.setFieldValue('bussinessType', +value)
+                    formikUpdate.setFieldValue('groupId', value)
                   }
+                  defaultValue={formikUpdate.values.groupId}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Chọn ngành nghề kinh doanh chính" />
                   </SelectTrigger>
-                  <SelectContent className="max-h-[400px] overflow-y-auto">
+                  <SelectContent className="max-h-[400px] overflow-y-auto w-full">
                     <SelectGroup>
                       {listMG?.results.map((item) => (
                         <SelectItem
@@ -156,46 +204,91 @@ function Material() {
                   </SelectContent>
                 </Select>
               </FormGroup>
-              <FormGroup label="Loại" isRequrired>
-                <BaseInput value={dataEditing?.category} />
-              </FormGroup>
+              {/* <FormGroup label="Loại" isRequrired>
+                <BaseInput value={dataEditing?.group} />
+              </FormGroup> */}
             </div>
-            <div className="flex items-center gap-3 w-full">
-              <FormGroup label="ĐVT" isRequrired>
-                <BaseInput defaultValue={dataEditing?.unit_name} />
-              </FormGroup>
-              <FormGroup label="Nguồn gốc" isRequrired>
-                <BaseInput defaultValue={dataEditing?.provider} />
-              </FormGroup>
-              <FormGroup label="Giá bán ra" isRequrired>
-                <BaseInput defaultValue={dataEditing?.price} />
-              </FormGroup>
-              <FormGroup label="Chiết khấu">
-                <BaseInput defaultValue={dataEditing?.discount || 0} />
-              </FormGroup>
-            </div>
-            <div className="flex items-center gap-3 w-full">
+            <div className="grid grid-cols-2 items-center gap-3 w-full">
               <FormGroup
+                label="ĐVT"
+                isRequrired
+                wrapperClass="w-full"
+                errorMsg={formikUpdate.errors.unitId}
+              >
+                <Select
+                  onValueChange={(value) =>
+                    formikUpdate.setFieldValue('unitId', value)
+                  }
+                  defaultValue={formikUpdate.values.unitId}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Chọn đơn vị tính" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[400px] overflow-y-auto">
+                    <SelectGroup>
+                      {listMU?.results.map((item) => (
+                        <SelectItem key={item.id} id="unitId" value={item.id}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </FormGroup>
+              {/* <FormGroup label="Nguồn gốc" isRequrired>
+                <BaseInput defaultValue={dataEditing?.provider} />
+              </FormGroup> */}
+              <FormGroup
+                label="Giá bán ra"
+                isRequrired
+                errorMsg={formikUpdate.errors.price}
+              >
+                <BaseInput
+                  id="price"
+                  defaultValue={formikUpdate.values.price}
+                  onChange={formikUpdate.handleChange}
+                  isError={
+                    !!(formikUpdate.touched.price && formikUpdate.errors.price)
+                  }
+                />
+              </FormGroup>
+              {/* <FormGroup label="Chiết khấu">
+                <BaseInput defaultValue={dataEditing?.discount || 0} />
+              </FormGroup> */}
+            </div>
+            <div className="flex items-center gap-3 w-full">
+              {/* <FormGroup
                 label="Giảm thuế giá trị gia tăng"
                 wrapperClass="w-full"
                 isRequrired
               >
                 <BaseInput />
-              </FormGroup>
+              </FormGroup> */}
               <FormGroup
                 label="Trạng thái sử dụng"
                 wrapperClass="w-full"
                 isRequrired
+                errorMsg={formikUpdate.errors.statusId}
               >
-                <BaseInput defaultValue={dataEditing?.status} />
+                <SelectStatus
+                  onChange={(value) =>
+                    formikUpdate.setFieldValue('statusId', +value)
+                  }
+                  defaultValue={dataEditing?.status.id.toString()}
+                />
               </FormGroup>
             </div>
-            <FormGroup label="Mô tả" isRequrired>
-              <BaseInput placeholder="Nhập mô tả" />
+            <FormGroup label="Mô tả">
+              <BaseInput
+                placeholder="Nhập mô tả"
+                id="description"
+                onChange={formikUpdate.handleChange}
+                value={formikUpdate.values.description}
+              />
             </FormGroup>
           </div>
         }
-        handleSubmit={async () => {}}
+        handleSubmit={formikUpdate.handleSubmit}
         confirmText="Lưu"
         handleCancel={() => {
           setIdEdit('');
@@ -215,24 +308,26 @@ function Material() {
                 label="Tên HHDV"
                 isRequrired
                 wrapperClass="w-full"
-                errorMsg={formik.errors.name}
+                errorMsg={formikCreate.errors.name}
               >
                 <BaseInput
                   id="name"
-                  value={formik.values.name}
-                  onChange={formik.handleChange}
-                  isError={!!(formik.touched.name && formik.errors.name)}
+                  value={formikCreate.values.name}
+                  onChange={formikCreate.handleChange}
+                  isError={
+                    !!(formikCreate.touched.name && formikCreate.errors.name)
+                  }
                 />
               </FormGroup>
               <FormGroup
                 label="Nhóm HHDV"
                 isRequrired
                 wrapperClass="w-full"
-                errorMsg={formik.errors.groupId}
+                errorMsg={formikCreate.errors.groupId}
               >
                 <Select
                   onValueChange={(value) =>
-                    formik.setFieldValue('groupId', value)
+                    formikCreate.setFieldValue('groupId', value)
                   }
                 >
                   <SelectTrigger className="w-full">
@@ -258,11 +353,11 @@ function Material() {
                 label="ĐVT"
                 isRequrired
                 wrapperClass="w-full"
-                errorMsg={formik.errors.unitId}
+                errorMsg={formikCreate.errors.unitId}
               >
                 <Select
                   onValueChange={(value) =>
-                    formik.setFieldValue('unitId', value)
+                    formikCreate.setFieldValue('unitId', value)
                   }
                 >
                   <SelectTrigger className="w-full">
@@ -286,13 +381,15 @@ function Material() {
                 label="Giá bán ra"
                 isRequrired
                 wrapperClass="w-full"
-                errorMsg={formik.errors.price}
+                errorMsg={formikCreate.errors.price}
               >
                 <BaseInput
-                  value={formik.values.price}
-                  onChange={formik.handleChange}
+                  value={formikCreate.values.price}
+                  onChange={formikCreate.handleChange}
                   id="price"
-                  isError={!!(formik.touched.price && formik.errors.price)}
+                  isError={
+                    !!(formikCreate.touched.price && formikCreate.errors.price)
+                  }
                 />
               </FormGroup>
               {/* <FormGroup label="Chiết khấu">
@@ -312,13 +409,13 @@ function Material() {
               <BaseInput
                 placeholder="Nhập mô tả"
                 id="description"
-                value={formik.values.description}
-                onChange={formik.handleChange}
+                value={formikCreate.values.description}
+                onChange={formikCreate.handleChange}
               />
             </FormGroup>
           </div>
         }
-        handleSubmit={formik.handleSubmit}
+        handleSubmit={formikCreate.handleSubmit}
         confirmText="Tạo mới"
         handleCancel={() => {
           setIsCreate(false);

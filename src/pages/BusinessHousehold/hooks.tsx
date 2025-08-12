@@ -1,6 +1,5 @@
 import Status from '@/components/BaseComponents/Status';
 import { Button } from '@/components/Shadcn/button';
-import { ROUTE_PATH } from '@/enum/route-path';
 import type { BusinessHouseholdItem } from '@/types/dto/bussiness-household';
 import type { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
@@ -22,7 +21,7 @@ export const useBusinessHousehold = () => {
       ),
       cell: (table) => (
         <Link
-          to={`${ROUTE_PATH.BUSINESS_HOUSEHOLD}/${table.row.original.id}`}
+          to={`/business_household_detail/${table.row.original.id}`}
           className="font-medium text-left text-blue-600 underline"
         >
           {table.row.original.tax_code}

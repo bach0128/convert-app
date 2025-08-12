@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react';
 import { ConfirmModal } from '@/components/BaseComponents/ConfirmModal';
 import FormGroup from '@/components/BaseComponents/FormGroup';
 import BaseInput from '@/components/BaseComponents/BaseInput';
-import { mockGroupMaterial } from '@/mocks/GroupMaterial';
 import SearchInput from '@/components/BaseComponents/SearchInput';
 import { useQuery } from '@tanstack/react-query';
 import { getMaterialGroup } from '@/api/material';
@@ -28,8 +27,7 @@ function GroupMaterial() {
   const { columns } = useGroupColumns(setIdEdit, setIsEditing);
 
   const dataEditing = useMemo(() => {
-    if (idEdit)
-      return mockGroupMaterial.filter((item) => item.id === idEdit)[0];
+    if (idEdit) return listMg?.results.filter((item) => item.id === idEdit)[0];
   }, [idEdit]);
 
   return (
@@ -57,7 +55,7 @@ function GroupMaterial() {
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-3">
               <FormGroup label="Mã">
-                <BaseInput isReadonly={true} value={dataEditing?.code} />
+                <BaseInput isReadonly={true} value={dataEditing?.id} />
               </FormGroup>
               <FormGroup label="Tỷ lệ thuế GTGT">
                 <BaseInput isReadonly={true} value={dataEditing?.vat_rate} />
@@ -75,7 +73,7 @@ function GroupMaterial() {
                 wrapperClass="w-full"
                 isRequrired
               >
-                <BaseInput defaultValue={dataEditing?.status} />
+                <BaseInput defaultValue={dataEditing?.status.name} />
               </FormGroup>
             </div>
             <FormGroup label="Loại ngành nghề" isRequrired>

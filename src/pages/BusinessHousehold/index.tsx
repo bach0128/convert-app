@@ -10,8 +10,7 @@ import {
   SelectValue,
 } from '@/components/Shadcn/select';
 import { useBusinessHousehold } from './hooks';
-import { useParams } from 'react-router-dom';
-import BussinessHeader from './BussinessHeader';
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { ConfirmModal } from '@/components/BaseComponents/ConfirmModal';
 import FormGroup from '@/components/BaseComponents/FormGroup';
@@ -31,9 +30,10 @@ import {
   createBussinessSchema,
   type BussinessFormValues,
 } from '@/lib/validations/bussiness.schema';
+import { Plus } from 'lucide-react';
 
 function BusinessHousehold() {
-  const { id } = useParams();
+  const navigate = useNavigate();
   const { columns } = useBusinessHousehold();
   const [isOpenCreate, setIsOpenCreate] = useState(false);
 
@@ -65,7 +65,7 @@ function BusinessHousehold() {
   const formik = useFormik<BussinessFormValues>({
     initialValues: {
       name: '',
-      tax_code: 0,
+      tax_code: '',
       email: '',
       owner: '',
       phone: '',
@@ -93,59 +93,65 @@ function BusinessHousehold() {
         loadingTaxPaymentMethod ||
         loadingBhh ||
         loadingType) && <Loading />}
-      <BussinessHeader setIsOpenCreate={setIsOpenCreate} />
-      {!id && (
-        <>
-          <div className="flex items-center justify-between mt-2">
-            <div className="flex items-center gap-3">
-              <SearchInput placeholder="Tìm kiếm" />
-              <div className="flex items-center gap-1.5">
-                Phân nhóm HKD:
-                <Select>
-                  <SelectTrigger className="max-w-[250px] truncate">
-                    <SelectValue placeholder="Chọn phân nhóm hộ kinh doanh" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {IndustryGroup?.map((item) => (
-                        <SelectItem value={item.id.toString()} key={item.id}>
-                          {item.name}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
+      <div className="flex gap-2 items-center ">
+        <Button
+          variant={'outline'}
+          onClick={() => navigate(-1)}
+        >{`< Quay lại`}</Button>
+        <Button variant={'outline'} onClick={() => setIsOpenCreate(true)}>
+          <Plus /> Thêm HKD
+        </Button>
+      </div>
+      <>
+        <div className="flex items-center justify-between mt-2">
+          <div className="flex items-center gap-3">
+            <SearchInput placeholder="Tìm kiếm" />
+            <div className="flex items-center gap-1.5">
+              Phân nhóm HKD:
+              <Select>
+                <SelectTrigger className="max-w-[250px] truncate">
+                  <SelectValue placeholder="Chọn phân nhóm hộ kinh doanh" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {IndustryGroup?.map((item) => (
+                      <SelectItem value={item.id.toString()} key={item.id}>
+                        {item.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
 
-              <div className="flex items-center gap-1.5">
-                Ngành nghề chính:
-                <Select>
-                  <SelectTrigger className="max-w-[280px] truncate">
-                    <SelectValue placeholder="Chọn ngành nghề kinh doanh chính" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-[400px] overflow-y-auto">
-                    <SelectGroup>
-                      {BussinessType?.map((item) => (
-                        <SelectItem value={item.id.toString()} key={item.id}>
-                          {item.name}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="flex items-center gap-1.5">
+              Ngành nghề chính:
+              <Select>
+                <SelectTrigger className="max-w-[280px] truncate">
+                  <SelectValue placeholder="Chọn ngành nghề kinh doanh chính" />
+                </SelectTrigger>
+                <SelectContent className="max-h-[400px] overflow-y-auto">
+                  <SelectGroup>
+                    {BussinessType?.map((item) => (
+                      <SelectItem value={item.id.toString()} key={item.id}>
+                        {item.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
-            <Button variant={'outline'} size={'sm'}>
-              Xuất file
-            </Button>
           </div>
-          {listBhh && (
-            <div className="mt-4">
-              <TableData columns={columns} data={listBhh.results} />
-            </div>
-          )}
-        </>
-      )}
+          <Button variant={'outline'} size={'sm'}>
+            Xuất file
+          </Button>
+        </div>
+        {listBhh && (
+          <div className="mt-4">
+            <TableData columns={columns} data={listBhh.results} />
+          </div>
+        )}
+      </>
       {/**TODO: add role admin for show this */}
       <ConfirmModal
         open={isOpenCreate}
@@ -161,9 +167,7 @@ function BusinessHousehold() {
                 errorMsg={formik.errors.tax_code}
               >
                 <BaseInput
-                  type="number"
                   id="tax_code"
-                  name="tax_code"
                   value={formik.values.tax_code}
                   onChange={formik.handleChange}
                   isError={

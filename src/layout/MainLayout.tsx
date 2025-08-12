@@ -14,7 +14,7 @@ import {
 } from '@/components/Shadcn/tabs';
 import { NavList, TabComponents } from '@/enum/NavList';
 import { X } from 'lucide-react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ROUTE_PATH } from '@/enum/route-path';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -35,9 +35,14 @@ function MobileSidebarTrigger() {
 
 function MainLayout() {
   const [openTabs, setOpenTabs] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<string>();
   const navigate = useNavigate();
   const location = useLocation();
+  const { id } = useParams();
+
+  const initialPath = location.pathname.slice(1) || ROUTE_PATH.HOME;
+
+  const [activeTab, setActiveTab] = useState<string>(initialPath);
+
   // Sync active tab with current route
   useEffect(() => {
     const currentPath = location.pathname.slice(1);
@@ -68,6 +73,16 @@ function MainLayout() {
     setActiveTab(tabId);
     navigate(`/${tabId}`);
   };
+
+  // useEffect(() => {
+  //   const currentPath = location.pathname.slice(1) || ROUTE_PATH.HOME;
+
+  //   if (!openTabs.includes(currentPath)) {
+  //     setOpenTabs((prev) => [...prev, currentPath]);
+  //   }
+
+  //   setActiveTab(currentPath);
+  // }, [location.pathname]);
 
   return (
     <div className="h-screen w-full">
@@ -116,7 +131,13 @@ function MainLayout() {
               </TabsList>
               {openTabs.map((tabId) => {
                 const tab = NavList.navMain.find((t) => t.url === tabId);
-                const TabComponent = TabComponents[tabId];
+
+                let resolvedTabId = tabId;
+                if (id && tabId === 'business_household') {
+                  resolvedTabId = 'business_household_detail';
+                }
+
+                const TabComponent = TabComponents[resolvedTabId];
 
                 if (!tab || !TabComponent) return null;
 

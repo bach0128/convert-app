@@ -51,16 +51,11 @@ const router = createBrowserRouter([
           },
           {
             path: ROUTE_PATH.BUSINESS_HOUSEHOLD,
-            children: [
-              {
-                index: true,
-                element: <BusinessHousehold />,
-              },
-              {
-                path: ':id',
-                element: <SingleBusinessHousehold />,
-              },
-            ],
+            element: <BusinessHousehold />,
+          },
+          {
+            path: ROUTE_PATH.SINGLE_BUSINESS_HOUSEHOLD,
+            element: <SingleBusinessHousehold />,
           },
           {
             element: <GroupMaterial />,
