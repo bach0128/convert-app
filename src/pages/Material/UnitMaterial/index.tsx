@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import SearchInput from '@/components/BaseComponents/SearchInput';
 import {
   createMaterialUnit,
+  deleteUnit,
   getMaterialUnit,
   updateMaterialUnit,
 } from '@/api/material';
@@ -24,11 +25,17 @@ import {
   type MaterialUnitUpdateFormValues,
 } from '@/lib/validations/material.schema/material.schema';
 import SelectStatus from '@/components/BaseComponents/SelectStatus';
+import type { FormikProps } from 'formik';
+
+type MaterialUnitCreateFormik = FormikProps<MaterialUnitCreateFormValues>;
+type MateriaUnitlUpdateFormik = FormikProps<MaterialUnitUpdateFormValues>;
 
 function UnitMaterial() {
   const [idEdit, setIdEdit] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [isCreate, setIsCreate] = useState(false);
+  const [dataDelete, setDataDelete] = useState({ name: '', id: '' });
+  const [isDelete, setIsDelete] = useState(false);
 
   const {
     data: listMu,
@@ -39,48 +46,73 @@ function UnitMaterial() {
     queryFn: getMaterialUnit,
   });
 
-  const { columns } = useUnitColumns(setIdEdit, setIsEditing);
+  const { columns } = useUnitColumns(
+    setIdEdit,
+    setIsEditing,
+    setDataDelete,
+    setIsDelete
+  );
 
-  const formikCreate = useFormik<MaterialUnitCreateFormValues>({
-    initialValues: {
-      name: '',
-    },
-    validate: zodToFormikValidate(createMaterialUnitSchema),
-    onSubmit: async (values) => {
-      try {
-        await createMaterialUnit(values);
-        toastNotification('Tạo đơn vị tính mới thành công', 'success');
-        setIsCreate(false);
-        formikCreate.resetForm();
-        refetch();
-      } catch (error) {
-        if (error instanceof Error) toastNotification(error.message, 'error');
-      }
-    },
-  });
+  const handleDelete = async () => {
+    try {
+      await deleteUnit(dataDelete.id);
+      toastNotification('Xóa đơn vị tính thành công', 'success');
+      setDataDelete({ name: '', id: '' });
+      setIsDelete(false);
+      refetch();
+    } catch (error) {
+      if (error instanceof Error) toastNotification(error.message, 'error');
+    }
+  };
 
-  const formikUpdate = useFormik<MaterialUnitUpdateFormValues>({
-    initialValues: {
-      name: '',
-      statusId: 1,
-    },
-    validate: zodToFormikValidate(updateMaterialUnitSchema),
-    onSubmit: async (values) => {
-      try {
-        await updateMaterialUnit(dataEditing?.id || '', values);
-        toastNotification('Cập nhật đơn vị tính thành công', 'success');
-        setIsEditing(false);
-        formikUpdate.resetForm();
-        refetch();
-      } catch (error) {
-        if (error instanceof Error) toastNotification(error.message, 'error');
-      }
-    },
-  });
+  const formikCreate: MaterialUnitCreateFormik =
+    useFormik<MaterialUnitCreateFormValues>({
+      initialValues: {
+        name: '',
+      },
+      validate: zodToFormikValidate(
+        createMaterialUnitSchema,
+        () => formikCreate.submitCount
+      ),
+      onSubmit: async (values) => {
+        try {
+          await createMaterialUnit(values);
+          toastNotification('Tạo đơn vị tính mới thành công', 'success');
+          setIsCreate(false);
+          formikCreate.resetForm();
+          refetch();
+        } catch (error) {
+          if (error instanceof Error) toastNotification(error.message, 'error');
+        }
+      },
+    });
+
+  const formikUpdate: MateriaUnitlUpdateFormik =
+    useFormik<MaterialUnitUpdateFormValues>({
+      initialValues: {
+        name: '',
+        statusId: 1,
+      },
+      validate: zodToFormikValidate(
+        updateMaterialUnitSchema,
+        () => formikCreate.submitCount
+      ),
+      onSubmit: async (values) => {
+        try {
+          await updateMaterialUnit(dataEditing?.id || '', values);
+          toastNotification('Cập nhật đơn vị tính thành công', 'success');
+          setIsEditing(false);
+          formikUpdate.resetForm();
+          refetch();
+        } catch (error) {
+          if (error instanceof Error) toastNotification(error.message, 'error');
+        }
+      },
+    });
 
   const dataEditing = useMemo(() => {
     if (idEdit) return listMu?.results.filter((item) => item.id === idEdit)[0];
-  }, [idEdit]);
+  }, [idEdit, listMu]);
 
   useEffect(() => {
     if (dataEditing)
@@ -88,7 +120,7 @@ function UnitMaterial() {
         name: dataEditing.name,
         statusId: dataEditing.status.id,
       });
-  }, [idEdit]);
+  }, [idEdit, formikUpdate, dataEditing]);
 
   return (
     <div>
@@ -190,6 +222,23 @@ function UnitMaterial() {
           setIdEdit('');
           setIsEditing(false);
           formikUpdate.resetForm();
+        }}
+      />
+
+      <ConfirmModal
+        open={isDelete}
+        onOpenChange={setIsDelete}
+        title={'Xóa đơn vị tính'}
+        content={
+          <div>
+            Bạn có chắc chắn muốn xóa đơn vị tính{' '}
+            <strong>{dataDelete.name}</strong> ?
+          </div>
+        }
+        handleSubmit={handleDelete}
+        handleCancel={() => {
+          setIsDelete(false);
+          setDataDelete({ name: '', id: '' });
         }}
       />
     </div>

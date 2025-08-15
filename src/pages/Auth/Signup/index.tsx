@@ -19,21 +19,28 @@ import {
 import { useAuth } from '@/hooks/use-auth';
 import { useEffect } from 'react';
 
+import type { FormikProps } from 'formik';
+
+type SignupFormik = FormikProps<SignUpFormValues>;
+
 export default function SignUpPage() {
   const { error, signup } = useAuth();
-  const formik = useFormik<SignUpFormValues>({
+  const formik: SignupFormik = useFormik<SignUpFormValues>({
     initialValues: {
+      tax_code: '',
       name: '',
       email: '',
       password: '',
       confirmPassword: '',
     },
-    validate: zodToFormikValidate(signupSchema),
+    validate: zodToFormikValidate(signupSchema, () => formik.submitCount),
     onSubmit: async (values) => {
       await signup({
+        tax_code: values.tax_code,
         name: values.name,
         email: values.email,
         password: values.password,
+        confirmPassword: values.confirmPassword,
       });
       toastNotification('Đăng ký tài khoản thành công.', 'success');
       window.location.href = '/signin';
@@ -46,22 +53,41 @@ export default function SignUpPage() {
 
   return (
     <div className="flex items-center justify-center flex-1 h-full bg-gray-50">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-xl px-6">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
-            Tạo mới tài khoản
+            Phần mềm kế toán
           </CardTitle>
           <CardDescription className="text-center">
-            Điền thông tin để tạo mới
+            Hệ thống kế toán đơn giản, hỗ trợ hộ kinh doanh kê khai doanh thu,
+            lập tờ khai thuế và quản lý hóa đơn hiệu quả.
           </CardDescription>
         </CardHeader>
         <form onSubmit={formik.handleSubmit}>
           <CardContent className="space-y-4">
-            <FormGroup label="Name" isRequrired errorMsg={formik.errors.name}>
+            <FormGroup
+              label="Mã số thuế"
+              isRequrired
+              errorMsg={formik.errors.name}
+            >
+              <BaseInput
+                id="tax_code"
+                name="tax_code"
+                placeholder="Nhập mã số thuế"
+                value={formik.values.tax_code}
+                onChange={formik.handleChange}
+                isError={!!(formik.touched.tax_code && formik.errors.tax_code)}
+              />
+            </FormGroup>
+            <FormGroup
+              label="Tên người đăng ký"
+              isRequrired
+              errorMsg={formik.errors.name}
+            >
               <BaseInput
                 id="name"
                 name="name"
-                placeholder="name"
+                placeholder="Tên người đăng ký"
                 value={formik.values.name}
                 onChange={formik.handleChange}
                 isError={!!(formik.touched.name && formik.errors.name)}
@@ -83,7 +109,7 @@ export default function SignUpPage() {
             </FormGroup>
 
             <FormGroup
-              label="Password"
+              label="Mật khẩu"
               isRequrired
               errorMsg={formik.errors.password}
             >
@@ -91,7 +117,7 @@ export default function SignUpPage() {
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Tạo mật khẩu"
                 value={formik.values.password}
                 onChange={formik.handleChange}
                 isError={!!(formik.touched.password && formik.errors.password)}
@@ -99,12 +125,12 @@ export default function SignUpPage() {
             </FormGroup>
 
             <div className="space-y-2">
-              <FormGroup label="Confirm Password">
+              <FormGroup label="Xác nhận mật khẩu">
                 <BaseInput
                   id="confirmPassword"
                   name="confirmPassword"
                   type="password"
-                  placeholder="Confirm your password"
+                  placeholder="Xác nhận mật khẩu"
                   value={formik.values.confirmPassword}
                   onChange={formik.handleChange}
                 />
@@ -112,18 +138,18 @@ export default function SignUpPage() {
             </div>
           </CardContent>
 
-          <CardFooter className="flex flex-col space-y-4 mt-2">
+          <CardFooter className="flex flex-col space-y-4 mt-4">
             <Button type="submit" className="w-full">
-              Create Account
+              Đăng ký tài khoản
             </Button>
 
             <div className="text-center text-sm text-gray-600">
-              Already have an account?{' '}
+              Bạn đã có tài khoản?{' '}
               <a
                 href={ROUTE_PATH.SIGNIN}
-                className="text-blue-600 hover:underline font-medium"
+                className="text-black hover:underline font-medium"
               >
-                Sign in
+                Đăng nhập ngay
               </a>
             </div>
           </CardFooter>

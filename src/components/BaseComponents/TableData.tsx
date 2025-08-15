@@ -48,7 +48,7 @@ export function TableData<TData, TValue>({
   });
 
   return (
-    <div className="w-full">
+    <div className="max-w-full">
       <div className="rounded-md border">
         <Table>
           <TableHeader>

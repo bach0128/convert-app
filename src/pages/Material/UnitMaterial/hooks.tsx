@@ -1,5 +1,5 @@
 import { Button } from '@/components/Shadcn/button';
-import { ArrowUpDown, PauseCircle, PencilIcon, Trash2 } from 'lucide-react';
+import { ArrowUpDown, PencilIcon, Trash2 } from 'lucide-react';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import Status from '@/components/BaseComponents/Status';
@@ -12,7 +12,11 @@ import type { MaterialUnitItem } from '@/types/dto/material';
 
 export const useUnitColumns = (
   setIdEdit: React.Dispatch<React.SetStateAction<string>>,
-  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>,
+  setDataDelete: React.Dispatch<
+    React.SetStateAction<{ name: string; id: string }>
+  >,
+  setIsDelete: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   const columns: ColumnDef<MaterialUnitItem>[] = [
     {
@@ -88,17 +92,27 @@ export const useUnitColumns = (
                 <p>Chỉnh sửa</p>
               </TooltipContent>
             </Tooltip>
-            <Tooltip>
+            {/* <Tooltip>
               <TooltipTrigger asChild>
                 <PauseCircle size={18} className="cursor-pointer" />
               </TooltipTrigger>
               <TooltipContent>
                 <p>Ngừng hoạt động</p>
               </TooltipContent>
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Trash2 size={18} className="cursor-pointer" />
+                <Trash2
+                  size={18}
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setDataDelete({
+                      name: table.row.original.name,
+                      id: table.row.original.id,
+                    });
+                    setIsDelete(true);
+                  }}
+                />
               </TooltipTrigger>
               <TooltipContent>
                 <p>Xóa</p>

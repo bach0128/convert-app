@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { toast } from 'sonner';
 import type { ZodSchema } from 'zod';
+import type { FormikErrors, FormikValues } from 'formik';
 
 import { KEY_LOCAL_STORAGE } from '@/enum/Storage';
 
@@ -128,10 +129,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function zodToFormikValidate<T>(schema: ZodSchema<T>) {
-  return (values: unknown) => {
+export function zodToFormikValidate<T extends FormikValues>(
+  schema: ZodSchema<T>,
+  getSubmitCount: () => number
+) {
+  return (values: unknown): FormikErrors<T> => {
+    if (getSubmitCount() === 0) return {};
+
     const result = schema.safeParse(values);
     if (result.success) return {};
+
     const errors: Record<string, string> = {};
     for (const issue of result.error.issues) {
       const path = issue.path[0];
@@ -139,6 +146,6 @@ export function zodToFormikValidate<T>(schema: ZodSchema<T>) {
         errors[path] = issue.message;
       }
     }
-    return errors;
+    return errors as FormikErrors<T>;
   };
 }

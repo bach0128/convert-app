@@ -54,6 +54,8 @@ export function ConfirmModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className={cn(`p-6 rounded-lg lg:min-w-[800px]`, minWidth)}
+        aria-describedby={`modal-${title}`}
+        aria-description={`modal-${title}`}
       >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>

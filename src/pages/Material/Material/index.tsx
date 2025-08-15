@@ -7,6 +7,7 @@ import BaseInput from '@/components/BaseComponents/BaseInput';
 import SearchInput from '@/components/BaseComponents/SearchInput';
 import {
   createMaterial,
+  deleteMaterial,
   getMaterial,
   getMaterialGroup,
   getMaterialUnit,
@@ -33,10 +34,17 @@ import {
   type MaterialUpdateFormValues,
 } from '@/lib/validations/material.schema/material.schema';
 import SelectStatus from '@/components/BaseComponents/SelectStatus';
+import type { FormikProps } from 'formik';
+
+type MaterialCreateFormik = FormikProps<MaterialCreateFormValues>;
+type MaterialUpdateFormik = FormikProps<MaterialUpdateFormValues>;
 
 function Material() {
   const [idEdit, setIdEdit] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+
+  const [dataDelete, setDataDelete] = useState({ name: '', id: '' });
+  const [isDelete, setIsDelete] = useState(false);
   const [isCreate, setIsCreate] = useState(false);
 
   const {
@@ -58,65 +66,90 @@ function Material() {
     queryFn: getMaterialUnit,
   });
 
-  const { columns } = useGroupColumns(setIdEdit, setIsEditing);
+  const handleDelete = async () => {
+    try {
+      await deleteMaterial(dataDelete.id);
+      toastNotification('Xóa hàng hóa thành công', 'success');
+      setDataDelete({ name: '', id: '' });
+      setIsDelete(false);
+      refetch();
+    } catch (error) {
+      if (error instanceof Error) toastNotification(error.message, 'error');
+    }
+  };
+
+  const { columns } = useGroupColumns(
+    setIdEdit,
+    setIsEditing,
+    setDataDelete,
+    setIsDelete
+  );
 
   const dataEditing = useMemo(() => {
     if (idEdit)
       return listMaterial?.results.filter((item) => item.id === idEdit)[0];
-  }, [idEdit]);
+  }, [idEdit, listMaterial]);
 
-  const formikCreate = useFormik<MaterialCreateFormValues>({
-    initialValues: {
-      name: '',
-      unitId: '',
-      groupId: '',
-      price: '',
-      description: '',
-    },
-    validate: zodToFormikValidate(createMaterialSchema),
-    onSubmit: async (values) => {
-      try {
-        if (values.description === null) {
-          await createMaterial({
-            name: values.name,
-            unitId: values.unitId,
-            groupId: values.groupId,
-            price: values.price,
-          });
-        } else await createMaterial(values);
-        toastNotification('Tạo hàng hóa mới thành công', 'success');
-        setIsCreate(false);
-        formikCreate.resetForm();
-        refetch();
-      } catch (error) {
-        if (error instanceof Error) toastNotification(error.message, 'error');
-      }
-    },
-  });
+  const formikCreate: MaterialCreateFormik =
+    useFormik<MaterialCreateFormValues>({
+      initialValues: {
+        name: '',
+        unitId: '',
+        groupId: '',
+        price: '',
+        description: '',
+      },
+      validate: zodToFormikValidate(
+        createMaterialSchema,
+        () => formikCreate.submitCount
+      ),
+      onSubmit: async (values) => {
+        try {
+          if (values.description === null) {
+            await createMaterial({
+              name: values.name,
+              unitId: values.unitId,
+              groupId: values.groupId,
+              price: values.price,
+            });
+          } else await createMaterial(values);
+          toastNotification('Tạo hàng hóa mới thành công', 'success');
+          setIsCreate(false);
+          formikCreate.resetForm();
+          refetch();
+        } catch (error) {
+          if (error instanceof Error) toastNotification(error.message, 'error');
+        }
+      },
+    });
 
-  const formikUpdate = useFormik<MaterialUpdateFormValues>({
-    initialValues: {
-      name: '',
-      unitId: '',
-      groupId: '',
-      price: '',
-      description: '',
-      statusId: 1,
-    },
-    validate: zodToFormikValidate(updateMaterialSchema),
-    onSubmit: async (values) => {
-      try {
-        await updateMaterial(dataEditing?.id || '', values);
-        toastNotification('Cập nhật hàng hóa thành công', 'success');
-        setIsEditing(false);
-        setIdEdit('');
-        formikUpdate.resetForm();
-        refetch();
-      } catch (error) {
-        if (error instanceof Error) toastNotification(error.message, 'error');
-      }
-    },
-  });
+  const formikUpdate: MaterialUpdateFormik =
+    useFormik<MaterialUpdateFormValues>({
+      initialValues: {
+        name: '',
+        unitId: '',
+        groupId: '',
+        price: '',
+        description: '',
+        statusId: 1,
+      },
+      validate: zodToFormikValidate(
+        updateMaterialSchema,
+        () => formikUpdate.submitCount
+      ),
+      onSubmit: async (values) => {
+        try {
+          await updateMaterial(dataEditing?.id || '', values);
+          toastNotification('Cập nhật hàng hóa thành công', 'success');
+          setIsEditing(false);
+          setIdEdit('');
+          formikUpdate.resetForm();
+          refetch();
+        } catch (error) {
+          if (error instanceof Error) toastNotification(error.message, 'error');
+        }
+      },
+    });
 
   useEffect(() => {
     if (dataEditing)
@@ -128,7 +161,7 @@ function Material() {
         statusId: dataEditing.status.id,
         description: dataEditing.description || '',
       });
-  }, [idEdit]);
+  }, [idEdit, formikUpdate, dataEditing]);
 
   return (
     <div>
@@ -300,10 +333,10 @@ function Material() {
       <ConfirmModal
         open={Boolean(isCreate)}
         onOpenChange={setIsCreate}
-        title={'Thông tin hàng hóa và dịch vụ'}
+        title={'Tạo mới hàng hóa và dịch vụ'}
         content={
           <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-3 justify-center">
+            <div className="flex gap-3 justify-center">
               <FormGroup
                 label="Tên HHDV"
                 isRequrired
@@ -348,7 +381,7 @@ function Material() {
                 <BaseInput value={dataEditing?.category} />
               </FormGroup> */}
             </div>
-            <div className="flex items-center gap-3 w-full justify-center">
+            <div className="flex gap-3 w-full justify-center">
               <FormGroup
                 label="ĐVT"
                 isRequrired
@@ -419,8 +452,26 @@ function Material() {
         confirmText="Tạo mới"
         handleCancel={() => {
           setIsCreate(false);
+          formikCreate.resetForm();
         }}
         minWidth={'1000px'}
+      />
+
+      <ConfirmModal
+        open={isDelete}
+        onOpenChange={setIsDelete}
+        title={'Xóa hàng hóa'}
+        content={
+          <div>
+            Bạn có chắc chắn muốn xóa hàng hóa{' '}
+            <strong>{dataDelete.name}</strong> ?
+          </div>
+        }
+        handleSubmit={handleDelete}
+        handleCancel={() => {
+          setIsDelete(false);
+          setDataDelete({ name: '', id: '' });
+        }}
       />
     </div>
   );

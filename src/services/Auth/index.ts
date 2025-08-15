@@ -21,8 +21,8 @@ export class AuthService {
     return response.data;
   }
 
-  static async signup(credentials: UserSignUp): Promise<UserCredential> {
-    const response = await axiosAPIBaseConfig.post<UserCredential>(
+  static async signup(credentials: UserSignUp): Promise<{ message: string }> {
+    const response = await axiosAPIBaseConfig.post<{ message: string }>(
       AUTH_ENDPOINTS.SIGNUP,
       credentials
     );

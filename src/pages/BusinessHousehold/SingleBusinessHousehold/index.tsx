@@ -27,6 +27,9 @@ import {
   updateBussinessSchema,
 } from '@/lib/validations/bussiness.schema';
 import { useFormik } from 'formik';
+import type { FormikProps } from 'formik';
+
+type BussinessUpdateFormik = FormikProps<BussinessUpdateFormValues>;
 
 function SingleBusinessHousehold() {
   const navigate = useNavigate();
@@ -48,7 +51,7 @@ function SingleBusinessHousehold() {
       queryFn: getTaxPaymentMethod,
     });
 
-  const formik = useFormik<BussinessUpdateFormValues>({
+  const formik: BussinessUpdateFormik = useFormik<BussinessUpdateFormValues>({
     initialValues: {
       name: '',
       owner: '',
@@ -56,7 +59,10 @@ function SingleBusinessHousehold() {
       bussinessType: 0,
       taxPaymentMethod: 0,
     },
-    validate: zodToFormikValidate(updateBussinessSchema),
+    validate: zodToFormikValidate(
+      updateBussinessSchema,
+      () => formik.submitCount
+    ),
     onSubmit: async (values) => {
       try {
         await updateBhh(id || '', values);
@@ -78,12 +84,12 @@ function SingleBusinessHousehold() {
         bussinessType: data.bussinessType.id,
         taxPaymentMethod: data.taxPaymentMethod.id,
       });
-  }, [data]);
+  }, [data, formik]);
 
   return (
     <>
       {(isLoading || loadingTaxPaymentMethod || loadingType) && <Loading />}
-      <div className="mt-2 flex items-center gap-2">
+      <div className="flex items-center gap-2">
         <Button variant={'outline'} onClick={() => navigate(-1)}>
           <ChevronLeft /> Quay lại
         </Button>

@@ -1,5 +1,5 @@
 import { Button } from '@/components/Shadcn/button';
-import { ArrowUpDown, PauseCircle, PencilIcon, Trash2 } from 'lucide-react';
+import { ArrowUpDown, PencilIcon, Trash2 } from 'lucide-react';
 import type { ColumnDef } from '@tanstack/react-table';
 import Status from '@/components/BaseComponents/Status';
 import {
@@ -11,7 +11,11 @@ import type { MaterialItem } from '@/types/dto/material';
 
 export const useGroupColumns = (
   setIdEdit: React.Dispatch<React.SetStateAction<string>>,
-  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>,
+  setDataDelete: React.Dispatch<
+    React.SetStateAction<{ name: string; id: string }>
+  >,
+  setIsDelete: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   const columns: ColumnDef<MaterialItem>[] = [
     {
@@ -39,7 +43,7 @@ export const useGroupColumns = (
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className="p-0 px-1 hover:bg-transparent cursor-pointer"
         >
-          Tên nhóm hàng hóa và dịch vụ
+          Tên hàng hóa và dịch vụ
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
@@ -104,17 +108,27 @@ export const useGroupColumns = (
                 <p>Chỉnh sửa</p>
               </TooltipContent>
             </Tooltip>
-            <Tooltip>
+            {/* <Tooltip>
               <TooltipTrigger asChild>
                 <PauseCircle size={18} className="cursor-pointer" />
               </TooltipTrigger>
               <TooltipContent>
                 <p>Ngừng hoạt động</p>
               </TooltipContent>
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Trash2 size={18} className="cursor-pointer" />
+                <Trash2
+                  size={18}
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setDataDelete({
+                      name: table.row.original.name,
+                      id: table.row.original.id,
+                    });
+                    setIsDelete(true);
+                  }}
+                />
               </TooltipTrigger>
               <TooltipContent>
                 <p>Xóa</p>

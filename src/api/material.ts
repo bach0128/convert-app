@@ -41,6 +41,11 @@ export const updateMaterial = async (id: string, data: UpdateMaterial) => {
   return response;
 };
 
+export const deleteMaterial = async (id: string) => {
+  const response = await axiosAPIBaseConfig.delete(`/material/${id}`);
+  return response;
+};
+
 // material unit
 export const getMaterialUnit = async () => {
   const response =
@@ -66,5 +71,10 @@ export const updateMaterialUnit = async (
     status: number;
     message: string;
   }>(`/material-unit/${id}`, data);
+  return response;
+};
+
+export const deleteUnit = async (id: string) => {
+  const response = await axiosAPIBaseConfig.delete(`/material-unit/${id}`);
   return response;
 };

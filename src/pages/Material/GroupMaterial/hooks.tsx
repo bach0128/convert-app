@@ -1,5 +1,5 @@
 import { Button } from '@/components/Shadcn/button';
-import { ArrowUpDown, PauseCircle, PencilIcon, Trash2 } from 'lucide-react';
+import { ArrowUpDown, PencilIcon, Trash2 } from 'lucide-react';
 import type { ColumnDef } from '@tanstack/react-table';
 import Status from '@/components/BaseComponents/Status';
 import {
@@ -98,14 +98,14 @@ export const useGroupColumns = (
                 <p>Chỉnh sửa</p>
               </TooltipContent>
             </Tooltip>
-            <Tooltip>
+            {/* <Tooltip>
               <TooltipTrigger asChild>
                 <PauseCircle size={18} className="cursor-pointer" />
               </TooltipTrigger>
               <TooltipContent>
                 <p>Ngừng hoạt động</p>
               </TooltipContent>
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <Trash2 size={18} className="cursor-pointer" />

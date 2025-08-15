@@ -16,7 +16,7 @@ function FormGroup({
   children,
   errorMsg,
   label,
-  wrapperClass = 'space-y-1 text-left',
+  wrapperClass = 'space-y-1 text-left flex flex-col justify-start',
   labelClass = '',
   childrenClass,
   isWrappedByLabel = true,
@@ -35,7 +35,7 @@ function FormGroup({
             )}
           >
             {label}
-            {isRequrired && <span className="text-red-500"> *</span>}
+            {isRequrired && <span className="text-red-500 "> *</span>}
           </span>
         )}
         <div className={cn('mt-1', childrenClass)}>{children}</div>

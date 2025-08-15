@@ -21,6 +21,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Router />
         <Toaster
+          richColors
           position="top-right"
           closeButton
           icons={{

@@ -5,6 +5,7 @@ export interface EmailPasswordAuthentication {
 }
 
 export interface UserSignUp extends EmailPasswordAuthentication {
+  tax_code: string;
   name?: string;
   confirmPassword?: string;
 }

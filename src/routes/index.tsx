@@ -3,7 +3,6 @@ import { ROUTE_PATH } from '@/enum/route-path';
 import NotFoundPage from '@/pages/NotFound/NotFoundPage';
 import Loading from '@/components/BaseComponents/Loading';
 import HomePage from '@/pages/Home/index';
-import MainLayout from '@/layout/MainLayout';
 import SignUpPage from '@/pages/Auth/Signup';
 import SignInPage from '@/pages/Auth/Signin';
 import ResetPasswordPage from '@/pages/Auth/ResetPassword';
@@ -21,6 +20,7 @@ import GroupMaterial from '@/pages/Material/GroupMaterial';
 import Material from '@/pages/Material/Material';
 import MaterialList from '@/pages/Material';
 import AuthGuard from '@/contexts/authContext';
+import MainLayout from '@/layout/MainLayout';
 
 const router = createBrowserRouter([
   {

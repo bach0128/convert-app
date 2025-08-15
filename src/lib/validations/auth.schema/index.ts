@@ -13,6 +13,7 @@ export const signinSchema = z.object({
 // Signup Schema
 export const signupSchema = z
   .object({
+    tax_code: z.string({ message: 'Mã số thuế bắt buộc phải nhập' }),
     name: z.string({ message: 'Tên bắt buộc phải nhập' }),
     email: z
       .string({ message: 'Email bắt buộc phải nhập' })

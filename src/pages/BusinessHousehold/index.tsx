@@ -30,7 +30,10 @@ import {
   createBussinessSchema,
   type BussinessFormValues,
 } from '@/lib/validations/bussiness.schema';
-import { Plus } from 'lucide-react';
+import { ChevronLeft, Plus } from 'lucide-react';
+import type { FormikProps } from 'formik';
+
+type BussinessFormik = FormikProps<BussinessFormValues>;
 
 function BusinessHousehold() {
   const navigate = useNavigate();
@@ -62,7 +65,7 @@ function BusinessHousehold() {
       queryFn: getTaxPaymentMethod,
     });
 
-  const formik = useFormik<BussinessFormValues>({
+  const formik: BussinessFormik = useFormik<BussinessFormValues>({
     initialValues: {
       name: '',
       tax_code: '',
@@ -73,7 +76,10 @@ function BusinessHousehold() {
       bussinessType: 0,
       taxPaymentMethod: 0,
     },
-    validate: zodToFormikValidate(createBussinessSchema),
+    validate: zodToFormikValidate(
+      createBussinessSchema,
+      () => formik.submitCount
+    ),
     onSubmit: async (values) => {
       try {
         await createBhh(values);
@@ -94,10 +100,11 @@ function BusinessHousehold() {
         loadingBhh ||
         loadingType) && <Loading />}
       <div className="flex gap-2 items-center ">
-        <Button
-          variant={'outline'}
-          onClick={() => navigate(-1)}
-        >{`< Quay lại`}</Button>
+        <Button variant={'outline'} onClick={() => navigate(-1)}>
+          {' '}
+          <ChevronLeft />
+          {`Quay lại`}
+        </Button>
         <Button variant={'outline'} onClick={() => setIsOpenCreate(true)}>
           <Plus /> Thêm HKD
         </Button>
@@ -147,7 +154,7 @@ function BusinessHousehold() {
           </Button>
         </div>
         {listBhh && (
-          <div className="mt-4">
+          <div className="mt-4 max-w-full">
             <TableData columns={columns} data={listBhh.results} />
           </div>
         )}
@@ -159,7 +166,7 @@ function BusinessHousehold() {
         title={'Tạo hộ kinh doanh mới'}
         content={
           <form className="flex flex-col gap-3">
-            <div className="flex w-full items-center gap-2">
+            <div className="flex w-full gap-2">
               <FormGroup
                 label="Mã số thuế"
                 isRequrired

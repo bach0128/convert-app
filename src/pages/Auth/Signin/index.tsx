@@ -25,32 +25,39 @@ import FormGroup from '@/components/BaseComponents/FormGroup';
 import BaseInput from '@/components/BaseComponents/BaseInput';
 import { KEY_LOCAL_STORAGE } from '@/enum/Storage';
 import { useAuth } from '@/hooks/use-auth';
+import type { FormikProps } from 'formik';
+
+type SigninFormik = FormikProps<SigninFormValues>;
 
 export default function SignInPage() {
   const [isRemember, setIsRemember] = useState(false);
   const { error, signin } = useAuth();
 
-  const formik = useFormik<SigninFormValues>({
+  const formik: SigninFormik = useFormik<SigninFormValues>({
     initialValues: {
       email: '',
       password: '',
     },
-    validate: zodToFormikValidate(signinSchema),
+    validate: zodToFormikValidate(signinSchema, () => formik.submitCount),
     onSubmit: async (values) => {
-      const result = await signin(values);
-      saveToStorage(
-        KEY_LOCAL_STORAGE.ACCESS_TOKEN,
-        result.access_token,
-        isRememberMe()
-      );
+      try {
+        const result = await signin(values);
+        saveToStorage(
+          KEY_LOCAL_STORAGE.ACCESS_TOKEN,
+          result.access_token,
+          isRememberMe()
+        );
 
-      saveToStorage(
-        KEY_LOCAL_STORAGE.REFRESH_TOKEN,
-        result.refresh_token,
-        isRememberMe()
-      );
+        saveToStorage(
+          KEY_LOCAL_STORAGE.REFRESH_TOKEN,
+          result.refresh_token,
+          isRememberMe()
+        );
 
-      window.location.href = '/';
+        window.location.href = '/';
+      } catch (error) {
+        if (error instanceof Error) toastNotification(error.message, 'error');
+      }
     },
   });
 
@@ -71,7 +78,7 @@ export default function SignInPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
-            Welcome back
+            Chào mừng quay trở lại
           </CardTitle>
           <CardDescription className="text-center">
             Vui lòng nhập email và mật khẩu để đăng nhập.
@@ -94,7 +101,7 @@ export default function SignInPage() {
             </FormGroup>
 
             <FormGroup
-              label="Password"
+              label="Mật khẩu"
               isRequrired
               errorMsg={formik.errors.password}
             >
@@ -102,7 +109,7 @@ export default function SignInPage() {
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Điền mật khẩu"
                 value={formik.values.password}
                 onChange={formik.handleChange}
                 isError={!!(formik.touched.password && formik.errors.password)}
@@ -124,7 +131,7 @@ export default function SignInPage() {
                     href={ROUTE_PATH.RESET_PASSWORD}
                     className="text-sm hover:underline"
                   >
-                    Forgot password?
+                    Quên mật khẩu?
                   </a>
                 </div>
               </div>
@@ -133,7 +140,7 @@ export default function SignInPage() {
 
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full">
-              Sign In
+              Đăng nhập
             </Button>
 
             <div className="relative">
@@ -142,12 +149,12 @@ export default function SignInPage() {
               </div>
             </div>
             <div className="text-center text-sm text-gray-600">
-              {"Don't have an account? "}
+              {'Bạn chưa có tài khoản? '}
               <a
                 href={ROUTE_PATH.SIGNUP}
                 className="hover:underline font-medium text-black"
               >
-                Sign up
+                Đăng ký
               </a>
             </div>
           </CardFooter>

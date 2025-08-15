@@ -24,7 +24,7 @@ const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
     const isPassword = props.type === 'password';
     const [showPassword, setShowPassword] = useState(false);
     const inputClass = cn(
-      'h-10 w-full rounded-lg border px-3 py-2 text-sm outline-none placeholder:text-[#838383] placeholder:font-normal focus:border-[#0D0D0D] focus:outline-none focus-visible:ring-0 disabled:text-[#D4D4D4]',
+      'h-9 w-full rounded-lg border px-3 py-2 text-sm outline-none placeholder:text-[#838383] placeholder:font-normal focus:border-[#0D0D0D] focus:outline-none focus-visible:ring-0 disabled:text-[#D4D4D4]',
       isError && errorClass,
       props.className,
       isPassword && 'pr-8'
