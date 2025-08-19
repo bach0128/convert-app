@@ -17,9 +17,12 @@ export interface UserCredential {
 }
 
 export interface User {
-  id: string;
+  id: number;
   email: string;
-  name?: string;
+  tax_code: string;
+  name: string;
+  isActive: boolean;
+  role: string;
 }
 
 export interface ResendOTPParams {

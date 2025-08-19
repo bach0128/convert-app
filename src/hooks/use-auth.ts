@@ -1,18 +1,36 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   AuthService,
   type EmailPasswordAuthentication,
   type UserSignUp,
 } from '@/services';
-import { getAccessToken, getErrorMessage, getRefreshToken } from '@/lib/utils';
+import {
+  getAccessToken,
+  getErrorMessage,
+  getRefreshToken,
+  removeFromStorages,
+} from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from '@/enum/route-path';
+import { KEY_LOCAL_STORAGE } from '@/enum/Storage';
+import type { User } from '@/types/dto/auth';
+import { useQuery } from '@tanstack/react-query';
 
 export function useAuth() {
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
   const isTokenExisted = !!getAccessToken() || !!getRefreshToken();
   const navigate = useNavigate();
+
+  const { data } = useQuery({
+    queryKey: ['get me'],
+    queryFn: AuthService.getMe,
+  });
+
+  useEffect(() => {
+    if (data) setUser(data);
+  }, [data]);
 
   const signin = async (credentials: EmailPasswordAuthentication) => {
     setIsLoading(true);
@@ -51,7 +69,12 @@ export function useAuth() {
     setError(null);
 
     try {
-      await AuthService.signout();
+      removeFromStorages([
+        KEY_LOCAL_STORAGE.ACCESS_TOKEN,
+        KEY_LOCAL_STORAGE.REFRESH_TOKEN,
+        KEY_LOCAL_STORAGE.USER_PREFERENCES,
+      ]);
+      window.location.href = '/signin';
     } catch (err) {
       const errorMessage = getErrorMessage(err);
       setError(errorMessage);
@@ -78,6 +101,7 @@ export function useAuth() {
   };
 
   return {
+    user,
     signin,
     signup,
     logout,

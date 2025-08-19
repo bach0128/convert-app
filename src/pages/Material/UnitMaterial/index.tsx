@@ -17,7 +17,11 @@ import Loading from '@/components/BaseComponents/Loading';
 import { Button } from '@/components/Shadcn/button';
 import { Plus } from 'lucide-react';
 import { useFormik } from 'formik';
-import { toastNotification, zodToFormikValidate } from '@/lib/utils';
+import {
+  getErrorMessage,
+  toastNotification,
+  zodToFormikValidate,
+} from '@/lib/utils';
 import {
   createMaterialUnitSchema,
   updateMaterialUnitSchema,
@@ -61,7 +65,7 @@ function UnitMaterial() {
       setIsDelete(false);
       refetch();
     } catch (error) {
-      if (error instanceof Error) toastNotification(error.message, 'error');
+      toastNotification(getErrorMessage(error), 'error');
     }
   };
 
@@ -82,7 +86,7 @@ function UnitMaterial() {
           formikCreate.resetForm();
           refetch();
         } catch (error) {
-          if (error instanceof Error) toastNotification(error.message, 'error');
+          toastNotification(getErrorMessage(error), 'error');
         }
       },
     });

@@ -29,13 +29,6 @@ export class AuthService {
     return response.data;
   }
 
-  static async signout(): Promise<AuthResponse> {
-    const response = await axiosAPIBaseConfig.post<AuthResponse>(
-      AUTH_ENDPOINTS.SIGNOUT
-    );
-    return response.data;
-  }
-
   static async refreshToken(
     refreshToken: string
   ): Promise<{ access_token: string }> {

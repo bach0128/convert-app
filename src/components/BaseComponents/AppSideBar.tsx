@@ -22,9 +22,18 @@ import {
 } from '@/components/Shadcn/sidebar';
 import { NavList } from '@/enum/NavList';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '@/hooks/use-auth';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '../Shadcn/dropdown-menu';
+import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 
 export function AppSidebar() {
   const { pathname } = useLocation();
+  const { user, logout } = useAuth();
+
   return (
     <Sidebar variant="inset">
       <SidebarHeader>
@@ -96,14 +105,17 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton>
-              <UserCircle2 />
-              <span>Tài khoản</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger className="w-full cursor-pointer flex items-center gap-2 hover:bg-yellow-base rounded-sm p-1">
+            <UserCircle2 size={18} />
+            <span>{user?.name}</span>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-[200px]">
+            <DropdownMenuItem onClick={() => logout()}>
+              Đăng xuất
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </SidebarFooter>
     </Sidebar>
   );
