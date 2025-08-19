@@ -48,6 +48,7 @@ export default [
         sessionStorage: 'readonly',
         document: 'readonly',
         KEY_LOCAL_STORAGE: 'readonly',
+        FileReader: 'readonly',
       },
     },
     plugins: {

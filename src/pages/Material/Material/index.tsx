@@ -161,7 +161,8 @@ function Material() {
         statusId: dataEditing.status.id,
         description: dataEditing.description || '',
       });
-  }, [idEdit, formikUpdate, dataEditing]);
+    // eslint-disable-next-line
+  }, [idEdit, dataEditing]);
 
   return (
     <div>

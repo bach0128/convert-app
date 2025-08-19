@@ -112,7 +112,8 @@ function UnitMaterial() {
 
   const dataEditing = useMemo(() => {
     if (idEdit) return listMu?.results.filter((item) => item.id === idEdit)[0];
-  }, [idEdit, listMu]);
+    // eslint-disable-next-line
+  }, [idEdit]);
 
   useEffect(() => {
     if (dataEditing)
@@ -120,7 +121,8 @@ function UnitMaterial() {
         name: dataEditing.name,
         statusId: dataEditing.status.id,
       });
-  }, [idEdit, formikUpdate, dataEditing]);
+    // eslint-disable-next-line
+  }, [dataEditing]);
 
   return (
     <div>

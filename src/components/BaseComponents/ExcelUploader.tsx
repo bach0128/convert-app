@@ -18,6 +18,7 @@ import {
   TableRow,
 } from '@/components/Shadcn/table';
 import { Upload, FileSpreadsheet, Loader2 } from 'lucide-react';
+import { toastNotification } from '@/lib/utils';
 
 interface ExcelData {
   [key: string]: string | number | boolean;
@@ -29,8 +30,11 @@ export default function ExcelUploader() {
   const [fileName, setFileName] = useState('');
   const [headers, setHeaders] = useState<string[]>([]);
   const [data, setData] = useState<ExcelData[]>([]);
+  // const [data, setData] = useState<any[]>([]);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // read file and export to rows
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -72,11 +76,11 @@ export default function ExcelUploader() {
         } else {
           setError('The Excel file appears to be empty.');
         }
-      } catch (err) {
+      } catch {
         setError(
           "Error reading file. Please make sure it's a valid Excel file."
         );
-        console.error('Error reading file:', err);
+        toastNotification('Tải dữ liệu lỗi', 'error');
       } finally {
         setLoading(false);
       }
@@ -89,6 +93,34 @@ export default function ExcelUploader() {
 
     reader.readAsArrayBuffer(file);
   };
+
+  // read file and export to json
+
+  // const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (!file) return;
+
+  //   const reader = new FileReader();
+
+  //   // Đọc file dưới dạng ArrayBuffer (ổn định nhất)
+  //   reader.onload = (event) => {
+  //     const arrayBuffer = event.target?.result as ArrayBuffer;
+
+  //     // Đọc workbook từ buffer
+  //     const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+
+  //     // Lấy sheet đầu tiên
+  //     const sheetName = workbook.SheetNames[0];
+  //     const worksheet = workbook.Sheets[sheetName];
+
+  //     // Chuyển sheet sang JSON
+  //     const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+  //     setData(jsonData);
+  //   };
+
+  //   reader.readAsArrayBuffer(file);
+  // };
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
