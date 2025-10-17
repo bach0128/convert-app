@@ -45,7 +45,7 @@ export const NavList: NavItem[] = [
         icon: FileText,
       },
       {
-        title: 'Hàng hóa & Dịch vụ',
+        title: 'HH & DV',
         url: TabID.MATERIAL,
         icon: FileText,
       },

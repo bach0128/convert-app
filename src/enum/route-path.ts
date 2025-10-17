@@ -24,6 +24,11 @@ const ROUTE_PATH = {
   GROUP_MATERIAL: '/group',
   MATERIAL: '/material',
   MATERIAL_LIST: '/material_list',
+
+  // chi phí
+  COST_INVOICE: '/cost/:id',
+
+  // doanh thu
 } as const;
 
 export { ROUTE_PATH };

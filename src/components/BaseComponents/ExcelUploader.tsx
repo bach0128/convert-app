@@ -1,36 +1,23 @@
 import type React from 'react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import { Button } from '@/components/Shadcn/button';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/Shadcn/card';
-import { Alert, AlertDescription } from '@/components/Shadcn/alert';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/Shadcn/table';
-import { Upload, FileSpreadsheet, Loader2 } from 'lucide-react';
+import { Loader2, CloudUpload } from 'lucide-react';
 import { toastNotification } from '@/lib/utils';
+import type { ExcelData } from '@/types/excelFile';
 
-interface ExcelData {
-  [key: string]: string | number | boolean;
-}
-
-export default function ExcelUploader() {
+export default function ExcelUploader({
+  setData,
+  title = 'Nhập file',
+}: {
+  title?: string;
+  data: ExcelData[];
+  setData: React.Dispatch<React.SetStateAction<ExcelData[]>>;
+}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [fileName, setFileName] = useState('');
-  const [headers, setHeaders] = useState<string[]>([]);
-  const [data, setData] = useState<ExcelData[]>([]);
-  // const [data, setData] = useState<any[]>([]);
+  // const [headers, setHeaders] = useState<string[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -61,7 +48,7 @@ export default function ExcelUploader() {
         if (jsonData.length > 0) {
           // Extract headers from first row
           const headers = jsonData[0].map((header) => String(header));
-          setHeaders(headers);
+          // setHeaders(headers);
 
           // Convert remaining rows to objects
           const rows = jsonData.slice(1).map((row) => {
@@ -74,12 +61,10 @@ export default function ExcelUploader() {
 
           setData(rows);
         } else {
-          setError('The Excel file appears to be empty.');
+          setError('File không có dữ liệu.');
         }
       } catch {
-        setError(
-          "Error reading file. Please make sure it's a valid Excel file."
-        );
+        setError('Có lỗi khi tải dữ liệu lên. Vui lòng kiểm tra lại file.');
         toastNotification('Tải dữ liệu lỗi', 'error');
       } finally {
         setLoading(false);
@@ -87,7 +72,7 @@ export default function ExcelUploader() {
     };
 
     reader.onerror = () => {
-      setError('Error reading file.');
+      setError('Lỗi đọc file');
       setLoading(false);
     };
 
@@ -128,7 +113,7 @@ export default function ExcelUploader() {
 
   const clearData = () => {
     setData([]);
-    setHeaders([]);
+    // setHeaders([]);
     setFileName('');
     setError('');
     if (fileInputRef.current) {
@@ -136,104 +121,52 @@ export default function ExcelUploader() {
     }
   };
 
+  useEffect(() => {
+    if (error) toastNotification(error, 'error');
+  }, [error]);
+
   return (
-    <div className="w-full mx-auto p-6 space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileSpreadsheet className="h-5 w-5" />
-            Excel File Uploader
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center gap-4">
+    <div>
+      <div className="flex items-center gap-4">
+        <Button
+          onClick={handleUploadClick}
+          disabled={loading}
+          className="flex items-center gap-2"
+          variant={'outline'}
+        >
+          {loading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <CloudUpload className="h-4 w-4" />
+          )}
+          {loading ? 'Loading...' : title}
+        </Button>
+
+        {fileName && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">
+              File đã chọn: {fileName}
+            </span>
             <Button
-              onClick={handleUploadClick}
+              variant="outline"
+              size="sm"
+              onClick={clearData}
               disabled={loading}
-              className="flex items-center gap-2"
             >
-              {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Upload className="h-4 w-4" />
-              )}
-              {loading ? 'Processing...' : 'Upload Excel File'}
+              Hủy
             </Button>
-
-            {fileName && (
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">
-                  Uploaded: {fileName}
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={clearData}
-                  disabled={loading}
-                >
-                  Clear
-                </Button>
-              </div>
-            )}
           </div>
+        )}
+      </div>
 
-          <input
-            id="file-upload"
-            type="file"
-            accept=".xlsx,.xls"
-            onChange={handleFileUpload}
-            ref={fileInputRef}
-            className="hidden"
-          />
-
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
-          {data.length > 0 && (
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold">
-                  Data Preview ({data.length} rows)
-                </h3>
-              </div>
-
-              <div className="border rounded-md max-h-96 overflow-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      {headers.map((header, index) => (
-                        <TableHead key={index} className="font-semibold">
-                          {header}
-                        </TableHead>
-                      ))}
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {data.slice(0, 100).map((row, rowIndex) => (
-                      <TableRow key={rowIndex}>
-                        {headers.map((header, colIndex) => (
-                          <TableCell key={colIndex}>
-                            {String(row[header] || '')}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-
-              {data.length > 100 && (
-                <p className="text-sm text-muted-foreground">
-                  Showing first 100 rows of {data.length} total rows
-                </p>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      <input
+        id="file-upload"
+        type="file"
+        accept=".xlsx,.xls"
+        onChange={handleFileUpload}
+        ref={fileInputRef}
+        className="hidden"
+      />
     </div>
   );
 }

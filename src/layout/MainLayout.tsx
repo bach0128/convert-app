@@ -1,20 +1,18 @@
-import {
-  SidebarContent,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/Shadcn/sidebar';
-import { AppSidebar } from '@/components/BaseComponents/AppSideBar';
+import { Sidebar } from '@/components/AppSideBar';
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 export default function MainLayout() {
+  const [isOpenSidebar, setIsOpenSidebar] = useState(true);
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      {/* <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"></header> */}
-      <SidebarContent className="px-4 py-6 max-w-full rounded-xl shadow">
-        <SidebarTrigger className="-ml-1" />
+    <div className="h-screen flex w-full">
+      <Sidebar
+        isOpenSidebar={isOpenSidebar}
+        setIsOpenSidebar={setIsOpenSidebar}
+      />
+      <div className="flex-1 overflow-auto p-5">
         <Outlet />
-      </SidebarContent>
-    </SidebarProvider>
+      </div>
+    </div>
   );
 }

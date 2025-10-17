@@ -44,6 +44,7 @@ interface ApiError {
     data?: {
       message?: string;
       msg?: string;
+      errors?: ArrayLike<{ messages: string | string[] }>;
     };
   };
   message?: string;
@@ -55,7 +56,9 @@ export const getErrorMessage = (error: ApiError | Error | unknown): string => {
 
   if (typeof error === 'object' && error !== null && 'response' in error) {
     const apiError = error as ApiError;
+    const messageError = apiError.response?.data?.errors?.[0]?.messages?.[0];
     return (
+      messageError ||
       apiError.response?.data?.message ||
       apiError.response?.data?.msg ||
       apiError.message ||
@@ -72,7 +75,7 @@ export const getErrorMessage = (error: ApiError | Error | unknown): string => {
     return error;
   }
 
-  return 'An unexpected error occurred';
+  return 'Lỗi không xác định';
 };
 
 export const isRememberMe = (): boolean => {
@@ -148,4 +151,16 @@ export function zodToFormikValidate<T extends FormikValues>(
     }
     return errors as FormikErrors<T>;
   };
+}
+
+export function formatDate(date: Date | undefined) {
+  if (!date) {
+    return '';
+  }
+
+  return date.toLocaleDateString('en-US', {
+    day: '2-digit',
+    month: 'numeric',
+    year: 'numeric',
+  });
 }

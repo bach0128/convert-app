@@ -27,7 +27,7 @@ import {
   updateMaterialUnitSchema,
   type MaterialUnitCreateFormValues,
   type MaterialUnitUpdateFormValues,
-} from '@/lib/validations/material.schema/material.schema';
+} from '@/lib/validations/material.schema';
 import SelectStatus from '@/components/BaseComponents/SelectStatus';
 import type { FormikProps } from 'formik';
 

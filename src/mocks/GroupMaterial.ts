@@ -1,6 +1,4 @@
-import type { GroupMaterialItem } from '@/pages/Material/GroupMaterial/hooks';
-
-export const mockGroupMaterial: GroupMaterialItem[] = [
+export const mockGroupMaterial = [
   {
     id: '1',
     code: 'DV',

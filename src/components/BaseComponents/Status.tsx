@@ -20,6 +20,7 @@ function Status({
     stop: 'Ngưng hoạy động',
     new: 'tạo mới',
   };
+
   return (
     <span
       className={cn(

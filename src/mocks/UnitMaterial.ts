@@ -1,6 +1,4 @@
-import type { UnitItem } from '@/pages/Material/UnitMaterial/hooks';
-
-export const mockUnits: UnitItem[] = [
+export const mockUnits = [
   {
     id: '1',
     code: 'DVT001',

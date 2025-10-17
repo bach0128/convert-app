@@ -13,14 +13,14 @@ import { Checkbox } from '@/components/Shadcn/checkbox';
 import { Separator } from '@/components/Shadcn/separator';
 import { ROUTE_PATH } from '@/enum/route-path';
 import { useFormik } from 'formik';
-import type { SigninFormValues } from '@/lib/validations/auth.schema/index';
+import type { SigninFormValues } from '@/lib/validations/auth.schema';
 import {
   isRememberMe,
   saveToStorage,
   toastNotification,
   zodToFormikValidate,
 } from '@/lib/utils';
-import { signinSchema } from '@/lib/validations/auth.schema/index';
+import { signinSchema } from '@/lib/validations/auth.schema';
 import FormGroup from '@/components/BaseComponents/FormGroup';
 import BaseInput from '@/components/BaseComponents/BaseInput';
 import { KEY_LOCAL_STORAGE } from '@/enum/Storage';

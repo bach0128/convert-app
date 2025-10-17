@@ -1,7 +1,7 @@
 export type APIResponse<T> = {
   data: T;
-  error: string | null;
-  message: string;
+  // error: string | null;
+  // message: string;
   status: string;
 };
 

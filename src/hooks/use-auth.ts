@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   AuthService,
   type EmailPasswordAuthentication,
@@ -23,13 +23,20 @@ export function useAuth() {
   const isTokenExisted = !!getAccessToken() || !!getRefreshToken();
   const navigate = useNavigate();
 
-  const { data } = useQuery({
+  const isHaveToken = useMemo(() => {
+    return getAccessToken();
+  }, []);
+
+  const { data, error: errorGetMe } = useQuery({
     queryKey: ['get me'],
     queryFn: AuthService.getMe,
+    enabled: Boolean(isHaveToken),
   });
 
   useEffect(() => {
-    if (data) setUser(data);
+    if (data) {
+      setUser(data);
+    }
   }, [data]);
 
   const signin = async (credentials: EmailPasswordAuthentication) => {
@@ -65,24 +72,15 @@ export function useAuth() {
   };
 
   const logout = async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      removeFromStorages([
-        KEY_LOCAL_STORAGE.ACCESS_TOKEN,
-        KEY_LOCAL_STORAGE.REFRESH_TOKEN,
-        KEY_LOCAL_STORAGE.USER_PREFERENCES,
-      ]);
-      window.location.href = '/signin';
-    } catch (err) {
-      const errorMessage = getErrorMessage(err);
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
+    removeFromStorages([
+      KEY_LOCAL_STORAGE.ACCESS_TOKEN,
+      KEY_LOCAL_STORAGE.REFRESH_TOKEN,
+      KEY_LOCAL_STORAGE.USER_PREFERENCES,
+    ]);
+    window.location.href = '/signin';
   };
+
+  if (errorGetMe) logout();
 
   const recoverPassword = async (email: string) => {
     setIsLoading(true);

@@ -21,6 +21,7 @@ import Material from '@/pages/Material/Material';
 import MaterialList from '@/pages/Material';
 import AuthGuard from '@/contexts/authContext';
 import MainLayout from '@/layout/MainLayout';
+import SingleCostInvoice from '@/pages/CostM/SingleCostInvoice';
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,12 @@ const router = createBrowserRouter([
           {
             element: <CostPage />,
             path: ROUTE_PATH.COST,
+            children: [
+              {
+                path: ':id',
+                element: <SingleCostInvoice />,
+              },
+            ],
           },
           {
             element: <TaxDeclarationPage />,

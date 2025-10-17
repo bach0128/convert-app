@@ -1,6 +1,4 @@
-import type { BusinessHouseholdItem } from '@/pages/BusinessHousehold/hooks';
-
-export const ListBusinessHousehold: BusinessHouseholdItem[] = [
+export const ListBusinessHousehold = [
   {
     id: '7f8a31c4-05e0-4a3f-b6cc-7e54714d3ab2',
     tax_code: '0101234567',

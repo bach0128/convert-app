@@ -1,6 +1,4 @@
-import type { MaterialItem } from '@/pages/Material/Material/hooks';
-
-export const mockMaterial: MaterialItem[] = [
+export const mockMaterial = [
   {
     id: '1',
     code: 'HH0009',
