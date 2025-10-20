@@ -29,6 +29,7 @@ const ROUTE_PATH = {
   COST_INVOICE: '/cost/:id',
 
   // doanh thu
+  SALE_INVOICE: '/revenue/:id',
 } as const;
 
 export { ROUTE_PATH };

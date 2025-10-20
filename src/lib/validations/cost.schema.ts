@@ -12,4 +12,9 @@ export const createInvoiceSchema = z.object({
     .min(1, { message: 'Vui lòng điền tên đơn vị bán hàng' }),
 });
 
+export const editInvoicePurchaseSchema = createInvoiceSchema.extend({
+  invoiceNumber: z.string(),
+});
+
 export type InvoiceCreateFormValues = z.infer<typeof createInvoiceSchema>;
+export type InvoiceEditPurchaseFormValues = z.infer<typeof createInvoiceSchema>;

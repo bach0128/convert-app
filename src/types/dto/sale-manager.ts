@@ -2,12 +2,14 @@ export interface SaleInvoiceDto {
   id: number;
   invoiceNumber: string;
   customerName: string;
+  customerCompanyName: string;
+  customerTaxCode: string;
   userId: number;
   createdAt: string;
-  items: InvoiceItem[];
+  items: SaleInvoiceItem[];
 }
 
-export interface InvoiceItem {
+export interface SaleInvoiceItem {
   id: number;
   productCode: string;
   productName: string;

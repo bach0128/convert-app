@@ -19,21 +19,21 @@ import { useQuery } from '@tanstack/react-query';
 import {
   createBhh,
   getBhh,
-  getBussinessType,
+  getBusinessType,
   getIndustryGroup,
   getTaxPaymentMethod,
-} from '@/api/bussiness-household';
+} from '@/api/business-household';
 import Loading from '@/components/BaseComponents/Loading';
 import { useFormik } from 'formik';
 import { toastNotification, zodToFormikValidate } from '@/lib/utils';
 import {
-  createBussinessSchema,
-  type BussinessFormValues,
+  createBusinessSchema,
+  type BusinessFormValues,
 } from '@/lib/validations/bussiness.schema';
 import { ChevronLeft, Plus } from 'lucide-react';
 import type { FormikProps } from 'formik';
 
-type BussinessFormik = FormikProps<BussinessFormValues>;
+type BusinessFormik = FormikProps<BusinessFormValues>;
 
 function BusinessHousehold() {
   const navigate = useNavigate();
@@ -55,8 +55,8 @@ function BusinessHousehold() {
   });
 
   const { data: BussinessType, isLoading: loadingType } = useQuery({
-    queryKey: ['bussiness-type'],
-    queryFn: getBussinessType,
+    queryKey: ['business-type'],
+    queryFn: getBusinessType,
   });
 
   const { data: TaxPaymentMethod, isLoading: loadingTaxPaymentMethod } =
@@ -65,7 +65,7 @@ function BusinessHousehold() {
       queryFn: getTaxPaymentMethod,
     });
 
-  const formik: BussinessFormik = useFormik<BussinessFormValues>({
+  const formik: BusinessFormik = useFormik<BusinessFormValues>({
     initialValues: {
       name: '',
       tax_code: '',
@@ -73,11 +73,11 @@ function BusinessHousehold() {
       owner: '',
       phone: '',
       address: '',
-      bussinessType: 0,
+      businessType: 0,
       taxPaymentMethod: 0,
     },
     validate: zodToFormikValidate(
-      createBussinessSchema,
+      createBusinessSchema,
       () => formik.submitCount
     ),
     onSubmit: async (values) => {
@@ -254,7 +254,7 @@ function BusinessHousehold() {
               <FormGroup
                 label="Ngành nghề kinh doanh chính"
                 isRequrired
-                errorMsg={formik.errors.bussinessType}
+                errorMsg={formik.errors.businessType}
               >
                 <Select
                   onValueChange={(value) =>

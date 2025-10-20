@@ -22,7 +22,6 @@ export function CalendarBase({
   setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
 }) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState(formatDate(new Date()));
   const [month, setMonth] = React.useState<Date | undefined>(date);
 
   return (
@@ -30,11 +29,10 @@ export function CalendarBase({
       <div className="relative flex gap-2">
         <Input
           id="date"
-          value={value}
+          value={formatDate(date)}
           placeholder="Chọn ngày"
           className="bg-background pr-10"
           onChange={(e) => {
-            setValue(e.target.value);
             const date = parse(e.target.value, ' MMMM dd yyyy', new Date());
             if (date) {
               setDate(date);
@@ -68,7 +66,6 @@ export function CalendarBase({
               onMonthChange={setMonth}
               onSelect={(date) => {
                 setDate(date);
-                setValue(formatDate(date));
                 setOpen(false);
               }}
             />

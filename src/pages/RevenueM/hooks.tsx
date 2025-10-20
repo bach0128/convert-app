@@ -35,28 +35,22 @@ export const useCostManager = () => {
       size: 20,
     },
     {
-      accessorKey: 'sellerTaxCode',
+      accessorKey: 'customerTaxCode',
       header: 'Mã số thuế',
       cell: (row) => <span>{row.getValue<string>()}</span>,
       size: 20,
     },
     {
-      accessorKey: 'sellerName',
+      accessorKey: 'customerName',
       header: 'Tên người mua hàng',
       cell: (row) => <span>{row.getValue<string>()}</span>,
       size: 10,
     },
     {
-      accessorKey: 'sellerCompanyName',
+      accessorKey: 'customerCompanyName',
       header: 'Tên đơn vị mua hàng',
       cell: (row) => <span>{row.getValue<string>()}</span>,
       size: 10,
-    },
-
-    {
-      accessorKey: 'sellerTaxCode',
-      header: 'Tổng tiền hàng',
-      cell: (row) => <span>{row.getValue<string>()}</span>,
     },
   ];
 

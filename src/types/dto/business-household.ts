@@ -1,4 +1,4 @@
-import type { Status_Business } from '@/enum/status-bussiness';
+import type { Status_Business } from '@/enum/Status';
 
 export interface BusinessHouseholdItem {
   id: string;
@@ -10,7 +10,7 @@ export interface BusinessHouseholdItem {
   phone: string;
   createdAt: string;
   updatedAt: string;
-  bussinessType: DefaultItem;
+  businessType: DefaultItem;
   taxPaymentMethod: DefaultItem;
   status: {
     id: number;
@@ -25,20 +25,20 @@ export interface DefaultItem {
   name: number;
 }
 
-export type CreateNewBussinessHousehold = {
+export type CreateNewBusinessHousehold = {
   tax_code: string;
   name: string;
   owner: string;
   address: string;
   phone: string;
-  bussinessType: number;
+  businessType: number;
   taxPaymentMethod: number;
 };
 
-export type UpdateBussinessHousehold = {
+export type UpdateBusinessHousehold = {
   name: string;
   owner: string;
   address: string;
-  bussinessType: number;
+  businessType: number;
   taxPaymentMethod: number;
 };

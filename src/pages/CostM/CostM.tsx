@@ -4,9 +4,9 @@ import { TableData } from '@/components/BaseComponents/TableData';
 import { Button } from '@/components/Shadcn/button';
 import type { ExcelData } from '@/types/excelFile';
 import { ChevronLeft, File, FilterIcon, Plus, Trash2 } from 'lucide-react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useCostManager } from './hooks';
 import { ConfirmModal } from '@/components/BaseComponents/ConfirmModal';
 import FormGroup from '@/components/BaseComponents/FormGroup';
@@ -27,6 +27,7 @@ import {
   getListPurchaseInvoice,
 } from '@/api/purchase-invoice';
 import Loading from '@/components/BaseComponents/Loading';
+import { subMonths } from 'date-fns';
 
 type InvoiceCreateFormik = FormikProps<InvoiceCreateFormValues>;
 
@@ -34,11 +35,15 @@ function CostPage() {
   const navigate = useNavigate();
   const { columns } = useCostManager();
   const [isOpenCreate, setIsOpenCreate] = useState(false);
-  const [startDate, setStartDate] = React.useState<Date | undefined>(
-    new Date()
+  const [fromDate, setFromDate] = React.useState<Date | undefined>(() =>
+    subMonths(new Date(), 1)
   );
   const [endDate, setEndDate] = React.useState<Date | undefined>(new Date());
   const [excelData, setExcelData] = useState<ExcelData[]>([]);
+
+  useEffect(() => {
+    setFromDate(subMonths(new Date(), 1));
+  }, []);
 
   const {
     data: listPurchaseInvoice,
@@ -95,7 +100,7 @@ function CostPage() {
           <div className="flex font-medium text-sm items-center justify-center gap-2">
             Từ ngày
             <div>
-              <CalendarBase setDate={setStartDate} date={startDate} />
+              <CalendarBase setDate={setFromDate} date={fromDate} />
             </div>
           </div>
           <div className="flex font-medium text-sm items-center justify-center gap-2">
@@ -200,6 +205,9 @@ function CostPage() {
         handleSubmit={formikCreate.handleSubmit}
         handleCancel={formikCreate.resetForm}
       />
+      <div>
+        <Outlet />
+      </div>
     </div>
   );
 }

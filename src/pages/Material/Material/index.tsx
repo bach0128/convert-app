@@ -221,7 +221,7 @@ function Material() {
                   defaultValue={formikUpdate.values.groupId}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Chọn ngành nghề kinh doanh chính" />
+                    <SelectValue placeholder="Chọn nhóm hàng hóa và dịch vụ" />
                   </SelectTrigger>
                   <SelectContent className="max-h-[400px] overflow-y-auto w-full">
                     <SelectGroup>
@@ -365,7 +365,7 @@ function Material() {
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Chọn ngành nghề kinh doanh chính" />
+                    <SelectValue placeholder="Chọn nhóm hàng hóa và dịch vụ" />
                   </SelectTrigger>
                   <SelectContent className="max-h-[400px] overflow-y-auto">
                     <SelectGroup>

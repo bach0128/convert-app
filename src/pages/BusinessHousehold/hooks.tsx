@@ -1,7 +1,7 @@
 import Status from '@/components/BaseComponents/Status';
 import { Button } from '@/components/Shadcn/button';
 import { ROUTE_PATH } from '@/enum/route-path';
-import type { BusinessHouseholdItem } from '@/types/dto/bussiness-household';
+import type { BusinessHouseholdItem } from '@/types/dto/business-household';
 import type { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -32,16 +32,7 @@ export const useBusinessHousehold = () => {
     },
     {
       accessorKey: 'name',
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="p-0 px-1 hover:bg-transparent cursor-pointer"
-        >
-          Tên hộ kinh doanh
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      ),
+      header: 'Tên hộ kinh doanh',
       cell: ({ row }) => <span>{row.getValue('name')}</span>,
       size: 33.33,
     },
@@ -54,7 +45,7 @@ export const useBusinessHousehold = () => {
     {
       accessorKey: 'bussinessType',
       header: 'Ngành nghề chính',
-      cell: (table) => <span>{table.row.original.bussinessType.name}</span>,
+      cell: (table) => <span>{table.row.original.businessType.name}</span>,
       size: 20,
     },
     {

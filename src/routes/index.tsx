@@ -10,7 +10,7 @@ import VerifyCodePage from '@/pages/Auth/VerifyCode';
 import ChangePasswordPage from '@/pages/Auth/ChangePassword';
 import DefaultLayout from '@/layout/DefaultLayout';
 import RevenuePage from '@/pages/RevenueM';
-import CostPage from '@/pages/CostM';
+import CostPage from '@/pages/CostM/CostM';
 import TaxDeclarationPage from '@/pages/TaxDeclaration';
 import ReportPage from '@/pages/Report';
 import BusinessHousehold from '@/pages/BusinessHousehold';
@@ -22,6 +22,7 @@ import MaterialList from '@/pages/Material';
 import AuthGuard from '@/contexts/authContext';
 import MainLayout from '@/layout/MainLayout';
 import SingleCostInvoice from '@/pages/CostM/SingleCostInvoice';
+import SingleSaleInvoice from '@/pages/RevenueM/SingleSaleInvoice';
 
 const router = createBrowserRouter([
   {
@@ -39,14 +40,16 @@ const router = createBrowserRouter([
             path: ROUTE_PATH.REVENUE,
           },
           {
+            path: ROUTE_PATH.SALE_INVOICE,
+            element: <SingleSaleInvoice />,
+          },
+          {
             element: <CostPage />,
             path: ROUTE_PATH.COST,
-            children: [
-              {
-                path: ':id',
-                element: <SingleCostInvoice />,
-              },
-            ],
+          },
+          {
+            path: ROUTE_PATH.COST_INVOICE,
+            element: <SingleCostInvoice />,
           },
           {
             element: <TaxDeclarationPage />,

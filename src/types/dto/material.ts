@@ -1,4 +1,4 @@
-import type { Status_Business } from '@/enum/status-bussiness';
+import type { Status_Business } from '@/enum/Status';
 
 export interface MaterialGroupItem {
   id: string;

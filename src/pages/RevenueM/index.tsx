@@ -12,17 +12,17 @@ import { ConfirmModal } from '@/components/BaseComponents/ConfirmModal';
 import FormGroup from '@/components/BaseComponents/FormGroup';
 import BaseInput from '@/components/BaseComponents/BaseInput';
 import { useFormik, type FormikProps } from 'formik';
-import {
-  createInvoiceSchema,
-  type InvoiceCreateFormValues,
-} from '@/lib/validations/cost.schema';
 import { zodToFormikValidate } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 // import { createPurchaseInvoice } from '@/api/purchase-invoice';
 import Loading from '@/components/BaseComponents/Loading';
 import { getListSaleInvoice } from '@/api/sale-invoice';
+import {
+  createInvoiceSaleSchema,
+  type InvoiceSaleCreateFormValues,
+} from '@/lib/validations/sale.schema';
 
-type InvoiceCreateFormik = FormikProps<InvoiceCreateFormValues>;
+type InvoiceCreateFormik = FormikProps<InvoiceSaleCreateFormValues>;
 
 function RevenuePage() {
   const navigate = useNavigate();
@@ -43,30 +43,31 @@ function RevenuePage() {
     queryFn: getListSaleInvoice,
   });
 
-  const formikCreate: InvoiceCreateFormik = useFormik<InvoiceCreateFormValues>({
-    initialValues: {
-      taxCode: '',
-      sellerName: '',
-      sellerCompanyName: '',
-    },
-    validate: zodToFormikValidate(
-      createInvoiceSchema,
-      () => formikCreate.submitCount
-    ),
-    onSubmit: async () => {
-      // try {
-      // await createPurchaseInvoice({
-      //   ...values,
-      //   rows: excelData,
-      // });
-      // toastNotification('Tạo hóa đơn mới thành công', 'success');
-      // formikCreate.resetForm();
-      //   refetch();
-      // } catch (error) {
-      //   if (error instanceof Error) toastNotification(error.message, 'error');
-      // }
-    },
-  });
+  const formikCreate: InvoiceCreateFormik =
+    useFormik<InvoiceSaleCreateFormValues>({
+      initialValues: {
+        taxCode: '',
+        customerName: '',
+        customerCompanyName: '',
+      },
+      validate: zodToFormikValidate(
+        createInvoiceSaleSchema,
+        () => formikCreate.submitCount
+      ),
+      onSubmit: async () => {
+        // try {
+        // await createPurchaseInvoice({
+        //   ...values,
+        //   rows: excelData,
+        // });
+        // toastNotification('Tạo hóa đơn mới thành công', 'success');
+        // formikCreate.resetForm();
+        //   refetch();
+        // } catch (error) {
+        //   if (error instanceof Error) toastNotification(error.message, 'error');
+        // }
+      },
+    });
 
   if (isLoading) return <Loading />;
   return (
@@ -143,16 +144,16 @@ function RevenuePage() {
                 label="Tên người mua hàng"
                 isRequrired
                 wrapperClass="w-full"
-                errorMsg={formikCreate.errors.sellerName}
+                errorMsg={formikCreate.errors.customerName}
               >
                 <BaseInput
-                  id="sellerName"
-                  value={formikCreate.values.sellerName}
+                  id="customerName"
+                  value={formikCreate.values.customerName}
                   onChange={formikCreate.handleChange}
                   isError={
                     !!(
-                      formikCreate.touched.sellerName &&
-                      formikCreate.errors.sellerName
+                      formikCreate.touched.customerName &&
+                      formikCreate.errors.customerName
                     )
                   }
                 />
@@ -164,16 +165,16 @@ function RevenuePage() {
                 label="Tên đơn vị mua hàng"
                 isRequrired
                 wrapperClass="w-full"
-                errorMsg={formikCreate.errors.sellerCompanyName}
+                errorMsg={formikCreate.errors.customerCompanyName}
               >
                 <BaseInput
-                  id="sellerCompanyName"
-                  value={formikCreate.values.sellerCompanyName}
+                  id="customerCompanyName"
+                  value={formikCreate.values.customerCompanyName}
                   onChange={formikCreate.handleChange}
                   isError={
                     !!(
-                      formikCreate.touched.sellerCompanyName &&
-                      formikCreate.errors.sellerCompanyName
+                      formikCreate.touched.customerCompanyName &&
+                      formikCreate.errors.customerCompanyName
                     )
                   }
                 />

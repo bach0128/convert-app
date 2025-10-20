@@ -1,9 +1,9 @@
 import {
   getBhhById,
-  getBussinessType,
+  getBusinessType,
   getTaxPaymentMethod,
   updateBhh,
-} from '@/api/bussiness-household';
+} from '@/api/business-household';
 import BaseInput from '@/components/BaseComponents/BaseInput';
 import FormGroup from '@/components/BaseComponents/FormGroup';
 import Loading from '@/components/BaseComponents/Loading';
@@ -23,13 +23,13 @@ import {
 } from '@/components/Shadcn/select';
 import { zodToFormikValidate, toastNotification } from '@/lib/utils';
 import {
-  type BussinessUpdateFormValues,
-  updateBussinessSchema,
+  type BusinessUpdateFormValues,
+  updateBusinessSchema,
 } from '@/lib/validations/bussiness.schema';
 import { useFormik } from 'formik';
 import type { FormikProps } from 'formik';
 
-type BussinessUpdateFormik = FormikProps<BussinessUpdateFormValues>;
+type BussinessUpdateFormik = FormikProps<BusinessUpdateFormValues>;
 
 function SingleBusinessHousehold() {
   const navigate = useNavigate();
@@ -40,9 +40,9 @@ function SingleBusinessHousehold() {
     queryFn: () => getBhhById(id || ''),
   });
 
-  const { data: BussinessType, isLoading: loadingType } = useQuery({
-    queryKey: ['bussiness-type'],
-    queryFn: getBussinessType,
+  const { data: BusinessType, isLoading: loadingType } = useQuery({
+    queryKey: ['business-type'],
+    queryFn: getBusinessType,
   });
 
   const { data: TaxPaymentMethod, isLoading: loadingTaxPaymentMethod } =
@@ -51,16 +51,16 @@ function SingleBusinessHousehold() {
       queryFn: getTaxPaymentMethod,
     });
 
-  const formik: BussinessUpdateFormik = useFormik<BussinessUpdateFormValues>({
+  const formik: BussinessUpdateFormik = useFormik<BusinessUpdateFormValues>({
     initialValues: {
       name: '',
       owner: '',
       address: '',
-      bussinessType: 0,
+      businessType: 0,
       taxPaymentMethod: 0,
     },
     validate: zodToFormikValidate(
-      updateBussinessSchema,
+      updateBusinessSchema,
       () => formik.submitCount
     ),
     onSubmit: async (values) => {
@@ -81,10 +81,10 @@ function SingleBusinessHousehold() {
         name: data.name,
         owner: data.owner,
         address: data.address,
-        bussinessType: data.bussinessType.id,
+        businessType: data.businessType.id,
         taxPaymentMethod: data.taxPaymentMethod.id,
       });
-  }, [data, formik]);
+  }, [data]);
 
   return (
     <>
@@ -93,7 +93,10 @@ function SingleBusinessHousehold() {
         <Button variant={'outline'} onClick={() => navigate(-1)}>
           <ChevronLeft /> Quay lại
         </Button>
-        <Button variant={'outline'} onClick={() => setIsEditing(true)}>
+        <Button
+          variant={isEditing ? 'default' : 'outline'}
+          onClick={() => setIsEditing(!isEditing)}
+        >
           <Pencil /> Chỉnh sửa
         </Button>
       </div>
@@ -168,21 +171,21 @@ function SingleBusinessHousehold() {
           <FormGroup
             label="Ngành nghề kinh doanh chính"
             isRequrired={isEditing}
-            errorMsg={formik.errors.bussinessType}
+            errorMsg={formik.errors.businessType}
           >
             {isEditing ? (
               <Select
                 onValueChange={(value) =>
                   formik.setFieldValue('bussinessType', +value)
                 }
-                defaultValue={data?.bussinessType.id.toString()}
+                defaultValue={data?.businessType.id.toString()}
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Chọn ngành nghề kinh doanh chính" />
                 </SelectTrigger>
                 <SelectContent className="max-h-[400px] overflow-y-auto">
                   <SelectGroup>
-                    {BussinessType?.map((item) => (
+                    {BusinessType?.map((item) => (
                       <SelectItem
                         key={item.id}
                         id="bussinessType"
@@ -196,7 +199,7 @@ function SingleBusinessHousehold() {
               </Select>
             ) : (
               <BaseInput
-                value={data?.bussinessType.name}
+                value={data?.businessType.name}
                 isReadonly={!isEditing}
               />
             )}
@@ -237,7 +240,7 @@ function SingleBusinessHousehold() {
       </div>
       {isEditing && (
         <div className="w-full flex items-center justify-end mt-4 gap-2">
-          <Button variant={'outline'} onClick={() => setIsEditing(false)}>
+          <Button variant={'default'} onClick={() => setIsEditing(false)}>
             Hủy
           </Button>
           <Button onClick={formik.submitForm}>Lưu</Button>

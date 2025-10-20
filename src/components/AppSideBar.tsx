@@ -18,6 +18,8 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from '@/components/Shadcn/collapsible';
+import { ROLE_USER } from '@/enum/Status';
+import { TabID } from '@/types/nav';
 
 export function Sidebar({
   isOpenSidebar,
@@ -137,7 +139,13 @@ export function Sidebar({
 
           return (
             <NavLink
-              to={item.url}
+              to={
+                item.url === TabID.BUSINESS_HOUSEHOLD
+                  ? user?.role === ROLE_USER.user
+                    ? `${item.url}/${user.id}`
+                    : item.url
+                  : item.url
+              }
               end
               key={item.title}
               className={() => cn('hover:bg-yellow-base hover:rounded')}

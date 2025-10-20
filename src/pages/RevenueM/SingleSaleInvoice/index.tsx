@@ -1,4 +1,4 @@
-import { getPurchaseInvoice } from '@/api/purchase-invoice';
+import { getSaleInvoice } from '@/api/sale-invoice';
 import BaseInput from '@/components/BaseComponents/BaseInput';
 import FormGroup from '@/components/BaseComponents/FormGroup';
 import Loading from '@/components/BaseComponents/Loading';
@@ -6,10 +6,10 @@ import { TableEditData } from '@/components/BaseComponents/TableEditData';
 import { Button } from '@/components/Shadcn/button';
 import { zodToFormikValidate } from '@/lib/utils';
 import {
-  editInvoicePurchaseSchema,
-  type InvoiceEditPurchaseFormValues,
-} from '@/lib/validations/cost.schema';
-import type { PurchaseInvoiceItem } from '@/types/dto/cost-manager';
+  editInvoiceSaleSchema,
+  type InvoiceSaleEditFormValues,
+} from '@/lib/validations/sale.schema';
+import type { SaleInvoiceItem } from '@/types/dto/sale-manager';
 import { useQuery } from '@tanstack/react-query';
 import type { ColumnDef } from '@tanstack/react-table';
 import { useFormik, type FormikProps } from 'formik';
@@ -18,33 +18,33 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-type InvoicePurchaseEditFormik = FormikProps<InvoiceEditPurchaseFormValues>;
+type InvoicePurchaseEditFormik = FormikProps<InvoiceSaleEditFormValues>;
 
-function SingleCostInvoice() {
+function SingleSaleInvoice() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: purchaseInvoice, isLoading } = useQuery({
-    queryKey: ['purchase-invoice'],
-    queryFn: () => getPurchaseInvoice(id || ''),
+  const { data: saleInvoice, isLoading } = useQuery({
+    queryKey: ['sale-invoice'],
+    queryFn: () => getSaleInvoice(id || ''),
     enabled: Boolean(id),
   });
 
   const [isEditing, setIsEditing] = useState(false);
 
   const formikEdit: InvoicePurchaseEditFormik =
-    useFormik<InvoiceEditPurchaseFormValues>({
+    useFormik<InvoiceSaleEditFormValues>({
       initialValues: {
         taxCode: '',
-        sellerName: '',
-        sellerCompanyName: '',
+        customerName: '',
+        customerCompanyName: '',
       },
       validate: zodToFormikValidate(
-        editInvoicePurchaseSchema,
+        editInvoiceSaleSchema,
         () => formikEdit.submitCount
       ),
       onSubmit: async (_values) => {
         // try {
-        //   await createPurchaseInvoice({
+        //   await createsaleInvoice({
         //     ...values,
         //     rows: excelData,
         //   });
@@ -61,19 +61,19 @@ function SingleCostInvoice() {
     });
 
   useEffect(() => {
-    if (purchaseInvoice) {
+    if (saleInvoice) {
       formikEdit.setValues({
-        taxCode: purchaseInvoice?.sellerTaxCode || '',
-        sellerName: purchaseInvoice?.sellerName || '',
-        sellerCompanyName: purchaseInvoice?.sellerCompanyName || '',
+        taxCode: saleInvoice?.customerTaxCode || '',
+        customerName: saleInvoice?.customerName || '',
+        customerCompanyName: saleInvoice?.customerCompanyName || '',
       });
-      setItems(purchaseInvoice.items);
+      setItems(saleInvoice.items);
     }
-  }, [purchaseInvoice]);
+  }, [saleInvoice]);
 
   // setup render table list item in invoice
-  const [items, setItems] = React.useState<PurchaseInvoiceItem[]>([]);
-  const columns: ColumnDef<PurchaseInvoiceItem>[] = [
+  const [items, setItems] = React.useState<SaleInvoiceItem[]>([]);
+  const columns: ColumnDef<SaleInvoiceItem>[] = [
     {
       accessorKey: 'productCode',
       header: 'Mã SP',
@@ -146,14 +146,17 @@ function SingleCostInvoice() {
           label="Tên người bán hàng"
           isRequrired
           wrapperClass="w-full text-start"
-          errorMsg={formikEdit.errors.sellerName}
+          errorMsg={formikEdit.errors.customerName}
         >
           <BaseInput
-            id="sellerName"
-            value={formikEdit.values.sellerName}
+            id="customerName"
+            value={formikEdit.values.customerName}
             onChange={formikEdit.handleChange}
             isError={
-              !!(formikEdit.touched.sellerName && formikEdit.errors.sellerName)
+              !!(
+                formikEdit.touched.customerName &&
+                formikEdit.errors.customerName
+              )
             }
             isReadonly={!isEditing}
           />
@@ -162,16 +165,16 @@ function SingleCostInvoice() {
           label="Tên đơn vị bán hàng"
           isRequrired
           wrapperClass="w-full text-start"
-          errorMsg={formikEdit.errors.sellerCompanyName}
+          errorMsg={formikEdit.errors.customerCompanyName}
         >
           <BaseInput
-            id="sellerCompanyName"
-            value={formikEdit.values.sellerCompanyName}
+            id="customerCompanyName"
+            value={formikEdit.values.customerCompanyName}
             onChange={formikEdit.handleChange}
             isError={
               !!(
-                formikEdit.touched.sellerCompanyName &&
-                formikEdit.errors.sellerCompanyName
+                formikEdit.touched.customerCompanyName &&
+                formikEdit.errors.customerCompanyName
               )
             }
             isReadonly={!isEditing}
@@ -192,4 +195,4 @@ function SingleCostInvoice() {
   );
 }
 
-export default SingleCostInvoice;
+export default SingleSaleInvoice;

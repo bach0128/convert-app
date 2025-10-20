@@ -66,7 +66,7 @@ export function ConfirmModal({
         {content && content}
 
         <DialogFooter>
-          <Button variant="outline" onClick={onCancel} className="px-6">
+          <Button variant="default" onClick={onCancel} className="px-6">
             {cancelText}
           </Button>
           <Button

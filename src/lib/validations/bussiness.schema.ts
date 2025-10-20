@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const createBussinessSchema = z.object({
+export const createBusinessSchema = z.object({
   tax_code: z.string().min(1, { message: 'Vui lòng điền mã số thuế' }),
   name: z.string().min(1, { message: 'Vui lòng điền tên hộ kinh doanh' }),
   owner: z.string().min(1, { message: 'Vui lòng điền tên người đại diện' }),
@@ -13,23 +13,23 @@ export const createBussinessSchema = z.object({
   taxPaymentMethod: z.coerce.number().min(1, {
     message: 'Vui lòng chọn hình thức nộp thuế',
   }),
-  bussinessType: z.coerce.number().min(1, {
+  businessType: z.coerce.number().min(1, {
     message: 'Vui lòng chọn ngành nghề kinh doanh',
   }),
 });
 
-export const updateBussinessSchema = z.object({
+export const updateBusinessSchema = z.object({
   name: z.string().min(1, { message: 'Vui lòng điền tên hộ kinh doanh' }),
   owner: z.string().min(1, { message: 'Vui lòng điền tên người đại diện' }),
   address: z.string().min(1, { message: 'Vui lòng điền địa chỉ kinh doanh' }),
   taxPaymentMethod: z.coerce.number().min(1, {
     message: 'Vui lòng chọn hình thức nộp thuế',
   }),
-  bussinessType: z.coerce.number().min(1, {
+  businessType: z.coerce.number().min(1, {
     message: 'Vui lòng chọn ngành nghề kinh doanh',
   }),
 });
 
-export type BussinessFormValues = z.infer<typeof createBussinessSchema>;
+export type BusinessFormValues = z.infer<typeof createBusinessSchema>;
 
-export type BussinessUpdateFormValues = z.infer<typeof updateBussinessSchema>;
+export type BusinessUpdateFormValues = z.infer<typeof updateBusinessSchema>;

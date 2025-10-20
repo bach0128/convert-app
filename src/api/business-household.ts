@@ -1,9 +1,9 @@
 import type {
   BusinessHouseholdItem,
-  CreateNewBussinessHousehold,
+  CreateNewBusinessHousehold,
   DefaultItem,
-  UpdateBussinessHousehold,
-} from '@/types/dto/bussiness-household';
+  UpdateBusinessHousehold,
+} from '@/types/dto/business-household';
 import { axiosAPIBaseConfig } from './axios';
 import type { PaginatedResponse } from '@/enum/api';
 
@@ -13,9 +13,9 @@ export const getIndustryGroup = async () => {
   return response.data;
 };
 
-export const getBussinessType = async () => {
+export const getBusinessType = async () => {
   const response =
-    await axiosAPIBaseConfig.get<DefaultItem[]>('/bussiness-type');
+    await axiosAPIBaseConfig.get<DefaultItem[]>('/business-type');
   return response.data;
 };
 
@@ -29,27 +29,27 @@ export const getTaxPaymentMethod = async () => {
 export const getBhh = async () => {
   const response = await axiosAPIBaseConfig.get<
     PaginatedResponse<BusinessHouseholdItem>
-  >('/bussiness-household');
+  >('/business-household');
   return response.data;
 };
 
 export const getBhhById = async (id: string) => {
   const response = await axiosAPIBaseConfig.get<BusinessHouseholdItem>(
-    `/bussiness-household/${id}`
+    `/business-household/${id}`
   );
   return response.data;
 };
 
-export const createBhh = async (data: CreateNewBussinessHousehold) => {
-  const response = await axiosAPIBaseConfig.post(`/bussiness-household`, {
+export const createBhh = async (data: CreateNewBusinessHousehold) => {
+  const response = await axiosAPIBaseConfig.post(`/business-household`, {
     ...data,
   });
   return response.data;
 };
 
-export const updateBhh = async (id: string, data: UpdateBussinessHousehold) => {
+export const updateBhh = async (id: string, data: UpdateBusinessHousehold) => {
   const response = await axiosAPIBaseConfig.patch(
-    `/bussiness-household/${id}`,
+    `/business-household/${id}`,
     data
   );
   return response;

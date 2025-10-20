@@ -13,6 +13,13 @@ export const getListPurchaseInvoice = async () => {
   return response.data;
 };
 
+export const getPurchaseInvoice = async (id: string) => {
+  const response = await axiosAPIBaseConfig.get<PurchaseInvoiceDto>(
+    `/purchase-invoice/${id}`
+  );
+  return response.data;
+};
+
 export const createPurchaseInvoice = async (data: CreatePurchaseInvoice) => {
   const response = await axiosAPIBaseConfig.post<
     APIResponse<{
