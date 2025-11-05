@@ -19,9 +19,14 @@ export const getMaterialGroup = async () => {
 };
 
 // material
-export const getMaterial = async () => {
-  const response =
-    await axiosAPIBaseConfig.get<PaginatedResponse<MaterialItem>>('/material');
+export const getMaterial = async (isActive?: boolean) => {
+  const response = await axiosAPIBaseConfig.get<
+    PaginatedResponse<MaterialItem>
+  >('/material', {
+    params: {
+      isActive: !!isActive,
+    },
+  });
   return response.data;
 };
 

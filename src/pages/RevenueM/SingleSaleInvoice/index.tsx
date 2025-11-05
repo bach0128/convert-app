@@ -1,10 +1,14 @@
-import { getSaleInvoice } from '@/api/sale-invoice';
+import { getSaleInvoice, updateSaleInvoice } from '@/api/sale-invoice';
 import BaseInput from '@/components/BaseComponents/BaseInput';
 import FormGroup from '@/components/BaseComponents/FormGroup';
 import Loading from '@/components/BaseComponents/Loading';
 import { TableEditData } from '@/components/BaseComponents/TableEditData';
 import { Button } from '@/components/Shadcn/button';
-import { zodToFormikValidate } from '@/lib/utils';
+import {
+  getErrorMessage,
+  toastNotification,
+  zodToFormikValidate,
+} from '@/lib/utils';
 import {
   editInvoiceSaleSchema,
   type InvoiceSaleEditFormValues,
@@ -13,17 +17,26 @@ import type { SaleInvoiceItem } from '@/types/dto/sale-manager';
 import { useQuery } from '@tanstack/react-query';
 import type { ColumnDef } from '@tanstack/react-table';
 import { useFormik, type FormikProps } from 'formik';
-import { ChevronLeft, Edit } from 'lucide-react';
+import { ChevronLeft, Edit, Trash2 } from 'lucide-react';
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/Shadcn/tooltip';
 
 type InvoicePurchaseEditFormik = FormikProps<InvoiceSaleEditFormValues>;
 
 function SingleSaleInvoice() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: saleInvoice, isLoading } = useQuery({
+  const {
+    data: saleInvoice,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ['sale-invoice'],
     queryFn: () => getSaleInvoice(id || ''),
     enabled: Boolean(id),
@@ -42,21 +55,27 @@ function SingleSaleInvoice() {
         editInvoiceSaleSchema,
         () => formikEdit.submitCount
       ),
-      onSubmit: async (_values) => {
-        // try {
-        //   await createsaleInvoice({
-        //     ...values,
-        //     rows: excelData,
-        //   });
-        //   toastNotification('Tạo hàng hóa mới thành công', 'success');
-        //   refetch();
-        // } catch (error) {
-        //   toastNotification(getErrorMessage(error), 'error');
-        // } finally {
-        //   setIsOpenCreate(false);
-        //   formikCreate.resetForm();
-        //   setExcelData([]);
-        // }
+      onSubmit: async (values) => {
+        try {
+          await updateSaleInvoice(id || '', {
+            ...values,
+            rows: items.map((item) => {
+              const unitPrice = +item.unitPrice;
+              const totalPrice = +item.unitPrice;
+              return {
+                ...item,
+                unitPrice,
+                totalPrice,
+              };
+            }),
+          });
+          toastNotification('Cập nhật hóa đơn thành công', 'success');
+          refetch();
+        } catch (error) {
+          toastNotification(getErrorMessage(error), 'error');
+        } finally {
+          setIsEditing(false);
+        }
       },
     });
 
@@ -69,6 +88,7 @@ function SingleSaleInvoice() {
       });
       setItems(saleInvoice.items);
     }
+    // eslint-disable-next-line
   }, [saleInvoice]);
 
   // setup render table list item in invoice
@@ -77,35 +97,82 @@ function SingleSaleInvoice() {
     {
       accessorKey: 'productCode',
       header: 'Mã SP',
+      size: 20,
     },
     {
       accessorKey: 'productName',
       header: 'Tên SP',
+      size: 20,
     },
     {
       accessorKey: 'materialGroup',
       header: 'Nhóm vật tư',
+      size: 20,
     },
     {
       accessorKey: 'quantity',
       header: 'Số lượng',
       meta: { editable: true },
+      size: 5,
     },
     {
       accessorKey: 'unitPrice',
       header: 'Đơn giá',
       meta: { editable: true },
+      size: 20,
     },
     {
       accessorKey: 'totalPrice',
       header: 'Thành tiền',
       cell: ({ row }) => {
         const quantity = row.original.quantity;
-        const unitPrice = parseFloat(row.original.unitPrice || '0');
+        const unitPrice = row.original.unitPrice;
         return (quantity * unitPrice).toLocaleString('vi-VN');
+      },
+      size: 20,
+    },
+    {
+      accessorKey: 'action',
+      header: '',
+      cell: ({ row }) => {
+        const code = row.original.productCode;
+        return (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Trash2
+                size={18}
+                className="cursor-pointer"
+                onClick={() => {
+                  const updated = items.filter(
+                    (item) => item.productCode !== code
+                  );
+                  setItems(updated);
+                }}
+              />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Xóa</p>
+            </TooltipContent>
+          </Tooltip>
+        );
       },
     },
   ];
+
+  const handleAddRow = () => {
+    const newRow: SaleInvoiceItem = {
+      id: Math.random(),
+      productCode: '',
+      productName: '',
+      materialGroup: '',
+      unitPrice: 0,
+      quantity: 0,
+      totalPrice: 0,
+    };
+    const updated = [...items, newRow];
+    setItems(updated);
+    // onChange?.(updated);
+  };
 
   if (isLoading) return <Loading />;
 
@@ -181,9 +248,11 @@ function SingleSaleInvoice() {
           />
         </FormGroup>
       </div>
-
       <div>
-        <h2 className="text-lg font-semibold">Danh sách sản phẩm</h2>
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-lg font-semibold">Danh sách sản phẩm</h2>
+          <Button onClick={handleAddRow}>Thêm sản phẩm</Button>
+        </div>
         <TableEditData data={items} columns={columns} onChange={setItems} />
       </div>
 

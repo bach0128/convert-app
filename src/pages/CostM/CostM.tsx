@@ -40,6 +40,7 @@ function CostPage() {
   );
   const [endDate, setEndDate] = React.useState<Date | undefined>(new Date());
   const [excelData, setExcelData] = useState<ExcelData[]>([]);
+  const [rowSelection, setRowSelection] = React.useState({});
 
   useEffect(() => {
     setFromDate(subMonths(new Date(), 1));
@@ -115,7 +116,10 @@ function CostPage() {
         </div>
 
         <div className="flex gap-2">
-          <Button variant={'outline'}>
+          <Button
+            variant={'outline'}
+            disabled={Object.keys(rowSelection).length == 0}
+          >
             <Trash2 /> Xóa
           </Button>
           <Button variant={'outline'}>
@@ -128,6 +132,8 @@ function CostPage() {
         <TableData
           columns={columns}
           data={listPurchaseInvoice?.results || []}
+          setRowSelection={setRowSelection}
+          rowSelection={rowSelection}
         />
       </div>
       <ConfirmModal

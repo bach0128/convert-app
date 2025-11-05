@@ -53,7 +53,7 @@ function Material() {
     refetch,
   } = useQuery({
     queryKey: ['list-material'],
-    queryFn: getMaterial,
+    queryFn: async () => await getMaterial(),
   });
 
   const { data: listMG, isLoading: isLoadingMg } = useQuery({

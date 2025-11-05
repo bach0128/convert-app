@@ -15,8 +15,8 @@ export interface PurchaseInvoiceItem {
   productName: string;
   materialGroup: string;
   quantity: number;
-  unitPrice: string;
-  totalPrice: string;
+  unitPrice: number;
+  totalPrice: number;
 }
 
 export interface CreatePurchaseInvoice {

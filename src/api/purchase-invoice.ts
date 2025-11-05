@@ -33,3 +33,21 @@ export const createPurchaseInvoice = async (data: CreatePurchaseInvoice) => {
 
   return response.data.data;
 };
+
+export const updatePurchaseInvoice = async (
+  id: string,
+  data: CreatePurchaseInvoice
+) => {
+  const response = await axiosAPIBaseConfig.patch<
+    APIResponse<{
+      success: boolean;
+      message: string;
+      errors: ArrayLike<{
+        rowIndex: number;
+        messages: string[];
+      }>;
+    }>
+  >(`/purchase-invoice/${id}`, data);
+
+  return response.data.data;
+};

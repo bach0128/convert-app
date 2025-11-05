@@ -15,6 +15,13 @@ export interface SaleInvoiceItem {
   productName: string;
   materialGroup: string;
   quantity: number;
-  unitPrice: string;
-  totalPrice: string;
+  unitPrice: number;
+  totalPrice: number;
+}
+
+export interface CreateSaleInvoice {
+  customerName: string;
+  customerCompanyName: string;
+  taxCode: string;
+  rows: ArrayLike<object>;
 }
