@@ -3,51 +3,41 @@ import { axiosAPIBaseConfig } from './axios';
 import type {
   CreatePurchaseInvoice,
   PurchaseInvoiceDto,
+  PurchaseInvoiceItem,
 } from '@/types/dto/cost-manager';
 
 export const getListPurchaseInvoice = async () => {
   const response =
     await axiosAPIBaseConfig.get<PaginatedResponse<PurchaseInvoiceDto>>(
-      '/purchase-invoice'
+      '/invoice/purchase'
     );
   return response.data;
 };
 
 export const getPurchaseInvoice = async (id: string) => {
   const response = await axiosAPIBaseConfig.get<PurchaseInvoiceDto>(
-    `/purchase-invoice/${id}`
+    `/invoice/${id}`
   );
   return response.data;
 };
 
 export const createPurchaseInvoice = async (data: CreatePurchaseInvoice) => {
-  const response = await axiosAPIBaseConfig.post<
-    APIResponse<{
-      success: boolean;
-      errors: ArrayLike<{
-        rowIndex: number;
-        messages: string[];
-      }>;
-    }>
-  >('/purchase-invoice/import', data);
+  const response = await axiosAPIBaseConfig.post('/invoice/import', data);
 
   return response.data.data;
 };
 
 export const updatePurchaseInvoice = async (
   id: string,
-  data: CreatePurchaseInvoice
+  data: PurchaseInvoiceItem[]
 ) => {
   const response = await axiosAPIBaseConfig.patch<
     APIResponse<{
       success: boolean;
       message: string;
-      errors: ArrayLike<{
-        rowIndex: number;
-        messages: string[];
-      }>;
+      errors: string;
     }>
-  >(`/purchase-invoice/${id}`, data);
+  >(`/invoice/${id}/items`, data);
 
   return response.data.data;
 };

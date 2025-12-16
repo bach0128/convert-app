@@ -1,48 +1,41 @@
 import type { APIResponse, PaginatedResponse } from '@/enum/api';
 import { axiosAPIBaseConfig } from './axios';
-import type {
-  CreateSaleInvoice,
-  SaleInvoiceDto,
-} from '@/types/dto/sale-manager';
+import type { SaleInvoiceDto, SaleInvoiceItem } from '@/types/dto/sale-manager';
 
 export const getListSaleInvoice = async () => {
   const response =
     await axiosAPIBaseConfig.get<PaginatedResponse<SaleInvoiceDto>>(
-      '/sale-invoice'
+      '/invoice/sale'
     );
   return response.data;
 };
 
 export const getSaleInvoice = async (id: string) => {
   const response = await axiosAPIBaseConfig.get<SaleInvoiceDto>(
-    `/sale-invoice/${id}`
+    `/invoice/${id}`
   );
   return response.data;
 };
 
 export const updateSaleInvoice = async (
   id: string,
-  data: CreateSaleInvoice
+  data: SaleInvoiceItem[]
 ) => {
   const response = await axiosAPIBaseConfig.patch<
     APIResponse<{
       success: boolean;
       message: string;
-      errors: ArrayLike<{
-        rowIndex: number;
-        messages: string[];
-      }>;
+      errors: string;
     }>
-  >(`/sale-invoice/${id}`, data);
+  >(`/invoice/${id}/items`, data);
 
   return response.data.data;
 };
 
-// export const createSaleInvoice = async (data: CreatePurchaseInvoice) => {
-//   const response = await axiosAPIBaseConfig.post<{
-//     success: boolean;
-//     inserted: number;
-//   }>('/sale-invoice/import', data);
+export const createSaleInvoice = async ({ rawData }: { rawData: string }) => {
+  const response = await axiosAPIBaseConfig.post<{
+    success: boolean;
+  }>('/invoice/import', { rawData });
 
-//   return response;
-// };
+  return response;
+};

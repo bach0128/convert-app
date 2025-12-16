@@ -7,7 +7,7 @@ export const createInvoiceSchema = z.object({
   sellerName: z
     .string()
     .min(1, { message: 'Vui lòng điền tên người bán hàng' }),
-  sellerCompanyName: z
+  sellerAddress: z
     .string()
     .min(1, { message: 'Vui lòng điền tên đơn vị bán hàng' }),
 });

@@ -17,7 +17,7 @@ import {
 } from '@/components/Shadcn/card';
 import { Button } from '@/components/Shadcn/button';
 import { Alert, AlertDescription } from '@/components/Shadcn/alert';
-import ExcelUploader from '@/components/BaseComponents/ExcelUploader';
+// import XmlUploader from '@/components/BaseComponents/XmlUploader';
 
 interface ExcelData {
   [key: string]: string;
@@ -42,14 +42,8 @@ function HomePage() {
 
   return (
     <div className="px-10 py-3 flex flex-1 flex-col">
-      <p>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Distinctio,
-        autem adipisci molestiae eaque ut fugiat ipsam itaque voluptatum,
-        dolore, accusantium quod nesciunt tempora reprehenderit recusandae
-        optio? Iure natus non molestias!
-      </p>
       <div className="flex items-center gap-4 flex-col sm:flex-row">
-        <ExcelUploader />
+        {/* <XmlUploader /> */}
         {fileName && (
           <span className="text-sm text-muted-foreground">
             Selected: {fileName}

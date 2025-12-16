@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import { toast } from 'sonner';
 import type { ZodSchema } from 'zod';
 import type { FormikErrors, FormikValues } from 'formik';
+import { XMLParser } from 'fast-xml-parser';
 
 import { KEY_LOCAL_STORAGE } from '@/enum/Storage';
 
@@ -163,4 +164,22 @@ export function formatDate(date: Date | undefined) {
     month: 'numeric',
     year: 'numeric',
   });
+}
+
+export function getSellerInfo(xmlText: string) {
+  const parser = new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: '',
+  });
+
+  const parsed = parser.parse(xmlText);
+
+  const nameNBan = parsed?.HoaDon?.NBan?.Ten;
+  const mstNBan = parsed?.HoaDon?.NBan?.MST;
+
+  return { NBan: nameNBan, taxCode: mstNBan };
+}
+
+export function formatNumber(a: number) {
+  return new Intl.NumberFormat('vi-VN').format(a);
 }

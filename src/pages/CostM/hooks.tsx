@@ -1,5 +1,6 @@
 // import Status from '@/components/BaseComponents/Status';
 import { ROUTE_PATH } from '@/enum/route-path';
+import { formatNumber } from '@/lib/utils';
 import type { PurchaseInvoiceDto } from '@/types/dto/cost-manager';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
@@ -9,7 +10,7 @@ import { Link } from 'react-router-dom';
 export const useCostManager = () => {
   const columns: ColumnDef<PurchaseInvoiceDto>[] = [
     {
-      accessorKey: 'invoiceNumber',
+      accessorKey: 'so_hd',
       header: 'Số hóa đơn',
       cell: (row) => (
         <Link
@@ -22,7 +23,7 @@ export const useCostManager = () => {
       size: 10,
     },
     {
-      accessorKey: 'createdAt',
+      accessorKey: 'ngay_lap',
       header: 'Ngày tạo hóa đơn',
       cell: (row) => {
         const isoString = row.getValue<string>();
@@ -35,27 +36,29 @@ export const useCostManager = () => {
       size: 20,
     },
     {
-      accessorKey: 'sellerTaxCode',
+      accessorKey: 'seller_taxcode',
       header: 'Mã số thuế',
       cell: (row) => <span>{row.getValue<string>()}</span>,
       size: 20,
     },
     {
-      accessorKey: 'sellerName',
-      header: 'Tên người bán hàng',
-      cell: (row) => <span>{row.getValue<string>()}</span>,
-      size: 10,
-    },
-    {
-      accessorKey: 'sellerCompanyName',
+      accessorKey: 'seller_name',
       header: 'Tên đơn vị bán hàng',
       cell: (row) => <span>{row.getValue<string>()}</span>,
       size: 10,
     },
 
     {
-      accessorKey: 'sellerTaxCode',
+      accessorKey: 'total_amount_raw',
       header: 'Tổng tiền hàng',
+      cell: (row) => {
+        const formatted = formatNumber(row.getValue<number>());
+        return <span>{formatted}</span>;
+      },
+    },
+    {
+      accessorKey: 'tien_te',
+      header: 'Đơn vị tính',
       cell: (row) => <span>{row.getValue<string>()}</span>,
     },
   ];

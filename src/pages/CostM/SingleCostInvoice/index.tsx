@@ -7,30 +7,16 @@ import FormGroup from '@/components/BaseComponents/FormGroup';
 import Loading from '@/components/BaseComponents/Loading';
 import { TableEditData } from '@/components/BaseComponents/TableEditData';
 import { Button } from '@/components/Shadcn/button';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/Shadcn/tooltip';
-import {
-  getErrorMessage,
-  toastNotification,
-  zodToFormikValidate,
-} from '@/lib/utils';
-import {
-  editInvoicePurchaseSchema,
-  type InvoiceEditPurchaseFormValues,
-} from '@/lib/validations/cost.schema';
+
 import type { PurchaseInvoiceItem } from '@/types/dto/cost-manager';
 import { useQuery } from '@tanstack/react-query';
-import type { ColumnDef } from '@tanstack/react-table';
-import { useFormik, type FormikProps } from 'formik';
-import { ChevronLeft, Edit, Trash2 } from 'lucide-react';
+import { ChevronLeft, Edit } from 'lucide-react';
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
-type InvoicePurchaseEditFormik = FormikProps<InvoiceEditPurchaseFormValues>;
+import { useSingleCost } from './hooks';
+import { InvoiceItemType } from '@/models/invoice';
+import { getErrorMessage, toastNotification } from '@/lib/utils';
 
 function SingleCostInvoice() {
   const { id } = useParams();
@@ -46,140 +32,70 @@ function SingleCostInvoice() {
   });
 
   const [isEditing, setIsEditing] = useState(false);
-
-  const formikEdit: InvoicePurchaseEditFormik =
-    useFormik<InvoiceEditPurchaseFormValues>({
-      initialValues: {
-        taxCode: '',
-        sellerName: '',
-        sellerCompanyName: '',
-      },
-      validate: zodToFormikValidate(
-        editInvoicePurchaseSchema,
-        () => formikEdit.submitCount
-      ),
-      onSubmit: async (values) => {
-        try {
-          await updatePurchaseInvoice(id || '', {
-            ...values,
-            rows: items.map((item) => {
-              const unitPrice = +item.unitPrice;
-              const totalPrice = +item.unitPrice;
-              return {
-                ...item,
-                unitPrice,
-                totalPrice,
-              };
-            }),
-          });
-          toastNotification('Cập nhật hóa đơn thành công', 'success');
-          refetch();
-        } catch (error) {
-          toastNotification(getErrorMessage(error), 'error');
-        } finally {
-          setIsEditing(false);
-        }
-      },
-    });
-
-  useEffect(() => {
-    if (purchaseInvoice) {
-      formikEdit.setValues({
-        taxCode: purchaseInvoice?.sellerTaxCode || '',
-        sellerName: purchaseInvoice?.sellerName || '',
-        sellerCompanyName: purchaseInvoice?.sellerCompanyName || '',
-      });
-      setItems(purchaseInvoice.items);
-    }
-    // eslint-disable-next-line
-  }, [purchaseInvoice]);
-
-  // setup render table list item in invoice
+  const [rowSelection, setRowSelection] = React.useState({});
   const [items, setItems] = React.useState<PurchaseInvoiceItem[]>([]);
 
-  const columns: ColumnDef<PurchaseInvoiceItem>[] = [
-    {
-      accessorKey: 'productCode',
-      header: 'Mã SP',
-      meta: { editable: true },
-      size: 15,
-    },
-    {
-      accessorKey: 'productName',
-      header: 'Tên SP',
-      meta: { editable: true },
-      size: 30,
-    },
-    {
-      accessorKey: 'materialGroup',
-      header: 'Nhóm vật tư',
-      meta: { editable: true },
-      size: 15,
-    },
-    {
-      accessorKey: 'unitPrice',
-      header: 'Đơn giá',
-      meta: { editable: true },
-      size: 20,
-    },
-    {
-      accessorKey: 'quantity',
-      header: 'Số lượng',
-      meta: { editable: true },
-      size: 5,
-    },
-    {
-      accessorKey: 'totalPrice',
-      header: 'Thành tiền',
-      cell: ({ row }) => {
-        const quantity = row.original.quantity;
-        const unitPrice = row.original.unitPrice;
-        return quantity * unitPrice;
-      },
-      size: 10,
-    },
-    {
-      accessorKey: 'action',
-      header: '',
-      cell: ({ row }) => {
-        const code = row.original.productCode;
-        return (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Trash2
-                size={18}
-                className="cursor-pointer"
-                onClick={() => {
-                  const updated = items.filter(
-                    (item) => item.productCode !== code
-                  );
-                  setItems(updated);
-                }}
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Xóa</p>
-            </TooltipContent>
-          </Tooltip>
-        );
-      },
-    },
-  ];
+  const handleRemoveItem = (STT: number) => {
+    setItems(
+      items.map((i) => {
+        if (i.STT === STT) {
+          return { ...i, is_removed: true };
+        } else return i;
+      })
+    );
+  };
+
+  const { columns } = useSingleCost(handleRemoveItem);
 
   const handleAddRow = () => {
     const newRow: PurchaseInvoiceItem = {
-      id: Math.random(),
-      productCode: '',
-      productName: '',
-      materialGroup: '',
-      unitPrice: 0,
-      quantity: 0,
-      totalPrice: 0,
+      STT: items.length + 1,
+      THHDVu: '',
+      DVTinh: '',
+      materialUnitId: '',
+      source: InvoiceItemType.MANUAL,
+      DGia: 0,
+      SLuong: 0,
+      ThTien: 0,
     };
     const updated = [...items, newRow];
     setItems(updated);
     // onChange?.(updated);
   };
+  const handleUpdateInvoice = async () => {
+    try {
+      await updatePurchaseInvoice(id || '', items);
+      toastNotification('Cập nhật hóa đơn thành công', 'success');
+      refetch();
+    } catch (error) {
+      toastNotification(getErrorMessage(error), 'error');
+    }
+  };
+
+  useEffect(() => {
+    if (!purchaseInvoice) return;
+
+    if (purchaseInvoice.has_adjustment) {
+      setItems(
+        purchaseInvoice.items_adjusted
+          .map((i) => ({
+            ...i,
+          }))
+          .filter((i) => i.is_removed !== true)
+      );
+    } else
+      setItems(
+        purchaseInvoice.items_raw
+          .map((i, index) => ({
+            ...i,
+            source: InvoiceItemType.XML,
+            original_index: index,
+          }))
+          .filter((i) => i.is_removed !== true)
+      );
+  }, [purchaseInvoice]);
+
+  // is_removed;
 
   if (isLoading) return <Loading />;
 
@@ -202,53 +118,26 @@ function SingleCostInvoice() {
       <div className="flex flex-col gap-4">
         <FormGroup
           label="Mã số thuế đơn vị bán hàng"
-          isRequrired
           wrapperClass="w-full text-start"
-          errorMsg={formikEdit.errors.taxCode}
         >
           <BaseInput
             id="taxCode"
-            value={formikEdit.values.taxCode.trim()}
-            onChange={formikEdit.handleChange}
-            isError={
-              !!(formikEdit.touched.taxCode && formikEdit.errors.taxCode)
-            }
-            isReadonly={!isEditing}
+            value={purchaseInvoice?.seller_taxcode}
+            isReadonly
           />
         </FormGroup>
-        <FormGroup
-          label="Tên người bán hàng"
-          isRequrired
-          wrapperClass="w-full text-start"
-          errorMsg={formikEdit.errors.sellerName}
-        >
+        <FormGroup label="Tên người bán hàng" wrapperClass="w-full text-start">
           <BaseInput
             id="sellerName"
-            value={formikEdit.values.sellerName}
-            onChange={formikEdit.handleChange}
-            isError={
-              !!(formikEdit.touched.sellerName && formikEdit.errors.sellerName)
-            }
-            isReadonly={!isEditing}
+            value={purchaseInvoice?.seller_name}
+            isReadonly
           />
         </FormGroup>
-        <FormGroup
-          label="Tên đơn vị bán hàng"
-          isRequrired
-          wrapperClass="w-full text-start"
-          errorMsg={formikEdit.errors.sellerCompanyName}
-        >
+        <FormGroup label="Tên đơn vị bán hàng" wrapperClass="w-full text-start">
           <BaseInput
             id="sellerCompanyName"
-            value={formikEdit.values.sellerCompanyName}
-            onChange={formikEdit.handleChange}
-            isError={
-              !!(
-                formikEdit.touched.sellerCompanyName &&
-                formikEdit.errors.sellerCompanyName
-              )
-            }
-            isReadonly={!isEditing}
+            value={purchaseInvoice?.seller_address}
+            isReadonly
           />
         </FormGroup>
       </div>
@@ -258,28 +147,29 @@ function SingleCostInvoice() {
           <h2 className="text-lg font-semibold">Danh sách sản phẩm</h2>
           <Button onClick={handleAddRow}>Thêm sản phẩm</Button>
         </div>
-        <TableEditData data={items} columns={columns} onChange={setItems} />
+        <TableEditData
+          data={items.filter((i) => i.is_removed !== true)}
+          columns={columns}
+          onChange={setItems}
+          setRowSelection={setRowSelection}
+          rowSelection={rowSelection}
+        />
       </div>
 
       {isEditing && (
         <div className="flex justify-end items-center gap-2">
-          <Button
-            variant={'default'}
-            type="submit"
-            onClick={() => formikEdit.submitForm()}
-          >
+          <Button variant={'default'} onClick={() => handleUpdateInvoice()}>
             Lưu
           </Button>
           <Button
             variant={'default'}
             onClick={() => {
               setIsEditing(false);
-              formikEdit.setValues({
-                taxCode: purchaseInvoice?.sellerTaxCode || '',
-                sellerName: purchaseInvoice?.sellerName || '',
-                sellerCompanyName: purchaseInvoice?.sellerCompanyName || '',
-              });
-              setItems(purchaseInvoice?.items || []);
+              setItems(
+                purchaseInvoice?.has_adjustment
+                  ? purchaseInvoice.items_adjusted
+                  : purchaseInvoice?.items_raw || []
+              );
             }}
           >
             Hủy

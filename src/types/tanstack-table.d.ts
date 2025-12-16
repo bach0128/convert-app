@@ -13,6 +13,15 @@ declare module '@tanstack/react-table' {
   }
 
   interface TableMeta<TData extends RowData> {
-    updateData: (rowIndex: number, columnId: string, value: unknown) => void;
+    updateData: (
+      rowIndex: number,
+      columnId: keyof TData,
+      value: unknown
+    ) => void;
+
+    applyValueToSelectedRows: <K extends keyof TData>(
+      key: K,
+      value: TData[K]
+    ) => void;
   }
 }

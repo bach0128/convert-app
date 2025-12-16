@@ -1,26 +1,14 @@
 import { CalendarBase } from '@/components/BaseComponents/Calendar';
-import ExcelUploader from '@/components/BaseComponents/ExcelUploader';
+import XmlUploader from '@/components/BaseComponents/XmlUploader';
 import { TableData } from '@/components/BaseComponents/TableData';
 import { Button } from '@/components/Shadcn/button';
-import type { ExcelData } from '@/types/excelFile';
 import { ChevronLeft, File, FilterIcon, Plus, Trash2 } from 'lucide-react';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useCostManager } from './hooks';
 import { ConfirmModal } from '@/components/BaseComponents/ConfirmModal';
-import FormGroup from '@/components/BaseComponents/FormGroup';
-import BaseInput from '@/components/BaseComponents/BaseInput';
-import { useFormik, type FormikProps } from 'formik';
-import {
-  createInvoiceSchema,
-  type InvoiceCreateFormValues,
-} from '@/lib/validations/cost.schema';
-import {
-  getErrorMessage,
-  toastNotification,
-  zodToFormikValidate,
-} from '@/lib/utils';
+import { getErrorMessage, getSellerInfo, toastNotification } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import {
   createPurchaseInvoice,
@@ -28,18 +16,18 @@ import {
 } from '@/api/purchase-invoice';
 import Loading from '@/components/BaseComponents/Loading';
 import { subMonths } from 'date-fns';
-
-type InvoiceCreateFormik = FormikProps<InvoiceCreateFormValues>;
+import { useAuth } from '@/hooks/use-auth';
 
 function CostPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { columns } = useCostManager();
   const [isOpenCreate, setIsOpenCreate] = useState(false);
   const [fromDate, setFromDate] = React.useState<Date | undefined>(() =>
     subMonths(new Date(), 1)
   );
   const [endDate, setEndDate] = React.useState<Date | undefined>(new Date());
-  const [excelData, setExcelData] = useState<ExcelData[]>([]);
+  const [rawData, setRawData] = useState<string>('');
   const [rowSelection, setRowSelection] = React.useState({});
 
   useEffect(() => {
@@ -55,21 +43,12 @@ function CostPage() {
     queryFn: getListPurchaseInvoice,
   });
 
-  const formikCreate: InvoiceCreateFormik = useFormik<InvoiceCreateFormValues>({
-    initialValues: {
-      taxCode: '',
-      sellerName: '',
-      sellerCompanyName: '',
-    },
-    validate: zodToFormikValidate(
-      createInvoiceSchema,
-      () => formikCreate.submitCount
-    ),
-    onSubmit: async (values) => {
+  const { taxCode } = getSellerInfo(rawData);
+  const handleCreateInvoice = async () => {
+    if (user?.tax_code !== taxCode) {
       try {
         await createPurchaseInvoice({
-          ...values,
-          rows: excelData,
+          rawData,
         });
         toastNotification('Tạo hàng hóa mới thành công', 'success');
         refetch();
@@ -77,11 +56,10 @@ function CostPage() {
         toastNotification(getErrorMessage(error), 'error');
       } finally {
         setIsOpenCreate(false);
-        formikCreate.resetForm();
-        setExcelData([]);
+        setRawData('');
       }
-    },
-  });
+    } else toastNotification('Vui lòng kiểm tra lại người bán hàng.', 'error');
+  };
 
   if (isLoading) return <Loading />;
   return (
@@ -139,77 +117,17 @@ function CostPage() {
       <ConfirmModal
         open={isOpenCreate}
         onOpenChange={setIsOpenCreate}
-        title={'Thông tin hóa đơn'}
+        title={'Hóa đơn mua hàng'}
         content={
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <FormGroup
-                label="Mã số thuế đơn vị bán hàng"
-                isRequrired
-                wrapperClass="w-full"
-                errorMsg={formikCreate.errors.taxCode}
-              >
-                <BaseInput
-                  id="taxCode"
-                  value={formikCreate.values.taxCode}
-                  onChange={formikCreate.handleChange}
-                  isError={
-                    !!(
-                      formikCreate.touched.taxCode &&
-                      formikCreate.errors.taxCode
-                    )
-                  }
-                />
-              </FormGroup>
-
-              <FormGroup
-                label="Tên người bán hàng"
-                isRequrired
-                wrapperClass="w-full"
-                errorMsg={formikCreate.errors.sellerName}
-              >
-                <BaseInput
-                  id="sellerName"
-                  value={formikCreate.values.sellerName}
-                  onChange={formikCreate.handleChange}
-                  isError={
-                    !!(
-                      formikCreate.touched.sellerName &&
-                      formikCreate.errors.sellerName
-                    )
-                  }
-                />
-              </FormGroup>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <FormGroup
-                label="Tên đơn vị bán hàng"
-                isRequrired
-                wrapperClass="w-full"
-                errorMsg={formikCreate.errors.sellerCompanyName}
-              >
-                <BaseInput
-                  id="sellerCompanyName"
-                  value={formikCreate.values.sellerCompanyName}
-                  onChange={formikCreate.handleChange}
-                  isError={
-                    !!(
-                      formikCreate.touched.sellerCompanyName &&
-                      formikCreate.errors.sellerCompanyName
-                    )
-                  }
-                />
-              </FormGroup>
-            </div>
-
-            <div>
-              <ExcelUploader setData={setExcelData} data={excelData} />
-            </div>
+          <div>
+            <XmlUploader setData={setRawData} data={rawData} />
           </div>
         }
-        handleSubmit={formikCreate.handleSubmit}
-        handleCancel={formikCreate.resetForm}
+        handleSubmit={handleCreateInvoice}
+        handleCancel={() => {
+          setIsOpenCreate(false);
+          setRawData('');
+        }}
       />
       <div>
         <Outlet />

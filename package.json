@@ -46,6 +46,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "fast-xml-parser": "4.5.3",
     "formik": "^2.4.6",
     "husky": "^9.1.7",
     "init": "^0.1.2",

@@ -9,7 +9,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import React, { type HTMLProps } from 'react';
+import React from 'react';
 
 import {
   Table,
@@ -20,7 +20,7 @@ import {
   TableRow,
 } from '@/components/Shadcn/table';
 import { v4 as uuidv4 } from 'uuid';
-import { cn } from '@/lib/utils';
+import { IndeterminateCheckbox } from '@/types/table';
 
 interface TableDataProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -36,7 +36,14 @@ export function TableData<TData, TValue>({
   rowSelection,
 }: TableDataProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
+
+  const safeRowSelection = rowSelection ?? {};
   const table = useReactTable({
+    defaultColumn: {
+      size: 150,
+      minSize: 50,
+      maxSize: 400,
+    },
     data,
     columns,
     onSortingChange: setSorting,
@@ -47,35 +54,11 @@ export function TableData<TData, TValue>({
     onRowSelectionChange: setRowSelection,
     state: {
       sorting,
-      rowSelection,
+      rowSelection: safeRowSelection,
     },
     enableRowSelection: true,
     debugTable: true,
   });
-
-  // src: tanstack table - row selection : https://github.com/TanStack/table/blob/main/examples/react/row-selection/src/main.tsx#L340
-  function IndeterminateCheckbox({
-    indeterminate,
-    className = '',
-    ...rest
-  }: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
-    const ref = React.useRef<HTMLInputElement>(null!);
-
-    React.useEffect(() => {
-      if (typeof indeterminate === 'boolean') {
-        ref.current.indeterminate = !rest.checked && indeterminate;
-      }
-    }, [ref, indeterminate]);
-
-    return (
-      <input
-        type="checkbox"
-        ref={ref}
-        className={cn('cursor-pointer', className)}
-        {...rest}
-      />
-    );
-  }
 
   return (
     <div className="max-w-full">
@@ -98,7 +81,7 @@ export function TableData<TData, TValue>({
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id + uuidv4()}
-                    style={{ width: `${header.column.getSize()}%` }}
+                    style={{ width: `${header.column.getSize()}px` }}
                   >
                     {header.isPlaceholder
                       ? null
@@ -117,7 +100,7 @@ export function TableData<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={rowSelection && row.getIsSelected() && 'selected'}
+                  data-state={row && row.getIsSelected() ? 'selected' : ''}
                 >
                   {rowSelection && (
                     <TableCell key={row.id}>
@@ -134,7 +117,7 @@ export function TableData<TData, TValue>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id + uuidv4()}
-                      style={{ width: `${cell.column.getSize()}%` }}
+                      style={{ width: `${cell.column.getSize()}px` }}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

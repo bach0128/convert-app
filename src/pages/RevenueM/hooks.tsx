@@ -6,10 +6,10 @@ import { format } from 'date-fns';
 // import { ArrowUpDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export const useCostManager = () => {
+export const useRevenueManager = () => {
   const columns: ColumnDef<SaleInvoiceDto>[] = [
     {
-      accessorKey: 'invoiceNumber',
+      accessorKey: 'so_hd',
       header: 'Số hóa đơn',
       cell: (row) => (
         <Link
@@ -19,10 +19,9 @@ export const useCostManager = () => {
           {row.getValue<string>()}
         </Link>
       ),
-      size: 10,
     },
     {
-      accessorKey: 'createdAt',
+      accessorKey: 'ngay_lap',
       header: 'Ngày tạo hóa đơn',
       cell: (row) => {
         const isoString = row.getValue<string>();
@@ -32,25 +31,37 @@ export const useCostManager = () => {
 
         return <span>{formatted}</span>;
       },
-      size: 20,
     },
     {
-      accessorKey: 'customerTaxCode',
+      accessorKey: 'buyer_taxcode',
       header: 'Mã số thuế',
       cell: (row) => <span>{row.getValue<string>()}</span>,
-      size: 20,
     },
     {
-      accessorKey: 'customerName',
+      accessorKey: 'buyer_name',
       header: 'Tên người mua hàng',
       cell: (row) => <span>{row.getValue<string>()}</span>,
-      size: 10,
     },
     {
-      accessorKey: 'customerCompanyName',
+      accessorKey: 'buyer_address',
       header: 'Tên đơn vị mua hàng',
       cell: (row) => <span>{row.getValue<string>()}</span>,
       size: 10,
+    },
+    {
+      accessorKey: 'total_amount_raw',
+      header: 'Tổng tiền hàng',
+      cell: (row) => {
+        const formatted = new Intl.NumberFormat('vi-VN').format(
+          row.getValue<number>()
+        );
+        return <span>{formatted}</span>;
+      },
+    },
+    {
+      accessorKey: 'tien_te',
+      header: 'Đơn vị tính',
+      cell: (row) => <span>{row.getValue<string>()}</span>,
     },
   ];
 
